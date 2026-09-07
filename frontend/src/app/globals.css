@@ -1,0 +1,370 @@
+:root {
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --dark: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --accent: #f59e0b;
+  --success: #16a34a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--dark);
+  font-family:
+    Inter,
+    Arial,
+    Helvetica,
+    sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.hero {
+  min-height: 760px;
+  padding: 0 6vw 80px;
+  background:
+    radial-gradient(
+      circle at 75% 20%,
+      rgba(245, 158, 11, 0.14),
+      transparent 32%
+    ),
+    white;
+}
+
+.navigation {
+  max-width: 1280px;
+  height: 90px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.brandIcon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: var(--dark);
+  color: var(--accent);
+}
+
+.phase {
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.heroContent {
+  max-width: 1280px;
+  min-height: 620px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  align-items: center;
+  gap: 90px;
+}
+
+.eyebrow {
+  margin: 0 0 18px;
+  color: #b45309;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.heroText h1 {
+  margin: 0;
+  max-width: 700px;
+  font-size: clamp(54px, 6vw, 82px);
+  line-height: 0.98;
+  letter-spacing: -0.06em;
+}
+
+.heroText h1 span {
+  color: var(--muted);
+}
+
+.description {
+  max-width: 610px;
+  margin-top: 28px;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.actions {
+  margin-top: 34px;
+  display: flex;
+  gap: 12px;
+}
+
+.primaryButton,
+.secondaryButton {
+  min-height: 48px;
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.primaryButton {
+  background: var(--dark);
+  color: white;
+}
+
+.secondaryButton {
+  border: 1px solid var(--border);
+  background: white;
+}
+
+.projectCard {
+  padding: 30px;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: white;
+  box-shadow:
+    0 30px 80px rgba(15, 23, 42, 0.10);
+}
+
+.projectHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.label {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.projectHeader h2 {
+  margin: 8px 0 4px;
+  font-size: 22px;
+}
+
+.projectHeader p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.status {
+  height: fit-content;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #166534;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.progressHeader {
+  margin-top: 36px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.progressHeader strong {
+  color: var(--dark);
+}
+
+.progressBar {
+  height: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+
+.progressValue {
+  width: 72%;
+  height: 100%;
+  background: var(--accent);
+}
+
+.metrics {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.metrics article {
+  padding: 18px;
+  border-radius: 14px;
+  background: #f1f5f9;
+}
+
+.metrics span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.metrics strong {
+  display: block;
+  margin-top: 7px;
+  font-size: 17px;
+}
+
+.features {
+  max-width: 1280px;
+  margin: auto;
+  padding: 110px 24px;
+}
+
+.sectionTitle {
+  max-width: 700px;
+}
+
+.sectionTitle h2,
+.technology h2 {
+  margin: 0;
+  font-size: clamp(36px, 4vw, 54px);
+  line-height: 1.05;
+  letter-spacing: -0.05em;
+}
+
+.featureGrid {
+  margin-top: 54px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.featureCard {
+  min-height: 210px;
+  padding: 25px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: white;
+}
+
+.featureCard h3 {
+  margin-top: 80px;
+  margin-bottom: 10px;
+}
+
+.featureCard p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.technology {
+  max-width: 1230px;
+  margin: 0 auto 80px;
+  padding: 60px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 40px;
+  border-radius: 24px;
+  background: var(--dark);
+  color: white;
+}
+
+.technology .eyebrow {
+  color: #fbbf24;
+}
+
+.technologyList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.technologyList span {
+  padding: 11px 14px;
+  border: 1px solid #334155;
+  border-radius: 999px;
+  background: #1e293b;
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+@media (max-width: 950px) {
+
+  .heroContent {
+    grid-template-columns: 1fr;
+    padding-top: 60px;
+  }
+
+  .featureGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .technology {
+    grid-template-columns: 1fr;
+  }
+
+  .technologyList {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .hero {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .heroText h1 {
+    font-size: 48px;
+  }
+
+  .projectCard {
+    padding: 20px;
+  }
+
+  .metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .featureGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .technology {
+    margin-left: 20px;
+    margin-right: 20px;
+    padding: 30px;
+  }
+}

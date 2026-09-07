@@ -1,0 +1,97 @@
+name: buildflow
+
+services:
+
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-buildflow}
+      POSTGRES_USER: ${POSTGRES_USER:-buildflow}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-buildflow_dev_password}
+
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+
+    volumes:
+      - buildflow_postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U ${POSTGRES_USER:-buildflow} -d ${POSTGRES_DB:-buildflow}
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  mailpit:
+    image: axllent/mailpit:v1.31.1
+    restart: unless-stopped
+
+    ports:
+      - "${MAILPIT_SMTP_PORT:-1025}:1025"
+      - "${MAILPIT_UI_PORT:-8025}:8025"
+
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_DATABASE: /data/mailpit.db
+
+    volumes:
+      - buildflow_mailpit_data:/data
+
+  backend:
+    build:
+      context: ./backend
+
+    restart: unless-stopped
+
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-buildflow}
+      DB_USERNAME: ${POSTGRES_USER:-buildflow}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-buildflow_dev_password}
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - --fail
+        - --silent
+        - http://localhost:8080/actuator/health
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+
+  frontend:
+    build:
+      context: ./frontend
+
+      args:
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8080/api/v1}
+
+    restart: unless-stopped
+
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8080/api/v1}
+
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  buildflow_postgres_data:
+  buildflow_mailpit_data:
