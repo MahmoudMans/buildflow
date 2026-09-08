@@ -9,6 +9,7 @@ export function AppSidebar({
     | "overview"
     | "clients"
     | "projects"
+    | "suppliers"
     | "team";
 }) {
   return (
@@ -53,6 +54,17 @@ export function AppSidebar({
           href="/app/clients"
         >
           Clients
+        </Link>
+
+        <Link
+          className={
+            active === "suppliers"
+              ? "active"
+              : ""
+          }
+          href="/app/suppliers"
+        >
+          Suppliers
         </Link>
 
         <Link

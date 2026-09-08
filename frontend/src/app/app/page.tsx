@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
+import type { FormEvent } from "react";
+
 import { useRouter } from "next/navigation";
+
 import {
-  FormEvent,
   useEffect,
   useState,
 } from "react";
@@ -29,7 +30,6 @@ export default function ApplicationHomePage() {
     user,
     organizations,
     loading,
-    logout,
     refresh,
   } = useAuth();
 
@@ -105,11 +105,6 @@ export default function ApplicationHomePage() {
     } finally {
       setCreating(false);
     }
-  }
-
-  async function signOut() {
-    await logout();
-    router.push("/login");
   }
 
   if (

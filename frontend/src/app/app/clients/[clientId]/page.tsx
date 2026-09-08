@@ -11,6 +11,7 @@ import { useParams } from "next/navigation";
 
 import { AppSidebar } from "@/components/AppSidebar";
 import { useAuth } from "@/components/AuthProvider";
+import { useOrganizationSelection } from "@/components/useOrganizationSelection";
 
 import {
   ApiClientError,
@@ -34,8 +35,13 @@ export default function ClientDetailPage() {
     loading,
   } = useAuth();
 
-  const [organizationId, setOrganizationId] =
-    useState("");
+  const organizationSelection =
+    useOrganizationSelection(
+      organizations
+    );
+
+  const organizationId =
+    organizationSelection.organizationId;
 
   const [client, setClient] =
     useState<ClientView | null>(
@@ -60,40 +66,7 @@ export default function ClientDetailPage() {
   const [error, setError] =
     useState("");
 
-  useEffect(() => {
-    if (
-      organizations.length === 0
-    ) {
-      return;
-    }
 
-    const stored =
-      localStorage.getItem(
-        "buildflow.organizationId"
-      );
-
-    setOrganizationId(
-      stored &&
-      organizations.some(
-        (organization) =>
-          organization.id === stored
-      )
-        ? stored
-        : organizations[0].id
-    );
-  }, [organizations]);
-
-  useEffect(() => {
-    if (
-      organizationId &&
-      clientId
-    ) {
-      loadClient();
-    }
-  }, [
-    organizationId,
-    clientId,
-  ]);
 
   async function loadClient() {
     try {
@@ -151,6 +124,33 @@ export default function ClientDetailPage() {
       );
     }
   }
+
+    /* eslint-disable react-hooks/exhaustive-deps */
+useEffect(() => {
+    // BUILDFLOW_ASYNC_LOAD_EFFECT
+    const timer =
+      window.setTimeout(
+        () => {
+        if (
+          organizationId &&
+          clientId
+        ) {
+          loadClient();
+        }
+        },
+        0
+      );
+
+    return () => {
+      window.clearTimeout(
+        timer
+      );
+    };
+  }, [
+    organizationId,
+    clientId,
+  ]);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   if (
     loading ||

@@ -57,4 +57,21 @@ public interface ExpenseRepository
         @Param("status")
         ExpenseStatus status
     );
+
+    @Query("""
+        select sum(expense.totalAmount)
+        from Expense expense
+        where expense.purchaseOrderId = :purchaseOrderId
+          and expense.organizationId = :organizationId
+          and expense.projectId = :projectId
+          and expense.status = com.buildflow.expense.entity.ExpenseStatus.APPROVED
+        """)
+    BigDecimal sumApprovedByPurchaseOrder(
+        @Param("purchaseOrderId")
+        UUID purchaseOrderId,
+        @Param("organizationId")
+        UUID organizationId,
+        @Param("projectId")
+        UUID projectId
+    );
 }

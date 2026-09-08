@@ -35,9 +35,30 @@ public final class ExpenseDtos {
 
         @NotNull
         @DecimalMin("0.0000")
-        BigDecimal taxAmount
+        BigDecimal taxAmount,
+
+        UUID supplierId,
+
+        UUID purchaseOrderId
 
     ) {
+        public CreateExpenseRequest(
+            UUID budgetCategoryId,
+            String description,
+            LocalDate expenseDate,
+            BigDecimal netAmount,
+            BigDecimal taxAmount
+        ) {
+            this(
+                budgetCategoryId,
+                description,
+                expenseDate,
+                netAmount,
+                taxAmount,
+                null,
+                null
+            );
+        }
     }
 
     public record UpdateExpenseRequest(
@@ -82,6 +103,8 @@ public final class ExpenseDtos {
         UUID id,
         UUID projectId,
         UUID budgetCategoryId,
+        UUID supplierId,
+        UUID purchaseOrderId,
         String expenseNumber,
         String description,
         LocalDate expenseDate,
@@ -105,6 +128,8 @@ public final class ExpenseDtos {
                 expense.getId(),
                 expense.getProjectId(),
                 expense.getBudgetCategoryId(),
+                expense.getSupplierId(),
+                expense.getPurchaseOrderId(),
                 expense.getExpenseNumber(),
                 expense.getDescription(),
                 expense.getExpenseDate(),

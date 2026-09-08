@@ -13,6 +13,7 @@ import { useParams } from "next/navigation";
 import { AppSidebar } from "@/components/AppSidebar";
 import { ProjectWorkspaceNav } from "@/components/ProjectWorkspaceNav";
 import { useAuth } from "@/components/AuthProvider";
+import { useOrganizationSelection } from "@/components/useOrganizationSelection";
 
 import {
   ApiClientError,
@@ -126,8 +127,13 @@ export default function ProjectDetailPage() {
     loading,
   } = useAuth();
 
-  const [organizationId, setOrganizationId] =
-    useState("");
+  const organizationSelection =
+    useOrganizationSelection(
+      organizations
+    );
+
+  const organizationId =
+    organizationSelection.organizationId;
 
   const [project, setProject] =
     useState<ProjectView | null>(
@@ -155,40 +161,7 @@ export default function ProjectDetailPage() {
   const [error, setError] =
     useState("");
 
-  useEffect(() => {
-    if (
-      organizations.length === 0
-    ) {
-      return;
-    }
 
-    const stored =
-      localStorage.getItem(
-        "buildflow.organizationId"
-      );
-
-    setOrganizationId(
-      stored &&
-      organizations.some(
-        (organization) =>
-          organization.id === stored
-      )
-        ? stored
-        : organizations[0].id
-    );
-  }, [organizations]);
-
-  useEffect(() => {
-    if (
-      organizationId &&
-      projectId
-    ) {
-      loadProject();
-    }
-  }, [
-    organizationId,
-    projectId,
-  ]);
 
   async function loadProject() {
     try {
@@ -284,6 +257,33 @@ export default function ProjectDetailPage() {
       );
     }
   }
+
+    /* eslint-disable react-hooks/exhaustive-deps */
+useEffect(() => {
+    // BUILDFLOW_ASYNC_LOAD_EFFECT
+    const timer =
+      window.setTimeout(
+        () => {
+        if (
+          organizationId &&
+          projectId
+        ) {
+          loadProject();
+        }
+        },
+        0
+      );
+
+    return () => {
+      window.clearTimeout(
+        timer
+      );
+    };
+  }, [
+    organizationId,
+    projectId,
+  ]);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   if (
     loading ||

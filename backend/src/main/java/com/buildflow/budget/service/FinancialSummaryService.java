@@ -3,6 +3,7 @@ package com.buildflow.budget.service;
 import com.buildflow.budget.dto.BudgetDtos;
 import com.buildflow.expense.entity.ExpenseStatus;
 import com.buildflow.expense.repository.ExpenseRepository;
+import com.buildflow.procurement.service.ProcurementFinancialService;
 import com.buildflow.project.entity.Project;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,11 +24,16 @@ public class FinancialSummaryService {
     private final ExpenseRepository
         expenseRepository;
 
+    private final ProcurementFinancialService
+        procurementFinancialService;
+
     public FinancialSummaryService(
         BudgetAccessService accessService,
         BudgetCalculationService
             budgetCalculationService,
-        ExpenseRepository expenseRepository
+        ExpenseRepository expenseRepository,
+        ProcurementFinancialService
+            procurementFinancialService
     ) {
         this.accessService =
             accessService;
@@ -37,6 +43,9 @@ public class FinancialSummaryService {
 
         this.expenseRepository =
             expenseRepository;
+
+        this.procurementFinancialService =
+            procurementFinancialService;
     }
 
     @Transactional(readOnly = true)
@@ -75,18 +84,12 @@ public class FinancialSummaryService {
         }
 
         actualCost =
-            actualCost.setScale(
-                4,
-                RoundingMode.HALF_UP
-            );
+            money(actualCost);
 
         BigDecimal originalBudget =
-            project
-                .getOriginalBudget()
-                .setScale(
-                    4,
-                    RoundingMode.HALF_UP
-                );
+            money(
+                project.getOriginalBudget()
+            );
 
         BigDecimal effectiveBudget =
             project
@@ -95,15 +98,35 @@ public class FinancialSummaryService {
                 : plannedBudget;
 
         BigDecimal revisedBudget =
-            effectiveBudget;
+            money(effectiveBudget);
+
+        BigDecimal committedCost =
+            procurementFinancialService
+                .outstandingCommitments(
+                    organizationId,
+                    projectId
+                );
+
+        BigDecimal forecastCost =
+            money(
+                actualCost.add(
+                    committedCost
+                )
+            );
 
         BigDecimal budgetRemaining =
-            revisedBudget
-                .subtract(actualCost)
-                .setScale(
-                    4,
-                    RoundingMode.HALF_UP
-                );
+            money(
+                revisedBudget.subtract(
+                    actualCost
+                )
+            );
+
+        BigDecimal forecastVariance =
+            money(
+                revisedBudget.subtract(
+                    forecastCost
+                )
+            );
 
         return new BudgetDtos
             .FinancialSummaryView(
@@ -114,7 +137,19 @@ public class FinancialSummaryService {
                 originalBudget,
                 revisedBudget,
                 actualCost,
-                budgetRemaining
+                committedCost,
+                forecastCost,
+                budgetRemaining,
+                forecastVariance
             );
+    }
+
+    private BigDecimal money(
+        BigDecimal value
+    ) {
+        return value.setScale(
+            4,
+            RoundingMode.HALF_UP
+        );
     }
 }

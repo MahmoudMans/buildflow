@@ -13,6 +13,7 @@ import {
 import { AppSidebar } from "@/components/AppSidebar";
 import { ProjectWorkspaceNav } from "@/components/ProjectWorkspaceNav";
 import { useAuth } from "@/components/AuthProvider";
+import { useOrganizationSelection } from "@/components/useOrganizationSelection";
 
 import {
   ApiClientError,
@@ -27,6 +28,8 @@ import type {
   FinancialSummary,
   ProjectMember,
   ProjectView,
+  PurchaseOrderSummary,
+  Supplier,
 } from "@/lib/types";
 
 export default function ExpensesPage() {
@@ -41,8 +44,13 @@ export default function ExpensesPage() {
     loading,
   } = useAuth();
 
-  const [organizationId, setOrganizationId] =
-    useState("");
+  const organizationSelection =
+    useOrganizationSelection(
+      organizations
+    );
+
+  const organizationId =
+    organizationSelection.organizationId;
 
   const [project, setProject] =
     useState<ProjectView | null>(
@@ -62,6 +70,12 @@ export default function ExpensesPage() {
   const [expenses, setExpenses] =
     useState<Expense[]>([]);
 
+  const [suppliers, setSuppliers] =
+    useState<Supplier[]>([]);
+
+  const [purchaseOrders, setPurchaseOrders] =
+    useState<PurchaseOrderSummary[]>([]);
+
   const [
     projectMembers,
     setProjectMembers,
@@ -69,6 +83,14 @@ export default function ExpensesPage() {
 
   const [categoryId, setCategoryId] =
     useState("");
+
+  const [supplierId, setSupplierId] =
+    useState("");
+
+  const [
+    purchaseOrderId,
+    setPurchaseOrderId,
+  ] = useState("");
 
   const [description, setDescription] =
     useState("");
@@ -89,40 +111,7 @@ export default function ExpensesPage() {
   const [error, setError] =
     useState("");
 
-  useEffect(() => {
-    if (
-      organizations.length === 0
-    ) {
-      return;
-    }
 
-    const stored =
-      localStorage.getItem(
-        "buildflow.organizationId"
-      );
-
-    setOrganizationId(
-      stored
-      && organizations.some(
-        (organization) =>
-          organization.id === stored
-      )
-        ? stored
-        : organizations[0].id
-    );
-  }, [organizations]);
-
-  useEffect(() => {
-    if (
-      organizationId
-      && projectId
-    ) {
-      loadData();
-    }
-  }, [
-    organizationId,
-    projectId,
-  ]);
 
   async function loadData() {
     try {
@@ -132,6 +121,8 @@ export default function ExpensesPage() {
         summaryResult,
         expenseResult,
         memberResult,
+        supplierResult,
+        orderResult,
       ] = await Promise.all([
         apiGet<ProjectView>(
           `/projects/${projectId}`,
@@ -157,6 +148,16 @@ export default function ExpensesPage() {
           `/projects/${projectId}/members`,
           organizationId
         ),
+
+        apiGet<Supplier[]>(
+          "/suppliers",
+          organizationId
+        ),
+
+        apiGet<PurchaseOrderSummary[]>(
+          `/projects/${projectId}/purchase-orders`,
+          organizationId
+        ),
       ]);
 
       setProject(projectResult);
@@ -164,6 +165,8 @@ export default function ExpensesPage() {
       setSummary(summaryResult);
       setExpenses(expenseResult);
       setProjectMembers(memberResult);
+      setSuppliers(supplierResult);
+      setPurchaseOrders(orderResult);
 
       if (
         !categoryId
@@ -221,6 +224,10 @@ export default function ExpensesPage() {
             Number(netAmount),
           taxAmount:
             Number(taxAmount),
+          supplierId:
+            supplierId || null,
+          purchaseOrderId:
+            purchaseOrderId || null,
         },
         organizationId
       );
@@ -228,6 +235,8 @@ export default function ExpensesPage() {
       setDescription("");
       setNetAmount("");
       setTaxAmount("0");
+      setSupplierId("");
+      setPurchaseOrderId("");
 
       await loadData();
     } catch (caught) {
@@ -344,6 +353,33 @@ export default function ExpensesPage() {
     ).format(value);
   }
 
+    /* eslint-disable react-hooks/exhaustive-deps */
+useEffect(() => {
+    // BUILDFLOW_ASYNC_LOAD_EFFECT
+    const timer =
+      window.setTimeout(
+        () => {
+        if (
+          organizationId
+          && projectId
+        ) {
+          loadData();
+        }
+        },
+        0
+      );
+
+    return () => {
+      window.clearTimeout(
+        timer
+      );
+    };
+  }, [
+    organizationId,
+    projectId,
+  ]);
+  /* eslint-enable react-hooks/exhaustive-deps */
+
   if (
     loading
     || !user
@@ -393,20 +429,6 @@ export default function ExpensesPage() {
         <section className="financialMetricGrid">
           <article>
             <span>
-              Revised budget
-            </span>
-
-            <strong>
-              {money(
-                Number(
-                  summary.revisedBudget
-                )
-              )}
-            </strong>
-          </article>
-
-          <article>
-            <span>
               Actual cost
             </span>
 
@@ -414,6 +436,34 @@ export default function ExpensesPage() {
               {money(
                 Number(
                   summary.actualCost
+                )
+              )}
+            </strong>
+          </article>
+
+          <article>
+            <span>
+              Committed cost
+            </span>
+
+            <strong>
+              {money(
+                Number(
+                  summary.committedCost
+                )
+              )}
+            </strong>
+          </article>
+
+          <article>
+            <span>
+              Forecast cost
+            </span>
+
+            <strong>
+              {money(
+                Number(
+                  summary.forecastCost
                 )
               )}
             </strong>
@@ -430,16 +480,6 @@ export default function ExpensesPage() {
                   summary.budgetRemaining
                 )
               )}
-            </strong>
-          </article>
-
-          <article>
-            <span>
-              Expense records
-            </span>
-
-            <strong>
-              {expenses.length}
             </strong>
           </article>
         </section>
@@ -496,6 +536,9 @@ export default function ExpensesPage() {
 
                     <span>
                       {expense.description}
+                      {expense.purchaseOrderId
+                        ? " · linked PO"
+                        : ""}
                     </span>
                   </div>
 
@@ -639,14 +682,96 @@ export default function ExpensesPage() {
                     {budget.categories.map(
                       (category) => (
                         <option
-                          key={
-                            category.id
-                          }
-                          value={
-                            category.id
-                          }
+                          key={category.id}
+                          value={category.id}
                         >
                           {category.name}
+                        </option>
+                      )
+                    )}
+                  </select>
+                </label>
+
+                <label>
+                  Purchase order
+                  <select
+                    value={purchaseOrderId}
+                    onChange={(event) => {
+                      const value =
+                        event.target.value;
+
+                      setPurchaseOrderId(
+                        value
+                      );
+
+                      const order =
+                        purchaseOrders.find(
+                          (entry) =>
+                            entry.id === value
+                        );
+
+                      if (order) {
+                        setSupplierId(
+                          order.supplierId
+                        );
+                      }
+                    }}
+                  >
+                    <option value="">
+                      No purchase order
+                    </option>
+
+                    {purchaseOrders
+                      .filter(
+                        (order) =>
+                          order.status
+                            !== "CANCELLED"
+                      )
+                      .map(
+                        (order) => (
+                          <option
+                            key={order.id}
+                            value={order.id}
+                          >
+                            {
+                              order.purchaseOrderNumber
+                            }
+                            {" · "}
+                            {
+                              order.supplierName
+                            }
+                          </option>
+                        )
+                      )}
+                  </select>
+                </label>
+
+                <label>
+                  Supplier
+                  <select
+                    value={supplierId}
+                    disabled={
+                      Boolean(
+                        purchaseOrderId
+                      )
+                    }
+                    onChange={(event) =>
+                      setSupplierId(
+                        event.target.value
+                      )
+                    }
+                  >
+                    <option value="">
+                      No supplier
+                    </option>
+
+                    {suppliers.map(
+                      (supplier) => (
+                        <option
+                          key={supplier.id}
+                          value={supplier.id}
+                        >
+                          {supplier.name}
                         </option>
                       )
                     )}
@@ -717,9 +842,7 @@ export default function ExpensesPage() {
                 <button
                   className="authSubmit"
                   type="submit"
-                  disabled={
-                    !categoryId
-                  }
+                  disabled={!categoryId}
                 >
                   Create draft expense
                 </button>

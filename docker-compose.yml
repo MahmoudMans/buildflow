@@ -30,9 +30,8 @@ services:
     restart: unless-stopped
 
     ports:
-      - "${MAILPIT_SMTP_PORT:-1025}:1025"
-      - "${MAILPIT_UI_PORT:-8025}:8025"
-
+      - "127.0.0.1:${MAILPIT_SMTP_HOST_PORT:-1027}:1025"
+      - "127.0.0.1:${MAILPIT_UI_HOST_PORT:-8027}:8025"
     environment:
       MP_MAX_MESSAGES: 5000
       MP_DATABASE: /data/mailpit.db
@@ -52,7 +51,7 @@ services:
       DB_PASSWORD: ${POSTGRES_PASSWORD:-buildflow_dev_password}
       MAIL_HOST: mailpit
       MAIL_PORT: 1025
-      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:${FRONTEND_HOST_PORT:-3000}}
 
     ports:
       - "${BACKEND_PORT:-8080}:8080"
@@ -86,8 +85,7 @@ services:
       NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8080/api/v1}
 
     ports:
-      - "${FRONTEND_PORT:-3000}:3000"
-
+      - "127.0.0.1:${FRONTEND_HOST_PORT:-3000}:3000"
     depends_on:
       backend:
         condition: service_healthy

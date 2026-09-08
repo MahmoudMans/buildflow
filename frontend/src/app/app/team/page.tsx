@@ -1,15 +1,17 @@
 "use client";
 
-import Link from "next/link";
+import type { FormEvent } from "react";
+
 import { useRouter } from "next/navigation";
+
 import {
-  FormEvent,
   useEffect,
   useState,
 } from "react";
 
 import { AppSidebar } from "@/components/AppSidebar";
 import { useAuth } from "@/components/AuthProvider";
+import { useOrganizationSelection } from "@/components/useOrganizationSelection";
 
 import {
   ApiClientError,
@@ -42,8 +44,13 @@ export default function TeamPage() {
     loading,
   } = useAuth();
 
-  const [organizationId, setOrganizationId] =
-    useState("");
+  const organizationSelection =
+    useOrganizationSelection(
+      organizations
+    );
+
+  const organizationId =
+    organizationSelection.organizationId;
 
   const [members, setMembers] =
     useState<Member[]>([]);
@@ -72,47 +79,7 @@ export default function TeamPage() {
     router,
   ]);
 
-  useEffect(() => {
-    if (
-      organizations.length === 0
-    ) {
-      return;
-    }
 
-    const stored =
-      localStorage.getItem(
-        "buildflow.organizationId"
-      );
-
-    const valid =
-      stored &&
-      organizations.some(
-        (organization) =>
-          organization.id === stored
-      );
-
-    setOrganizationId(
-      valid
-        ? stored
-        : organizations[0].id
-    );
-  }, [organizations]);
-
-  useEffect(() => {
-    if (!organizationId) {
-      return;
-    }
-
-    loadTeam().catch(
-      (caught) => {
-        setError(
-          caught instanceof ApiClientError
-            ? caught.message
-            : "Could not load team."
-        );
-      }
-    );
-  }, [organizationId]);
 
   async function loadTeam() {
     const [
@@ -208,6 +175,37 @@ export default function TeamPage() {
     }
   }
 
+    /* eslint-disable react-hooks/exhaustive-deps */
+useEffect(() => {
+    // BUILDFLOW_ASYNC_LOAD_EFFECT
+    const timer =
+      window.setTimeout(
+        () => {
+        if (!organizationId) {
+          return;
+        }
+
+        loadTeam().catch(
+          (caught) => {
+            setError(
+              caught instanceof ApiClientError
+                ? caught.message
+                : "Could not load team."
+            );
+          }
+        );
+        },
+        0
+      );
+
+    return () => {
+      window.clearTimeout(
+        timer
+      );
+    };
+  }, [organizationId]);
+  /* eslint-enable react-hooks/exhaustive-deps */
+
   if (
     loading ||
     !user
@@ -242,7 +240,7 @@ export default function TeamPage() {
               const value =
                 event.target.value;
 
-              setOrganizationId(
+              organizationSelection.selectOrganization(
                 value
               );
 

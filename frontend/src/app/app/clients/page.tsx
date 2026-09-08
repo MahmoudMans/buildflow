@@ -9,6 +9,7 @@ import {
 
 import { AppSidebar } from "@/components/AppSidebar";
 import { useAuth } from "@/components/AuthProvider";
+import { useOrganizationSelection } from "@/components/useOrganizationSelection";
 
 import {
   ApiClientError,
@@ -28,8 +29,13 @@ export default function ClientsPage() {
     loading,
   } = useAuth();
 
-  const [organizationId, setOrganizationId] =
-    useState("");
+  const organizationSelection =
+    useOrganizationSelection(
+      organizations
+    );
+
+  const organizationId =
+    organizationSelection.organizationId;
 
   const [clients, setClients] =
     useState<ClientSummary[]>([]);
@@ -57,39 +63,7 @@ export default function ClientsPage() {
   const [error, setError] =
     useState("");
 
-  useEffect(() => {
-    if (
-      organizations.length === 0
-    ) {
-      return;
-    }
 
-    const stored =
-      localStorage.getItem(
-        "buildflow.organizationId"
-      );
-
-    const selected =
-      stored &&
-      organizations.some(
-        (organization) =>
-          organization.id === stored
-      )
-        ? stored
-        : organizations[0].id;
-
-    setOrganizationId(
-      selected
-    );
-  }, [organizations]);
-
-  useEffect(() => {
-    if (!organizationId) {
-      return;
-    }
-
-    loadClients();
-  }, [organizationId]);
 
   async function loadClients() {
     try {
@@ -157,6 +131,29 @@ export default function ClientsPage() {
     }
   }
 
+    /* eslint-disable react-hooks/exhaustive-deps */
+useEffect(() => {
+    // BUILDFLOW_ASYNC_LOAD_EFFECT
+    const timer =
+      window.setTimeout(
+        () => {
+        if (!organizationId) {
+          return;
+        }
+
+        loadClients();
+        },
+        0
+      );
+
+    return () => {
+      window.clearTimeout(
+        timer
+      );
+    };
+  }, [organizationId]);
+  /* eslint-enable react-hooks/exhaustive-deps */
+
   if (
     loading ||
     !user
@@ -186,7 +183,7 @@ export default function ClientsPage() {
               const value =
                 event.target.value;
 
-              setOrganizationId(
+              organizationSelection.selectOrganization(
                 value
               );
 

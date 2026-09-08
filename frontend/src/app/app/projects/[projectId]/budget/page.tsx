@@ -13,6 +13,7 @@ import {
 import { AppSidebar } from "@/components/AppSidebar";
 import { ProjectWorkspaceNav } from "@/components/ProjectWorkspaceNav";
 import { useAuth } from "@/components/AuthProvider";
+import { useOrganizationSelection } from "@/components/useOrganizationSelection";
 
 import {
   ApiClientError,
@@ -40,8 +41,13 @@ export default function BudgetPage() {
     loading,
   } = useAuth();
 
-  const [organizationId, setOrganizationId] =
-    useState("");
+  const organizationSelection =
+    useOrganizationSelection(
+      organizations
+    );
+
+  const organizationId =
+    organizationSelection.organizationId;
 
   const [project, setProject] =
     useState<ProjectView | null>(
@@ -89,40 +95,7 @@ export default function BudgetPage() {
   const [error, setError] =
     useState("");
 
-  useEffect(() => {
-    if (
-      organizations.length === 0
-    ) {
-      return;
-    }
 
-    const stored =
-      localStorage.getItem(
-        "buildflow.organizationId"
-      );
-
-    setOrganizationId(
-      stored
-      && organizations.some(
-        (organization) =>
-          organization.id === stored
-      )
-        ? stored
-        : organizations[0].id
-    );
-  }, [organizations]);
-
-  useEffect(() => {
-    if (
-      organizationId
-      && projectId
-    ) {
-      loadData();
-    }
-  }, [
-    organizationId,
-    projectId,
-  ]);
 
   async function loadData() {
     try {
@@ -323,6 +296,33 @@ export default function BudgetPage() {
       }
     ).format(value);
   }
+
+    /* eslint-disable react-hooks/exhaustive-deps */
+useEffect(() => {
+    // BUILDFLOW_ASYNC_LOAD_EFFECT
+    const timer =
+      window.setTimeout(
+        () => {
+        if (
+          organizationId
+          && projectId
+        ) {
+          loadData();
+        }
+        },
+        0
+      );
+
+    return () => {
+      window.clearTimeout(
+        timer
+      );
+    };
+  }, [
+    organizationId,
+    projectId,
+  ]);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   if (
     loading

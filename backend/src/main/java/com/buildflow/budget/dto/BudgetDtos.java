@@ -160,7 +160,10 @@ public final class BudgetDtos {
         BigDecimal originalBudget,
         BigDecimal revisedBudget,
         BigDecimal actualCost,
-        BigDecimal budgetRemaining
+        BigDecimal committedCost,
+        BigDecimal forecastCost,
+        BigDecimal budgetRemaining,
+        BigDecimal forecastBudgetVariance
     ) {
     }
 }

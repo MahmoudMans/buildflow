@@ -101,16 +101,33 @@ export function AuthProvider({
       }
     }, [applyAuth]);
 
-  useEffect(() => {
-    refresh()
-      .catch(() => {
-        setUser(null);
-        setOrganizations([]);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [refresh]);
+    /* eslint-disable react-hooks/exhaustive-deps */
+useEffect(() => {
+    // AUTH_BOOTSTRAP_DEFERRED
+    const timer =
+      window.setTimeout(
+        () => {
+            refresh()
+              .catch(() => {
+                setUser(null);
+                setOrganizations([]);
+              })
+              .finally(() => {
+                setLoading(false);
+              });
+
+        },
+        0
+      );
+
+    return () => {
+      window.clearTimeout(
+        timer
+      );
+    };
+  }, []);
+  /* eslint-enable react-hooks/exhaustive-deps */
+
 
   const login =
     useCallback(

@@ -6,7 +6,12 @@ import com.buildflow.expense.entity.Expense;
 import com.buildflow.expense.entity.ExpenseStatus;
 import com.buildflow.expense.repository.ExpenseRepository;
 import com.buildflow.organization.entity.OrganizationMembership;
+import com.buildflow.procurement.entity.PurchaseOrder;
+import com.buildflow.procurement.entity.PurchaseOrderStatus;
+import com.buildflow.procurement.repository.PurchaseOrderRepository;
 import com.buildflow.shared.error.BusinessException;
+import com.buildflow.supplier.entity.Supplier;
+import com.buildflow.supplier.service.SupplierService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,11 +37,20 @@ public class ExpenseService {
     private final BudgetService
         budgetService;
 
+    private final SupplierService
+        supplierService;
+
+    private final PurchaseOrderRepository
+        purchaseOrderRepository;
+
     public ExpenseService(
         ExpenseRepository expenseRepository,
         ExpenseAccessService accessService,
         ExpenseNumberService numberService,
-        BudgetService budgetService
+        BudgetService budgetService,
+        SupplierService supplierService,
+        PurchaseOrderRepository
+            purchaseOrderRepository
     ) {
         this.expenseRepository =
             expenseRepository;
@@ -49,6 +63,12 @@ public class ExpenseService {
 
         this.budgetService =
             budgetService;
+
+        this.supplierService =
+            supplierService;
+
+        this.purchaseOrderRepository =
+            purchaseOrderRepository;
     }
 
     @Transactional(readOnly = true)
@@ -124,6 +144,14 @@ public class ExpenseService {
             request.budgetCategoryId()
         );
 
+        ProcurementLink link =
+            resolveProcurementLink(
+                organizationId,
+                projectId,
+                request.supplierId(),
+                request.purchaseOrderId()
+            );
+
         ZoneId zone =
             ZoneId.of(
                 actor
@@ -147,6 +175,8 @@ public class ExpenseService {
                 organizationId,
                 projectId,
                 request.budgetCategoryId(),
+                link.supplierId(),
+                link.purchaseOrderId(),
                 expenseNumber,
                 request.description().trim(),
                 request.expenseDate(),
@@ -367,6 +397,86 @@ public class ExpenseService {
         );
     }
 
+    private ProcurementLink
+        resolveProcurementLink(
+            UUID organizationId,
+            UUID projectId,
+            UUID requestedSupplierId,
+            UUID purchaseOrderId
+        ) {
+
+        if (purchaseOrderId == null) {
+            if (
+                requestedSupplierId
+                    == null
+            ) {
+                return new ProcurementLink(
+                    null,
+                    null
+                );
+            }
+
+            Supplier supplier =
+                supplierService
+                    .requireSupplier(
+                        organizationId,
+                        requestedSupplierId
+                    );
+
+            return new ProcurementLink(
+                supplier.getId(),
+                null
+            );
+        }
+
+        PurchaseOrder order =
+            purchaseOrderRepository
+                .findByIdAndProjectIdAndOrganizationId(
+                    purchaseOrderId,
+                    projectId,
+                    organizationId
+                )
+                .orElseThrow(
+                    () ->
+                        new BusinessException(
+                            HttpStatus.NOT_FOUND,
+                            "PURCHASE_ORDER_NOT_FOUND",
+                            "The purchase order does not exist in this project."
+                        )
+                );
+
+        if (
+            order.getStatus()
+                == PurchaseOrderStatus.CANCELLED
+        ) {
+            throw new BusinessException(
+                HttpStatus.CONFLICT,
+                "CANCELLED_PURCHASE_ORDER_EXPENSE",
+                "An expense cannot be linked to a cancelled purchase order."
+            );
+        }
+
+        if (
+            requestedSupplierId
+                != null
+            && !requestedSupplierId
+                .equals(
+                    order.getSupplierId()
+                )
+        ) {
+            throw new BusinessException(
+                HttpStatus.BAD_REQUEST,
+                "EXPENSE_SUPPLIER_MISMATCH",
+                "The expense supplier must match the purchase order supplier."
+            );
+        }
+
+        return new ProcurementLink(
+            order.getSupplierId(),
+            order.getId()
+        );
+    }
+
     private Expense requireExpense(
         UUID organizationId,
         UUID expenseId
@@ -407,5 +517,11 @@ public class ExpenseService {
         }
 
         return value.trim();
+    }
+
+    private record ProcurementLink(
+        UUID supplierId,
+        UUID purchaseOrderId
+    ) {
     }
 }

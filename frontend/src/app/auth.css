@@ -1742,3 +1742,276 @@ a.dataRow:hover {
     grid-template-columns: 1fr;
   }
 }
+
+.procurementLayout {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns:
+    240px
+    minmax(0, 1fr)
+    320px;
+  gap: 18px;
+  align-items: start;
+}
+
+.purchaseOrderListCard,
+.purchaseOrderHeaderCard,
+.purchaseOrderItemsCard {
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 15px;
+  background: #ffffff;
+}
+
+.purchaseOrderListCard > header {
+  padding: 18px;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.purchaseOrderListCard h2 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.purchaseOrderListCard header span {
+  color: #64748b;
+  font-size: 11px;
+}
+
+.purchaseOrderListItem {
+  width: 100%;
+  padding: 15px 16px;
+  display: grid;
+  gap: 10px;
+  border: 0;
+  border-bottom: 1px solid #f1f5f9;
+  background: #ffffff;
+  cursor: pointer;
+  text-align: left;
+}
+
+.purchaseOrderListItem.active {
+  background: #fff7ed;
+}
+
+.purchaseOrderListItem > div {
+  display: grid;
+  gap: 3px;
+}
+
+.purchaseOrderListItem > div strong {
+  font-size: 12px;
+}
+
+.purchaseOrderListItem span {
+  color: #64748b;
+  font-size: 10px;
+}
+
+.purchaseOrderListItem > strong {
+  font-size: 12px;
+}
+
+.purchaseOrderDetail {
+  display: grid;
+  gap: 15px;
+}
+
+.procurementEmpty {
+  min-height: 220px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 15px;
+  background: #ffffff;
+}
+
+.purchaseOrderHeaderCard {
+  padding: 22px;
+}
+
+.purchaseOrderHeaderCard > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.purchaseOrderHeaderCard header > div > span {
+  color: #b45309;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.purchaseOrderHeaderCard h2 {
+  margin: 6px 0 3px;
+  font-size: 19px;
+}
+
+.purchaseOrderHeaderCard p {
+  margin: 0;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.poTotals {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+  gap: 10px;
+}
+
+.poTotals > div {
+  padding: 14px;
+  display: grid;
+  gap: 7px;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.poTotals span {
+  color: #64748b;
+  font-size: 10px;
+}
+
+.poTotals strong {
+  font-size: 14px;
+}
+
+.poActions {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.poActions button {
+  padding: 8px 11px;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  background: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.purchaseOrderItemsCard > header {
+  padding: 18px 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.purchaseOrderItemsCard h2 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.poItemHeader,
+.poItemRow {
+  padding: 12px 16px;
+  display: grid;
+  grid-template-columns:
+    minmax(180px, 1fr)
+    80px
+    90px
+    100px
+    65px
+    100px
+    60px;
+  gap: 10px;
+  align-items: center;
+}
+
+.poItemHeader {
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.poItemRow {
+  border-top: 1px solid #f1f5f9;
+  font-size: 10px;
+}
+
+.procurementFormCard {
+  width: 100%;
+}
+
+.receiptInputs {
+  display: grid;
+  gap: 10px;
+}
+
+.receiptInputs label {
+  display: grid;
+  gap: 7px;
+}
+
+.goodsReceipt {
+  padding: 16px 20px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.goodsReceipt > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.goodsReceipt span {
+  color: #64748b;
+  font-size: 10px;
+}
+
+.goodsReceipt ul {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  color: #475569;
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+@media (max-width: 1300px) {
+  .procurementLayout {
+    grid-template-columns:
+      220px
+      minmax(0, 1fr);
+  }
+
+  .procurementLayout >
+  .moduleFormCard {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 950px) {
+  .procurementLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .procurementLayout >
+  .moduleFormCard {
+    grid-column: auto;
+  }
+
+  .purchaseOrderListCard > div {
+    max-height: 280px;
+    overflow-y: auto;
+  }
+
+  .purchaseOrderItemsCard {
+    overflow-x: auto;
+  }
+
+  .poItemHeader,
+  .poItemRow {
+    min-width: 800px;
+  }
+}

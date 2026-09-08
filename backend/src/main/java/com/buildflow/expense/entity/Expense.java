@@ -144,6 +144,8 @@ public class Expense {
         UUID organizationId,
         UUID projectId,
         UUID budgetCategoryId,
+        UUID supplierId,
+        UUID purchaseOrderId,
         String expenseNumber,
         String description,
         LocalDate expenseDate,
@@ -171,6 +173,12 @@ public class Expense {
 
         expense.budgetCategoryId =
             budgetCategoryId;
+
+        expense.supplierId =
+            supplierId;
+
+        expense.purchaseOrderId =
+            purchaseOrderId;
 
         expense.expenseNumber =
             expenseNumber;

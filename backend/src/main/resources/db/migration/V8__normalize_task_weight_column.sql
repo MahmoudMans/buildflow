@@ -1,0 +1,4 @@
+ALTER TABLE tasks
+    ALTER COLUMN weight
+    TYPE INTEGER
+    USING weight::INTEGER;
