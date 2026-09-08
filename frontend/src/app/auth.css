@@ -2504,3 +2504,443 @@ a.dataRow:hover {
     grid-template-columns: 1fr;
   }
 }
+
+/* BUILDFLOW_PHASE8_SITE_OPERATIONS */
+
+.siteOpsContent {
+  padding-bottom: 80px;
+}
+
+.siteOpsQuickStats {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+  gap: 10px;
+}
+
+.siteOpsQuickStats article {
+  padding: 14px;
+  display: grid;
+  gap: 6px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.siteOpsQuickStats span {
+  color: #64748b;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.siteOpsQuickStats strong {
+  font-size: 18px;
+}
+
+.siteOpsMobileTabs {
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.siteOpsMobileTabs a {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 10px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.siteOpsSection {
+  margin-top: 26px;
+  scroll-margin-top: 16px;
+}
+
+.siteOpsGrid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.35fr)
+    minmax(300px, 0.65fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.siteReportList,
+.sitePhotoList,
+.siteIncidentList,
+.progressUpdateList {
+  display: grid;
+  gap: 10px;
+}
+
+.siteReportCard {
+  width: 100%;
+  padding: 14px;
+  display: grid;
+  gap: 8px;
+  text-align: left;
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.siteReportCard.active {
+  border-color: #94a3b8;
+  box-shadow:
+    0 0 0 1px #cbd5e1;
+}
+
+.siteReportCard > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.siteReportCard > div span,
+.siteReportCard > span {
+  color: #64748b;
+  font-size: 9px;
+}
+
+.siteReportCard p {
+  margin: 0;
+  color: #475569;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.siteReportDetail {
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.siteReportDetail > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.siteReportDetail > header span {
+  color: #0f766e;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.siteReportDetail h3 {
+  margin: 4px 0 0;
+}
+
+.siteReportDetail > header > strong {
+  font-size: 10px;
+  color: #334155;
+}
+
+.siteReportDetailGrid {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+  gap: 8px;
+}
+
+.siteReportDetailGrid > div {
+  padding: 10px;
+  border-radius: 9px;
+  background: #f8fafc;
+}
+
+.siteReportDetailGrid span {
+  color: #64748b;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.siteReportDetailGrid p {
+  margin: 5px 0 0;
+  color: #334155;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.sitePhotoCard {
+  padding: 13px;
+  display: grid;
+  gap: 7px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.sitePhotoCard > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.sitePhotoCard > div span {
+  color: #0f766e;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.sitePhotoCard p {
+  margin: 0;
+  color: #475569;
+  font-size: 10px;
+}
+
+.sitePhotoCard small {
+  color: #94a3b8;
+  font-size: 8px;
+}
+
+.siteIncidentCard {
+  padding: 15px;
+  display: grid;
+  gap: 10px;
+  border: 1px solid #e2e8f0;
+  border-left-width: 4px;
+  border-radius: 11px;
+  background: #ffffff;
+}
+
+.siteIncidentCard.severity-low {
+  border-left-color: #22c55e;
+}
+
+.siteIncidentCard.severity-medium {
+  border-left-color: #eab308;
+}
+
+.siteIncidentCard.severity-high {
+  border-left-color: #f97316;
+}
+
+.siteIncidentCard.severity-critical {
+  border-left-color: #dc2626;
+}
+
+.siteIncidentCard > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+}
+
+.siteIncidentCard > header > div span {
+  color: #64748b;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.siteIncidentCard h3 {
+  margin: 3px 0 0;
+  font-size: 13px;
+}
+
+.siteIncidentCard > p {
+  margin: 0;
+  color: #475569;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.incidentMeta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.incidentMeta span,
+.incidentMeta strong {
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: #f8fafc;
+  font-size: 8px;
+}
+
+.incidentResolution {
+  padding: 10px;
+  border-radius: 8px;
+  background: #f0fdf4;
+}
+
+.incidentResolution span {
+  color: #166534;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.incidentResolution p {
+  margin: 4px 0 0;
+  color: #166534;
+  font-size: 9px;
+}
+
+.siteIncidentActions {
+  flex-wrap: wrap;
+}
+
+.progressUpdateCard {
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+  background: #ffffff;
+}
+
+.progressUpdateCard > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progressUpdateCard > header strong {
+  font-size: 17px;
+}
+
+.progressUpdateCard > header span {
+  color: #64748b;
+  font-size: 8px;
+}
+
+.progressUpdateCard > p {
+  margin: 0;
+  color: #334155;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.progressUpdateCard > div {
+  padding-top: 8px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.progressUpdateCard > div span {
+  color: #64748b;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.progressUpdateCard > div p {
+  margin: 4px 0 0;
+  color: #475569;
+  font-size: 9px;
+}
+
+.siteCheckbox {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 8px !important;
+  align-items: center;
+}
+
+.siteCheckbox input {
+  width: auto !important;
+}
+
+.siteFormHint {
+  margin: 0;
+  color: #64748b;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+@media (max-width: 1100px) {
+  .siteOpsQuickStats {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .siteOpsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .siteOpsContent {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .siteOpsQuickStats {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+    gap: 7px;
+  }
+
+  .siteOpsQuickStats article {
+    padding: 11px;
+  }
+
+  .siteOpsQuickStats strong {
+    font-size: 16px;
+  }
+
+  .siteOpsMobileTabs {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    padding: 8px 0;
+    background: rgba(
+      248,
+      250,
+      252,
+      0.96
+    );
+    backdrop-filter: blur(8px);
+  }
+
+  .siteOpsSection {
+    margin-top: 20px;
+  }
+
+  .siteReportDetailGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .siteMobileForm {
+    padding: 14px !important;
+  }
+
+  .siteMobileForm input,
+  .siteMobileForm select,
+  .siteMobileForm textarea,
+  .siteMobileForm button {
+    min-height: 44px;
+  }
+
+  .siteMobileForm textarea {
+    min-height: 92px;
+  }
+
+  .siteIncidentActions button {
+    flex: 1 1 120px;
+    min-height: 42px;
+  }
+}
