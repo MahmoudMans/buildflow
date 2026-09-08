@@ -1,5 +1,6 @@
 package com.buildflow.project.service;
 
+import com.buildflow.budget.service.BudgetCalculationService;
 import com.buildflow.client.entity.Client;
 import com.buildflow.client.service.ClientService;
 import com.buildflow.organization.entity.MembershipStatus;
@@ -63,6 +64,9 @@ public class ProjectService {
     private final ProjectNumberService
         projectNumberService;
 
+    private final BudgetCalculationService
+        budgetCalculationService;
+
     public ProjectService(
         ProjectRepository projectRepository,
         ProjectMemberRepository
@@ -75,7 +79,9 @@ public class ProjectService {
             projectAccessService,
         ClientService clientService,
         ProjectNumberService
-            projectNumberService
+            projectNumberService,
+        BudgetCalculationService
+            budgetCalculationService
     ) {
         this.projectRepository =
             projectRepository;
@@ -97,6 +103,9 @@ public class ProjectService {
 
         this.projectNumberService =
             projectNumberService;
+
+        this.budgetCalculationService =
+            budgetCalculationService;
     }
 
     @Transactional
@@ -503,10 +512,28 @@ public class ProjectService {
                     .getTimezone()
             );
 
+        Instant now =
+            Instant.now();
+
+        if (
+            target == ProjectStatus.ACTIVE
+            && !project
+                .isBudgetBaselineLocked()
+        ) {
+            project.lockOriginalBudget(
+                budgetCalculationService
+                    .totalPlannedAmount(
+                        organizationId,
+                        projectId
+                    ),
+                now
+            );
+        }
+
         project.transition(
             target,
             LocalDate.now(zone),
-            Instant.now()
+            now
         );
 
         Client client =

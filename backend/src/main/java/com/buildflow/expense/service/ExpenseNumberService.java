@@ -1,0 +1,74 @@
+package com.buildflow.expense.service;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
+
+@Service
+public class ExpenseNumberService {
+
+    private final JdbcTemplate
+        jdbcTemplate;
+
+    public ExpenseNumberService(
+        JdbcTemplate jdbcTemplate
+    ) {
+        this.jdbcTemplate =
+            jdbcTemplate;
+    }
+
+    @Transactional
+    public String nextExpenseNumber(
+        UUID organizationId,
+        int year
+    ) {
+        jdbcTemplate.update(
+            """
+            INSERT INTO organization_number_sequences (
+                organization_id,
+                number_type,
+                calendar_year,
+                next_value
+            )
+            VALUES (?, 'EXPENSE', ?, 1)
+            ON CONFLICT (
+                organization_id,
+                number_type,
+                calendar_year
+            )
+            DO NOTHING
+            """,
+            organizationId,
+            year
+        );
+
+        Long number =
+            jdbcTemplate.queryForObject(
+                """
+                UPDATE organization_number_sequences
+                SET next_value = next_value + 1
+                WHERE organization_id = ?
+                  AND number_type = 'EXPENSE'
+                  AND calendar_year = ?
+                RETURNING next_value - 1
+                """,
+                Long.class,
+                organizationId,
+                year
+            );
+
+        if (number == null) {
+            throw new IllegalStateException(
+                "Could not allocate expense number."
+            );
+        }
+
+        return String.format(
+            "EXP-%d-%04d",
+            year,
+            number
+        );
+    }
+}

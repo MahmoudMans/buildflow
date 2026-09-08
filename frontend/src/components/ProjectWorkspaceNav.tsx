@@ -8,7 +8,9 @@ export function ProjectWorkspaceNav({
   active:
     | "overview"
     | "tasks"
-    | "milestones";
+    | "milestones"
+    | "budget"
+    | "expenses";
 }) {
   return (
     <nav className="projectWorkspaceNav">
@@ -43,6 +45,28 @@ export function ProjectWorkspaceNav({
         href={`/app/projects/${projectId}/milestones`}
       >
         Milestones
+      </Link>
+
+      <Link
+        className={
+          active === "budget"
+            ? "active"
+            : ""
+        }
+        href={`/app/projects/${projectId}/budget`}
+      >
+        Budget
+      </Link>
+
+      <Link
+        className={
+          active === "expenses"
+            ? "active"
+            : ""
+        }
+        href={`/app/projects/${projectId}/expenses`}
+      >
+        Expenses
       </Link>
     </nav>
   );

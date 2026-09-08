@@ -299,3 +299,70 @@ export interface Milestone {
   clientVisible: boolean;
   createdAt: string;
 }
+
+export interface BudgetItem {
+  id: string;
+  categoryId: string;
+  description: string;
+  quantity: number;
+  unitCost: number;
+  plannedAmount: number;
+  notes: string | null;
+  createdAt: string;
+}
+
+export interface BudgetCategory {
+  id: string;
+  name: string;
+  description: string | null;
+  sortOrder: number;
+  plannedAmount: number;
+  items: BudgetItem[];
+  createdAt: string;
+}
+
+export interface BudgetView {
+  projectId: string;
+  baselineLocked: boolean;
+  plannedBudget: number;
+  originalBudget: number;
+  categories: BudgetCategory[];
+}
+
+export interface FinancialSummary {
+  projectId: string;
+  budgetBaselineLocked: boolean;
+  plannedBudget: number;
+  originalBudget: number;
+  revisedBudget: number;
+  actualCost: number;
+  budgetRemaining: number;
+}
+
+export type ExpenseStatus =
+  | "DRAFT"
+  | "SUBMITTED"
+  | "APPROVED"
+  | "REJECTED"
+  | "VOID";
+
+export interface Expense {
+  id: string;
+  projectId: string;
+  budgetCategoryId: string;
+  expenseNumber: string;
+  description: string;
+  expenseDate: string;
+  netAmount: number;
+  taxAmount: number;
+  totalAmount: number;
+  status: ExpenseStatus;
+  createdBy: string;
+  approvedBy: string | null;
+  approvedAt: string | null;
+  rejectionReason: string | null;
+  voidReason: string | null;
+  voidedBy: string | null;
+  voidedAt: string | null;
+  createdAt: string;
+}

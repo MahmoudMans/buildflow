@@ -1385,3 +1385,360 @@ a.dataRow:hover {
     text-align: left;
   }
 }
+
+.budgetState {
+  display: grid;
+  gap: 6px;
+  text-align: right;
+}
+
+.budgetState span {
+  color: #64748b;
+  font-size: 11px;
+}
+
+.budgetState strong {
+  color: #b45309;
+  font-size: 14px;
+}
+
+.budgetLockedBanner {
+  margin-top: 24px;
+  padding: 14px 16px;
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+  background: #fffbeb;
+  color: #92400e;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.financialMetricGrid {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+  gap: 14px;
+}
+
+.financialMetricGrid article {
+  min-height: 115px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.financialMetricGrid span {
+  color: #64748b;
+  font-size: 11px;
+}
+
+.financialMetricGrid strong {
+  font-size: 19px;
+  letter-spacing: -0.03em;
+}
+
+.budgetPageLayout {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    340px;
+  gap: 20px;
+  align-items: start;
+}
+
+.budgetCategories {
+  display: grid;
+  gap: 15px;
+}
+
+.budgetEmpty {
+  border: 1px solid #e2e8f0;
+  border-radius: 15px;
+  background: #ffffff;
+}
+
+.budgetCategoryCard {
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 15px;
+  background: #ffffff;
+}
+
+.budgetCategoryCard > header {
+  padding: 21px 23px;
+  display: flex;
+  justify-content: space-between;
+  gap: 25px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.budgetCategoryCard h2 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.budgetCategoryCard header p {
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.budgetCategoryTotal {
+  display: grid;
+  gap: 5px;
+  text-align: right;
+}
+
+.budgetCategoryTotal span {
+  color: #64748b;
+  font-size: 10px;
+}
+
+.budgetCategoryTotal strong {
+  font-size: 15px;
+}
+
+.budgetItemTable {
+  display: grid;
+}
+
+.budgetItemHeader,
+.budgetItemRow {
+  padding: 12px 20px;
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 1fr)
+    70px
+    120px
+    120px
+    70px;
+  gap: 12px;
+  align-items: center;
+}
+
+.budgetItemHeader {
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.budgetItemRow {
+  min-height: 65px;
+  border-top: 1px solid #f1f5f9;
+  font-size: 11px;
+}
+
+.budgetItemRow > div:first-child {
+  display: grid;
+  gap: 4px;
+}
+
+.budgetItemRow > div:first-child span {
+  color: #94a3b8;
+  font-size: 10px;
+}
+
+.budgetItemEmpty {
+  padding: 28px;
+  color: #94a3b8;
+  text-align: center;
+  font-size: 11px;
+}
+
+.budgetCategoryCard footer {
+  padding: 12px 20px;
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #f1f5f9;
+}
+
+.tableAction {
+  padding: 6px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #475569;
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.tableAction.danger {
+  border-color: #fecaca;
+  color: #b91c1c;
+}
+
+.budgetForms {
+  display: grid;
+  gap: 15px;
+}
+
+.expensePageLayout {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    340px;
+  gap: 20px;
+  align-items: start;
+}
+
+.expenseTableCard {
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 15px;
+  background: #ffffff;
+}
+
+.expenseTableHeader,
+.expenseTableRow {
+  padding: 13px 18px;
+  display: grid;
+  grid-template-columns:
+    minmax(190px, 1fr)
+    95px
+    100px
+    100px
+    110px
+    95px
+    150px;
+  gap: 12px;
+  align-items: center;
+}
+
+.expenseTableHeader {
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.expenseTableRow {
+  min-height: 73px;
+  border-top: 1px solid #f1f5f9;
+  font-size: 11px;
+}
+
+.expenseTableRow > div:first-child {
+  display: grid;
+  gap: 4px;
+}
+
+.expenseTableRow > div:first-child span {
+  color: #64748b;
+  font-size: 10px;
+}
+
+.expenseStatus {
+  width: fit-content;
+  padding: 5px 7px;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.expenseStatus-draft {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.expenseStatus-submitted {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.expenseStatus-approved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.expenseStatus-rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.expenseStatus-void {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.expenseActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.expenseActions button {
+  padding: 5px 7px;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  background: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+@media (max-width: 1250px) {
+  .budgetPageLayout,
+  .expensePageLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .expenseTableCard {
+    overflow-x: auto;
+  }
+
+  .expenseTableHeader,
+  .expenseTableRow {
+    min-width: 950px;
+  }
+}
+
+@media (max-width: 900px) {
+  .financialMetricGrid {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .budgetItemHeader,
+  .budgetItemRow {
+    grid-template-columns: 1fr;
+  }
+
+  .budgetItemHeader {
+    display: none;
+  }
+
+  .budgetItemRow {
+    padding: 18px;
+  }
+
+  .budgetCategoryCard > header {
+    flex-direction: column;
+  }
+
+  .budgetCategoryTotal {
+    text-align: left;
+  }
+}
+
+@media (max-width: 560px) {
+  .financialMetricGrid {
+    grid-template-columns: 1fr;
+  }
+}

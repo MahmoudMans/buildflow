@@ -159,6 +159,12 @@ public class Project {
     private BigDecimal originalBudget;
 
     @Column(
+        name = "budget_baseline_locked",
+        nullable = false
+    )
+    private boolean budgetBaselineLocked;
+
+    @Column(
         name = "project_manager_membership_id"
     )
     private UUID projectManagerMembershipId;
@@ -270,6 +276,9 @@ public class Project {
 
         project.originalBudget =
             BigDecimal.ZERO;
+
+        project.budgetBaselineLocked =
+            false;
 
         project.progressPercentage =
             BigDecimal.ZERO;
@@ -433,6 +442,38 @@ public class Project {
             now;
     }
 
+    public void lockOriginalBudget(
+        BigDecimal originalBudget,
+        Instant now
+    ) {
+        if (budgetBaselineLocked) {
+            return;
+        }
+
+        if (
+            originalBudget == null
+            || originalBudget.signum() < 0
+        ) {
+            throw new BusinessException(
+                HttpStatus.BAD_REQUEST,
+                "INVALID_ORIGINAL_BUDGET",
+                "The original project budget cannot be negative."
+            );
+        }
+
+        this.originalBudget =
+            originalBudget.setScale(
+                4,
+                java.math.RoundingMode.HALF_UP
+            );
+
+        this.budgetBaselineLocked =
+            true;
+
+        this.updatedAt =
+            now;
+    }
+
     public void setProjectManagerMembershipId(
         UUID membershipId,
         Instant now
@@ -564,6 +605,10 @@ public class Project {
 
     public BigDecimal getOriginalBudget() {
         return originalBudget;
+    }
+
+    public boolean isBudgetBaselineLocked() {
+        return budgetBaselineLocked;
     }
 
     public UUID getProjectManagerMembershipId() {
