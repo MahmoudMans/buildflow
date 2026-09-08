@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 
+import { AppSidebar } from "@/components/AppSidebar";
 import { useAuth } from "@/components/AuthProvider";
 
 import {
@@ -220,28 +221,7 @@ export default function TeamPage() {
 
   return (
     <main className="appShell">
-      <aside className="appSidebar">
-        <Link
-          className="sidebarBrand"
-          href="/app"
-        >
-          <span>B</span>
-          BuildFlow
-        </Link>
-
-        <nav>
-          <Link href="/app">
-            Overview
-          </Link>
-
-          <Link
-            className="active"
-            href="/app/team"
-          >
-            Team
-          </Link>
-        </nav>
-      </aside>
+      <AppSidebar active="team" />
 
       <section className="appContent">
         <header className="appHeader">

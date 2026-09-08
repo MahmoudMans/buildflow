@@ -15,13 +15,12 @@ import java.util.UUID;
 @Service
 public class OrganizationAccessService {
 
-    private static final Set<
-        OrganizationRole
-    > MANAGEMENT_ROLES =
-        Set.of(
-            OrganizationRole.OWNER,
-            OrganizationRole.ADMIN
-        );
+    private static final Set<OrganizationRole>
+        MANAGEMENT_ROLES =
+            Set.of(
+                OrganizationRole.OWNER,
+                OrganizationRole.ADMIN
+            );
 
     private final
         OrganizationMembershipRepository
@@ -36,12 +35,10 @@ public class OrganizationAccessService {
     }
 
     @Transactional(readOnly = true)
-    public OrganizationMembership
-        requireMembership(
-            UUID organizationId,
-            UUID userId
-        ) {
-
+    public OrganizationMembership requireMembership(
+        UUID organizationId,
+        UUID userId
+    ) {
         return membershipRepository
             .findByOrganizationIdAndUserIdAndStatus(
                 organizationId,
@@ -59,12 +56,23 @@ public class OrganizationAccessService {
     }
 
     @Transactional(readOnly = true)
-    public OrganizationMembership
-        requireManagement(
-            UUID organizationId,
-            UUID userId
-        ) {
+    public OrganizationMembership requireManagement(
+        UUID organizationId,
+        UUID userId
+    ) {
+        return requireAnyRole(
+            organizationId,
+            userId,
+            MANAGEMENT_ROLES
+        );
+    }
 
+    @Transactional(readOnly = true)
+    public OrganizationMembership requireAnyRole(
+        UUID organizationId,
+        UUID userId,
+        Set<OrganizationRole> allowedRoles
+    ) {
         OrganizationMembership membership =
             requireMembership(
                 organizationId,
@@ -72,14 +80,14 @@ public class OrganizationAccessService {
             );
 
         if (
-            !MANAGEMENT_ROLES.contains(
+            !allowedRoles.contains(
                 membership.getRole()
             )
         ) {
             throw new BusinessException(
                 HttpStatus.FORBIDDEN,
-                "ORGANIZATION_MANAGEMENT_FORBIDDEN",
-                "You do not have permission to manage this organization."
+                "ORGANIZATION_PERMISSION_DENIED",
+                "You do not have permission to perform this operation."
             );
         }
 

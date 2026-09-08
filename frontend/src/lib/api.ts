@@ -227,24 +227,48 @@ export function apiPost<T>(
 
 export function apiPatch<T>(
   path: string,
-  body: unknown
+  body: unknown,
+  organizationId?: string
 ) {
+  const headers =
+    new Headers();
+
+  if (organizationId) {
+    headers.set(
+      "X-Organization-Id",
+      organizationId
+    );
+  }
+
   return apiRequest<T>(
     path,
     {
       method: "PATCH",
+      headers,
       body: JSON.stringify(body),
     }
   );
 }
 
 export function apiDelete<T>(
-  path: string
+  path: string,
+  organizationId?: string
 ) {
+  const headers =
+    new Headers();
+
+  if (organizationId) {
+    headers.set(
+      "X-Organization-Id",
+      organizationId
+    );
+  }
+
   return apiRequest<T>(
     path,
     {
       method: "DELETE",
+      headers,
     }
   );
 }

@@ -564,3 +564,824 @@
     padding: 28px;
   }
 }
+
+.moduleError {
+  margin-top: 24px;
+}
+
+.moduleLayout {
+  margin-top: 34px;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    340px;
+  gap: 20px;
+  align-items: start;
+}
+
+.moduleTableCard,
+.moduleFormCard,
+.projectInfoCard {
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.moduleTableCard {
+  overflow: hidden;
+}
+
+.moduleFormCard {
+  padding: 25px;
+}
+
+.moduleFormCard h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.moduleCardHeader {
+  padding: 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.moduleCardHeader h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.moduleCardHeader p {
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.dataList {
+  display: grid;
+}
+
+.dataRow {
+  min-height: 72px;
+  padding: 14px 22px;
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 1fr)
+    140px
+    150px
+    110px;
+  align-items: center;
+  gap: 15px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 12px;
+}
+
+.dataRow:last-child {
+  border-bottom: 0;
+}
+
+a.dataRow:hover {
+  background: #f8fafc;
+}
+
+.dataRow > div {
+  display: grid;
+  gap: 5px;
+}
+
+.dataRow strong {
+  font-size: 13px;
+}
+
+.dataRow span {
+  color: #64748b;
+}
+
+.statusBadge {
+  width: fit-content;
+  padding: 6px 8px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #334155 !important;
+  font-size: 10px !important;
+  font-weight: 800;
+}
+
+.emptyState {
+  padding: 60px 25px;
+  color: #94a3b8;
+  text-align: center;
+  font-size: 13px;
+}
+
+.detailCards {
+  margin-top: 34px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+  gap: 14px;
+}
+
+.detailCards article {
+  min-height: 110px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.detailCards span {
+  color: #64748b;
+  font-size: 11px;
+}
+
+.detailCards strong {
+  font-size: 15px;
+}
+
+.projectList {
+  display: grid;
+}
+
+.projectListCard {
+  padding: 22px 24px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.projectListCard:last-child {
+  border-bottom: 0;
+}
+
+.projectListCard:hover {
+  background: #f8fafc;
+}
+
+.projectListTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.projectListTop > div > span {
+  color: #b45309;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.projectListTop h3 {
+  margin: 7px 0 5px;
+  font-size: 17px;
+}
+
+.projectListTop p {
+  margin: 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.projectListMeta {
+  margin-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.projectDetailHeader {
+  align-items: center;
+}
+
+.projectClientName {
+  display: block;
+  margin-top: 8px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.projectActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.projectMetrics {
+  grid-template-columns:
+    repeat(
+      6,
+      minmax(0, 1fr)
+    );
+}
+
+.projectInfoCard {
+  margin-top: 20px;
+  padding: 24px;
+  display: grid;
+  grid-template-columns:
+    1fr
+    160px
+    1.4fr;
+  gap: 30px;
+}
+
+.projectInfoCard > div {
+  display: grid;
+  gap: 8px;
+}
+
+.projectInfoCard span {
+  color: #64748b;
+  font-size: 11px;
+}
+
+.projectInfoCard strong {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@media (max-width: 1150px) {
+  .projectMetrics {
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(0, 1fr)
+      );
+  }
+
+  .projectInfoCard {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1000px) {
+  .moduleLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .dataRow {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 18px 22px;
+  }
+}
+
+@media (max-width: 720px) {
+  .detailCards,
+  .projectMetrics {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .projectDetailHeader {
+    align-items: flex-start;
+  }
+
+  .projectActions {
+    justify-content: flex-start;
+  }
+}
+
+.authForm textarea,
+.workLogForm textarea,
+.commentComposer textarea {
+  width: 100%;
+  min-height: 110px;
+  padding: 12px 13px;
+  resize: vertical;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  outline: none;
+  background: #ffffff;
+  color: #0f172a;
+  font: inherit;
+}
+
+.authForm textarea:focus,
+.workLogForm textarea:focus,
+.commentComposer textarea:focus {
+  border-color: #f59e0b;
+  box-shadow:
+    0 0 0 3px
+    rgba(245, 158, 11, 0.12);
+}
+
+.projectWorkspaceNav {
+  margin-top: 32px;
+  padding: 5px;
+  display: inline-flex;
+  gap: 4px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.projectWorkspaceNav a {
+  padding: 9px 14px;
+  border-radius: 7px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.projectWorkspaceNav a.active {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+.planningProgress {
+  display: grid;
+  gap: 5px;
+  text-align: right;
+}
+
+.planningProgress span {
+  color: #64748b;
+  font-size: 11px;
+}
+
+.planningProgress strong {
+  font-size: 28px;
+}
+
+.planningToolbar {
+  margin-top: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.planningToolbar > span {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.viewSwitcher {
+  padding: 4px;
+  display: inline-flex;
+  gap: 3px;
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+  background: #ffffff;
+}
+
+.viewSwitcher button {
+  padding: 8px 13px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.viewSwitcher button.active {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+.planningLayout {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    330px;
+  gap: 20px;
+  align-items: start;
+}
+
+.taskListView,
+.calendarTaskView {
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 15px;
+  background: #ffffff;
+}
+
+.taskGroup {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.taskGroup:last-child {
+  border-bottom: 0;
+}
+
+.taskListRow {
+  min-height: 70px;
+  padding: 14px 20px;
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 1fr)
+    115px
+    90px
+    110px
+    60px;
+  align-items: center;
+  gap: 13px;
+  font-size: 11px;
+}
+
+.taskListRow:hover {
+  background: #f8fafc;
+}
+
+.taskListRow > div {
+  display: grid;
+  gap: 4px;
+}
+
+.taskListRow > div strong {
+  color: #0f172a;
+  font-size: 13px;
+}
+
+.taskListRow > div span,
+.taskListRow > span {
+  color: #64748b;
+}
+
+.subtaskRow {
+  margin-left: 34px;
+  border-left: 2px solid #f59e0b;
+  background: #fafafa;
+}
+
+.kanbanBoard {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      5,
+      minmax(190px, 1fr)
+    );
+  gap: 12px;
+  overflow-x: auto;
+}
+
+.kanbanColumn {
+  min-width: 190px;
+  padding: 13px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #f8fafc;
+}
+
+.kanbanColumn > header {
+  padding: 5px 4px 14px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.kanbanColumn > header span {
+  color: #64748b;
+}
+
+.kanbanColumn > div {
+  display: grid;
+  gap: 9px;
+}
+
+.kanbanTask {
+  min-height: 130px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.kanbanTask > span {
+  color: #b45309;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.kanbanTask > strong {
+  margin-top: 9px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.kanbanTask > div {
+  margin-top: auto;
+  padding-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  color: #64748b;
+}
+
+.calendarDay {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.calendarDay:last-child {
+  border-bottom: 0;
+}
+
+.calendarDay > header {
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  background: #f8fafc;
+}
+
+.calendarDay > header strong {
+  font-size: 13px;
+}
+
+.calendarDay > header span {
+  color: #64748b;
+  font-size: 11px;
+}
+
+.taskDetailGrid {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.taskDetailCard {
+  padding: 23px;
+  border: 1px solid #e2e8f0;
+  border-radius: 15px;
+  background: #ffffff;
+}
+
+.taskDetailCard h2 {
+  margin: 0 0 20px;
+  font-size: 15px;
+}
+
+.taskProgressTrack {
+  height: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+
+.taskProgressTrack > div {
+  height: 100%;
+  border-radius: inherit;
+  background: #f59e0b;
+}
+
+.inlineForm {
+  margin-top: 17px;
+  display: flex;
+  gap: 8px;
+}
+
+.inlineForm input {
+  width: 100px;
+  min-height: 35px;
+  padding: 0 9px;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+}
+
+.detailDefinition {
+  margin: 0;
+  display: grid;
+  gap: 15px;
+}
+
+.detailDefinition > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.detailDefinition dt {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.detailDefinition dd {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.taskCollaborationGrid {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.commentList,
+.workLogList {
+  max-height: 430px;
+  overflow-y: auto;
+}
+
+.commentItem,
+.workLogItem {
+  padding: 17px 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.commentItem header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.commentItem header strong {
+  font-size: 12px;
+}
+
+.commentItem header span {
+  color: #94a3b8;
+  font-size: 10px;
+}
+
+.commentItem p {
+  margin: 10px 0 0;
+  color: #475569;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.commentComposer,
+.workLogForm {
+  padding: 18px 20px;
+  display: grid;
+  gap: 12px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.workLogItem {
+  display: grid;
+  grid-template-columns:
+    minmax(150px, 1fr)
+    70px;
+  gap: 10px;
+}
+
+.workLogItem > div {
+  display: grid;
+  gap: 4px;
+}
+
+.workLogItem span {
+  color: #64748b;
+  font-size: 10px;
+}
+
+.workLogItem > strong {
+  font-size: 12px;
+}
+
+.workLogItem p {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.workLogForm label {
+  display: grid;
+  gap: 7px;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.workLogForm input {
+  min-height: 40px;
+  padding: 0 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+}
+
+.milestoneTimeline {
+  padding-left: 20px;
+  border-left: 2px solid #e2e8f0;
+}
+
+.milestoneCard {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.milestoneMarker {
+  position: absolute;
+  left: -27px;
+  top: 27px;
+  width: 12px;
+  height: 12px;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  background: #f59e0b;
+  box-shadow:
+    0 0 0 1px #e2e8f0;
+}
+
+.milestoneContent {
+  padding: 23px;
+  border: 1px solid #e2e8f0;
+  border-radius: 15px;
+  background: #ffffff;
+}
+
+.milestoneContent header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.milestoneContent header span {
+  color: #b45309;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.milestoneContent h2 {
+  margin: 6px 0 0;
+  font-size: 17px;
+}
+
+.milestoneContent > p {
+  margin: 15px 0;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.milestoneFooter {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: #64748b;
+  font-size: 10px;
+}
+
+.milestoneFooter > div {
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.checkboxLabel {
+  grid-template-columns:
+    auto 1fr !important;
+  align-items: center;
+}
+
+.checkboxLabel input {
+  width: 18px !important;
+  min-height: 18px !important;
+}
+
+@media (max-width: 1200px) {
+  .planningLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .kanbanBoard {
+    grid-template-columns:
+      repeat(
+        5,
+        220px
+      );
+  }
+}
+
+@media (max-width: 900px) {
+  .taskCollaborationGrid,
+  .taskDetailGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .taskListRow {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+
+  .projectWorkspaceNav {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .planningProgress {
+    text-align: left;
+  }
+}

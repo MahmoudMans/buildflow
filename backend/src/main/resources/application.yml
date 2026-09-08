@@ -61,6 +61,9 @@ app:
     cookie-secure: false
     frontend-url: ${FRONTEND_URL:http://localhost:3000}
 
+  planning:
+    comment-edit-window: 15m
+
 logging:
   level:
     root: INFO

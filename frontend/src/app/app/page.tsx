@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 
+import { AppSidebar } from "@/components/AppSidebar";
 import { useAuth } from "@/components/AuthProvider";
 import {
   ApiClientError,
@@ -223,36 +224,7 @@ export default function ApplicationHomePage() {
 
   return (
     <main className="appShell">
-      <aside className="appSidebar">
-        <Link
-          className="sidebarBrand"
-          href="/app"
-        >
-          <span>B</span>
-          BuildFlow
-        </Link>
-
-        <nav>
-          <Link
-            className="active"
-            href="/app"
-          >
-            Overview
-          </Link>
-
-          <Link href="/app/team">
-            Team
-          </Link>
-        </nav>
-
-        <button
-          type="button"
-          className="logoutButton"
-          onClick={signOut}
-        >
-          Sign out
-        </button>
-      </aside>
+      <AppSidebar active="overview" />
 
       <section className="appContent">
         <header className="appHeader">
