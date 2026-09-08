@@ -2,6 +2,8 @@ package com.buildflow.commercial.service;
 
 import com.buildflow.budget.dto.BudgetDtos;
 import com.buildflow.budget.service.FinancialSummaryService;
+import com.buildflow.changeorder.entity.ChangeOrderStatus;
+import com.buildflow.changeorder.repository.ChangeOrderRepository;
 import com.buildflow.commercial.dto.CommercialDtos;
 import com.buildflow.commercial.entity.InvoiceStatus;
 import com.buildflow.commercial.repository.InvoiceRepository;
@@ -41,35 +43,41 @@ public class RevenueMetricsService {
     private final FinancialSummaryService
         financialSummaryService;
 
+    private final ChangeOrderRepository
+        changeOrderRepository;
+
     public RevenueMetricsService(
         CommercialAccessService accessService,
-        ProjectCommercialDataService projectDataService,
+        ProjectCommercialDataService
+            projectDataService,
         InvoiceRepository invoiceRepository,
         PaymentRepository paymentRepository,
-        FinancialSummaryService financialSummaryService
+        FinancialSummaryService
+            financialSummaryService,
+        ChangeOrderRepository
+            changeOrderRepository
     ) {
-        this.accessService =
-            accessService;
-
+        this.accessService = accessService;
         this.projectDataService =
             projectDataService;
-
         this.invoiceRepository =
             invoiceRepository;
-
         this.paymentRepository =
             paymentRepository;
-
         this.financialSummaryService =
             financialSummaryService;
+        this.changeOrderRepository =
+            changeOrderRepository;
     }
 
     @Transactional(readOnly = true)
-    public CommercialDtos.RevenueSummary summary(
-        UUID organizationId,
-        UUID userId,
-        UUID projectId
-    ) {
+    public CommercialDtos.RevenueSummary
+        summary(
+            UUID organizationId,
+            UUID userId,
+            UUID projectId
+        ) {
+
         accessService.requireView(
             organizationId,
             projectId,
@@ -83,7 +91,14 @@ public class RevenueMetricsService {
             );
 
         BigDecimal approvedClientChanges =
-            zero();
+            nullableMoney(
+                changeOrderRepository
+                    .sumClientPriceImpactForStatus(
+                        projectId,
+                        organizationId,
+                        ChangeOrderStatus.APPROVED
+                    )
+            );
 
         BigDecimal revisedContractValue =
             money(
@@ -121,12 +136,14 @@ public class RevenueMetricsService {
                     )
             );
 
-        BudgetDtos.FinancialSummaryView financial =
-            financialSummaryService.summary(
-                organizationId,
-                userId,
-                projectId
-            );
+        BudgetDtos.FinancialSummaryView
+            financial =
+                financialSummaryService
+                    .summary(
+                        organizationId,
+                        userId,
+                        projectId
+                    );
 
         BigDecimal forecastCost =
             money(
@@ -142,11 +159,15 @@ public class RevenueMetricsService {
             );
 
         BigDecimal margin =
-            revisedContractValue.signum() == 0
+            revisedContractValue
+                    .signum()
+                == 0
                 ? zero()
                 : forecastProfit
                     .multiply(
-                        BigDecimal.valueOf(100)
+                        BigDecimal.valueOf(
+                            100
+                        )
                     )
                     .divide(
                         revisedContractValue,
@@ -154,26 +175,29 @@ public class RevenueMetricsService {
                         RoundingMode.HALF_UP
                     );
 
-        return new CommercialDtos.RevenueSummary(
-            projectId,
-            originalContractValue,
-            approvedClientChanges,
-            revisedContractValue,
-            totalInvoiced,
-            totalPaid,
-            outstanding,
-            forecastCost,
-            forecastProfit,
-            margin
-        );
+        return new CommercialDtos
+            .RevenueSummary(
+                projectId,
+                originalContractValue,
+                approvedClientChanges,
+                revisedContractValue,
+                totalInvoiced,
+                totalPaid,
+                outstanding,
+                forecastCost,
+                forecastProfit,
+                margin
+            );
     }
 
     private BigDecimal nullableMoney(
         BigDecimal value
     ) {
-        return value == null
-            ? zero()
-            : money(value);
+        if (value == null) {
+            return zero();
+        }
+
+        return money(value);
     }
 
     private BigDecimal money(
@@ -186,7 +210,6 @@ public class RevenueMetricsService {
     }
 
     private BigDecimal zero() {
-        return BigDecimal.ZERO
-            .setScale(4);
+        return BigDecimal.ZERO.setScale(4);
     }
 }

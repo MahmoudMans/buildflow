@@ -2350,3 +2350,157 @@ a.dataRow:hover {
     grid-column: 1 / -1;
   }
 }
+
+/* BUILDFLOW_PHASE7_CHANGE_ORDERS */
+
+.changeOrderMetrics {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+  gap: 10px;
+}
+
+.changeOrderMetrics article {
+  padding: 14px;
+  display: grid;
+  gap: 6px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.changeOrderMetrics span {
+  color: #64748b;
+  font-size: 9px;
+}
+
+.changeOrderMetrics strong {
+  font-size: 13px;
+}
+
+.changeOrderGrid {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.3fr)
+    minmax(300px, 0.7fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.changeOrderColumn {
+  display: grid;
+  gap: 14px;
+}
+
+.changeOrderDocument {
+  padding: 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 13px;
+  background: #ffffff;
+}
+
+.changeOrderDocument > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+}
+
+.changeOrderDocument > header > div {
+  display: grid;
+  gap: 4px;
+}
+
+.changeOrderDocument > header > div > span {
+  color: #b45309;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.changeOrderDocument h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.changeOrderDescription {
+  margin: 15px 0 0;
+  color: #475569;
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.changeOrderImpactGrid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+  gap: 8px;
+}
+
+.changeOrderImpactGrid > div {
+  padding: 11px;
+  display: grid;
+  gap: 5px;
+  border-radius: 9px;
+  background: #f8fafc;
+}
+
+.changeOrderImpactGrid span {
+  color: #64748b;
+  font-size: 9px;
+}
+
+.changeOrderImpactGrid strong {
+  font-size: 12px;
+}
+
+.changeOrderReason {
+  margin-top: 14px;
+  padding-top: 13px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.changeOrderReason span {
+  color: #64748b;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.changeOrderReason p {
+  margin: 5px 0 0;
+  color: #334155;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+@media (max-width: 1100px) {
+  .changeOrderMetrics {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .changeOrderGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .changeOrderMetrics {
+    grid-template-columns: 1fr;
+  }
+
+  .changeOrderImpactGrid {
+    grid-template-columns: 1fr;
+  }
+}
