@@ -14,7 +14,9 @@ export function ProjectWorkspaceNav({
     | "procurement"
     | "commercial"
     | "changes"
-    | "site";
+    | "site"
+    | "documents"
+    | "photos";
 }) {
   return (
     <nav className="projectWorkspaceNav">
@@ -79,6 +81,20 @@ export function ProjectWorkspaceNav({
         href={`/app/projects/${projectId}/site`}
       >
         Site
+      </Link>
+
+      <Link
+        className={active === "documents" ? "active" : ""}
+        href={`/app/projects/${projectId}/documents`}
+      >
+        Documents
+      </Link>
+
+      <Link
+        className={active === "photos" ? "active" : ""}
+        href={`/app/projects/${projectId}/photos`}
+      >
+        Photos
       </Link>
     </nav>
   );
