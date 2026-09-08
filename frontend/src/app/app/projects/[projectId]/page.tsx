@@ -1,121 +1,100 @@
 "use client";
 
-import Link from "next/link";
-
 import {
-  FormEvent,
+  useCallback,
   useEffect,
   useState,
 } from "react";
 
-import { useParams } from "next/navigation";
+import {
+  useParams,
+} from "next/navigation";
 
-import { AppSidebar } from "@/components/AppSidebar";
-import { ProjectWorkspaceNav } from "@/components/ProjectWorkspaceNav";
-import { useAuth } from "@/components/AuthProvider";
-import { useOrganizationSelection } from "@/components/useOrganizationSelection";
+import {
+  AppSidebar,
+} from "@/components/AppSidebar";
+
+import {
+  ProjectWorkspaceNav,
+} from "@/components/ProjectWorkspaceNav";
+
+import {
+  useAuth,
+} from "@/components/AuthProvider";
+
+import {
+  useOrganizationSelection,
+} from "@/components/useOrganizationSelection";
 
 import {
   ApiClientError,
   apiGet,
-  apiPost,
 } from "@/lib/api";
 
 import type {
-  Member,
-  ProjectMember,
-  ProjectRole,
-  ProjectStatus,
-  ProjectView,
-} from "@/lib/types";
+  DashboardMonthlyValue,
+  ProjectDashboard,
+} from "@/lib/dashboard-types";
 
-const projectRoles: ProjectRole[] = [
-  "PROJECT_MANAGER",
-  "SITE_MANAGER",
-  "ENGINEER",
-  "FOREMAN",
-  "WORKER",
-  "ACCOUNTANT",
-  "VIEWER",
-];
-
-function transitionAction(
-  status: ProjectStatus
-): {
-  label: string;
-  path: string;
-}[] {
-  switch (status) {
-    case "DRAFT":
-      return [
-        {
-          label: "Move to planning",
-          path: "plan",
-        },
-        {
-          label: "Cancel project",
-          path: "cancel",
-        },
-      ];
-
-    case "PLANNING":
-      return [
-        {
-          label: "Activate project",
-          path: "activate",
-        },
-        {
-          label: "Put on hold",
-          path: "hold",
-        },
-        {
-          label: "Cancel project",
-          path: "cancel",
-        },
-      ];
-
-    case "ACTIVE":
-      return [
-        {
-          label: "Put on hold",
-          path: "hold",
-        },
-        {
-          label: "Complete project",
-          path: "complete",
-        },
-        {
-          label: "Cancel project",
-          path: "cancel",
-        },
-      ];
-
-    case "ON_HOLD":
-      return [
-        {
-          label: "Resume project",
-          path: "resume",
-        },
-        {
-          label: "Cancel project",
-          path: "cancel",
-        },
-      ];
-
-    case "COMPLETED":
-      return [
-        {
-          label: "Archive project",
-          path: "archive",
-        },
-      ];
-
-    default:
-      return [];
-  }
+function money(
+  value: number,
+  currency: string
+) {
+  return new Intl.NumberFormat(
+    undefined,
+    {
+      style: "currency",
+      currency,
+      maximumFractionDigits: 0,
+    }
+  ).format(value);
 }
 
-export default function ProjectDetailPage() {
+function Bars({
+  values,
+}: {
+  values: DashboardMonthlyValue[];
+}) {
+  const maximum =
+    Math.max(
+      1,
+      ...values.map(
+        (item) =>
+          Math.abs(item.value)
+      )
+    );
+
+  return (
+    <div className="analyticsBars compact">
+      {values.map((item) => (
+        <div
+          className="analyticsBarColumn"
+          key={item.month}
+        >
+          <div className="analyticsBarTrack">
+            <div
+              className="analyticsBarFill"
+              style={{
+                height: `${Math.max(
+                  3,
+                  (Math.abs(item.value) /
+                    maximum) *
+                    100
+                )}%`,
+              }}
+            />
+          </div>
+
+          <span>
+            {item.month.slice(5)}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default function ProjectDashboardPage() {
   const params = useParams();
 
   const projectId =
@@ -127,190 +106,121 @@ export default function ProjectDetailPage() {
     loading,
   } = useAuth();
 
-  const organizationSelection =
+  const selection =
     useOrganizationSelection(
       organizations
     );
 
   const organizationId =
-    organizationSelection.organizationId;
+    selection.organizationId;
 
-  const [project, setProject] =
-    useState<ProjectView | null>(
-      null
-    );
-
-  const [
-    projectMembers,
-    setProjectMembers,
-  ] = useState<ProjectMember[]>([]);
-
-  const [
-    organizationMembers,
-    setOrganizationMembers,
-  ] = useState<Member[]>([]);
-
-  const [membershipId, setMembershipId] =
-    useState("");
-
-  const [projectRole, setProjectRole] =
-    useState<ProjectRole>(
-      "WORKER"
-    );
+  const [dashboard, setDashboard] =
+    useState<
+      ProjectDashboard | null
+    >(null);
 
   const [error, setError] =
     useState("");
 
+  const load =
+    useCallback(
+      async () => {
+        if (!organizationId) {
+          return;
+        }
 
+        try {
+          setError("");
 
-  async function loadProject() {
-    try {
-      const [
-        projectResult,
-        projectMemberResult,
-        organizationMemberResult,
-      ] = await Promise.all([
-        apiGet<ProjectView>(
-          `/projects/${projectId}`,
-          organizationId
-        ),
+          const result =
+            await apiGet<
+              ProjectDashboard
+            >(
+              `/projects/${projectId}/dashboard`,
+              organizationId
+            );
 
-        apiGet<ProjectMember[]>(
-          `/projects/${projectId}/members`,
-          organizationId
-        ),
+          setDashboard(result);
+        } catch (caught) {
+          setError(
+            caught
+              instanceof ApiClientError
+              ? caught.message
+              : caught
+                instanceof Error
+                ? caught.message
+                : "Unable to load project dashboard."
+          );
+        }
+      },
+      [
+        organizationId,
+        projectId,
+      ]
+    );
 
-        apiGet<Member[]>(
-          `/organizations/${organizationId}/members`
-        ),
-      ]);
-
-      setProject(projectResult);
-
-      setProjectMembers(
-        projectMemberResult
-      );
-
-      setOrganizationMembers(
-        organizationMemberResult.filter(
-          (member) =>
-            member.status === "ACTIVE"
-            && member.role !== "CLIENT"
-        )
-      );
-    } catch (caught) {
-      setError(
-        caught instanceof ApiClientError
-          ? caught.message
-          : "Could not load project."
-      );
-    }
-  }
-
-  async function changeStatus(
-    path: string
-  ) {
-    try {
-      await apiPost(
-        `/projects/${projectId}/${path}`,
-        undefined,
-        organizationId
-      );
-
-      await loadProject();
-    } catch (caught) {
-      setError(
-        caught instanceof ApiClientError
-          ? caught.message
-          : "Project status update failed."
-      );
-    }
-  }
-
-  async function addMember(
-    event: FormEvent
-  ) {
-    event.preventDefault();
-
-    if (!membershipId) {
+  useEffect(() => {
+    if (!organizationId) {
       return;
     }
 
-    try {
-      await apiPost(
-        `/projects/${projectId}/members`,
-        {
-          membershipId,
-          projectRole,
-        },
-        organizationId
-      );
-
-      setMembershipId("");
-
-      await loadProject();
-    } catch (caught) {
-      setError(
-        caught instanceof ApiClientError
-          ? caught.message
-          : "Could not assign project member."
-      );
-    }
-  }
-
-    /* eslint-disable react-hooks/exhaustive-deps */
-useEffect(() => {
-    // BUILDFLOW_ASYNC_LOAD_EFFECT
     const timer =
       window.setTimeout(
         () => {
-        if (
-          organizationId &&
-          projectId
-        ) {
-          loadProject();
-        }
+          void load();
         },
         0
       );
 
     return () => {
-      window.clearTimeout(
-        timer
-      );
+      window.clearTimeout(timer);
     };
   }, [
     organizationId,
-    projectId,
+    load,
   ]);
-  /* eslint-enable react-hooks/exhaustive-deps */
 
   if (
-    loading ||
-    !user ||
-    !project
+    loading
+    || !user
   ) {
     return (
       <main className="appLoading">
-        {error || "Loading..."}
+        Loading...
       </main>
     );
   }
 
-  const assignedMembershipIds =
-    new Set(
-      projectMembers.map(
-        (member) =>
-          member.membershipId
-      )
-    );
+  if (!dashboard) {
+    return (
+      <main className="appShell">
+        <AppSidebar active="projects" />
 
-  const availableMembers =
-    organizationMembers.filter(
-      (member) =>
-        !assignedMembershipIds.has(
-          member.membershipId
-        )
+        <section className="appContent">
+          {error ? (
+            <div className="formError moduleError">
+              {error}
+            </div>
+          ) : (
+            <div className="emptyState">
+              Loading project dashboard...
+            </div>
+          )}
+        </section>
+      </main>
+    );
+  }
+
+  const healthClass =
+    dashboard.health.status
+      .toLowerCase()
+      .replace("_", "-");
+
+  const revisedBudget =
+    Math.max(
+      1,
+      dashboard.budgetUtilization
+        .revisedBudget
     );
 
   return (
@@ -318,47 +228,40 @@ useEffect(() => {
       <AppSidebar active="projects" />
 
       <section className="appContent">
-        <header className="appHeader projectDetailHeader">
+        <header className="appHeader projectDashboardHeader">
           <div>
             <p>
-              {project.projectNumber}
+              {dashboard.projectNumber}
             </p>
 
             <h1>
-              {project.name}
+              {dashboard.projectName}
             </h1>
 
-            <span className="projectClientName">
-              {project.clientName}
+            <span>
+              {dashboard.status}
+              {" · "}
+              {dashboard.progressPercentage.toFixed(
+                0
+              )}
+              % complete
             </span>
           </div>
 
-          <div className="projectActions">
-            {transitionAction(
-              project.status
-            ).map((action) => (
-              <button
-                key={action.path}
-                className="smallButton"
-                type="button"
-                onClick={() =>
-                  changeStatus(
-                    action.path
-                  )
-                }
-              >
-                {action.label}
-              </button>
-            ))}
-
-            <Link
-              className="smallButton"
-              href="/app/projects"
-            >
-              Back
-            </Link>
+          <div
+            className={`healthBadge ${healthClass}`}
+          >
+            {dashboard.health.status.replace(
+              "_",
+              " "
+            )}
           </div>
         </header>
+
+        <ProjectWorkspaceNav
+          projectId={projectId}
+          active="overview"
+        />
 
         {error && (
           <div className="formError moduleError">
@@ -366,228 +269,419 @@ useEffect(() => {
           </div>
         )}
 
-        <ProjectWorkspaceNav
-          projectId={projectId}
-          active="overview"
-        />
+        {dashboard.health.reasons.length >
+          0 && (
+          <section className="healthReasons">
+            {dashboard.health.reasons.map(
+              (reason) => (
+                <span key={reason}>
+                  {reason}
+                </span>
+              )
+            )}
+          </section>
+        )}
 
-        <section className="detailCards projectMetrics">
+        <section className="projectOverviewDetails">
           <article>
-            <span>Status</span>
+            <span>
+              Start Date
+            </span>
             <strong>
-              {project.status}
+              {dashboard.startDate
+                ?? "—"}
             </strong>
           </article>
 
           <article>
-            <span>Progress</span>
+            <span>
+              Expected Completion
+            </span>
             <strong>
-              {project.progressPercentage}%
+              {dashboard.expectedCompletion
+                ?? "—"}
             </strong>
           </article>
 
           <article>
-            <span>Priority</span>
+            <span>
+              Project Manager
+            </span>
             <strong>
-              {project.priority}
+              {dashboard.projectManager
+                ?? "—"}
             </strong>
           </article>
 
           <article>
-            <span>Type</span>
+            <span>
+              Progress
+            </span>
             <strong>
-              {project.projectType}
-            </strong>
-          </article>
-
-          <article>
-            <span>Start</span>
-            <strong>
-              {project.startDate ?? "—"}
-            </strong>
-          </article>
-
-          <article>
-            <span>Planned end</span>
-            <strong>
-              {project.plannedEndDate ??
-                "—"}
+              {dashboard.progressPercentage.toFixed(
+                0
+              )}
+              %
             </strong>
           </article>
         </section>
 
-        <section className="projectInfoCard">
-          <div>
+        <section className="dashboardMetricGrid projectFinancialGrid">
+          <article>
             <span>
-              Location
+              Contract Value
             </span>
-
             <strong>
-              {[
-                project.siteAddress,
-                project.city,
-                project.country,
-              ]
-                .filter(Boolean)
-                .join(", ")
-                || "Not specified"}
+              {money(
+                dashboard.financial
+                  .revisedContractValue,
+                dashboard.currency
+              )}
             </strong>
-          </div>
+          </article>
 
-          <div>
+          <article>
             <span>
-              Currency
+              Original Budget
             </span>
-
             <strong>
-              {project.currency}
+              {money(
+                dashboard.financial
+                  .originalBudget,
+                dashboard.currency
+              )}
             </strong>
-          </div>
+          </article>
 
-          <div>
+          <article>
             <span>
-              Description
+              Revised Budget
             </span>
-
             <strong>
-              {project.description ||
-                "No description"}
+              {money(
+                dashboard.financial
+                  .revisedBudget,
+                dashboard.currency
+              )}
             </strong>
-          </div>
+          </article>
+
+          <article>
+            <span>
+              Actual Cost
+            </span>
+            <strong>
+              {money(
+                dashboard.financial
+                  .actualCost,
+                dashboard.currency
+              )}
+            </strong>
+          </article>
+
+          <article>
+            <span>
+              Committed Cost
+            </span>
+            <strong>
+              {money(
+                dashboard.financial
+                  .committedCost,
+                dashboard.currency
+              )}
+            </strong>
+          </article>
+
+          <article>
+            <span>
+              Forecast Cost
+            </span>
+            <strong>
+              {money(
+                dashboard.financial
+                  .forecastCost,
+                dashboard.currency
+              )}
+            </strong>
+          </article>
+
+          <article>
+            <span>
+              Forecast Profit
+            </span>
+            <strong
+              className={
+                dashboard.financial
+                    .forecastProfit <
+                  0
+                  ? "negativeValue"
+                  : "positiveValue"
+              }
+            >
+              {money(
+                dashboard.financial
+                  .forecastProfit,
+                dashboard.currency
+              )}
+            </strong>
+          </article>
+
+          <article>
+            <span>
+              Outstanding Invoices
+            </span>
+            <strong>
+              {money(
+                dashboard.outstandingInvoices,
+                dashboard.currency
+              )}
+            </strong>
+          </article>
         </section>
 
-        <section className="moduleLayout">
-          <div className="moduleTableCard">
-            <div className="moduleCardHeader">
+        <section className="projectOperationalGrid">
+          <article>
+            <span>
+              Open Tasks
+            </span>
+            <strong>
+              {dashboard.openTasks}
+            </strong>
+          </article>
+
+          <article>
+            <span>
+              Overdue Tasks
+            </span>
+            <strong>
+              {dashboard.overdueTasks}
+            </strong>
+          </article>
+
+          <article>
+            <span>
+              Upcoming Milestones
+            </span>
+            <strong>
+              {dashboard.upcomingMilestones}
+            </strong>
+          </article>
+
+          <article>
+            <span>
+              Open Incidents
+            </span>
+            <strong>
+              {dashboard.openIncidents}
+            </strong>
+          </article>
+        </section>
+
+        <section className="dashboardTwoColumn">
+          <article className="dashboardPanel">
+            <header>
               <div>
+                <span>
+                  COST
+                </span>
                 <h2>
-                  Project team
+                  Cost Evolution
                 </h2>
+              </div>
+            </header>
 
-                <p>
-                  {projectMembers.length} assigned members
-                </p>
+            <Bars
+              values={
+                dashboard.costEvolution
+              }
+            />
+          </article>
+
+          <article className="dashboardPanel">
+            <header>
+              <div>
+                <span>
+                  BUDGET
+                </span>
+                <h2>
+                  Budget Utilization
+                </h2>
+              </div>
+            </header>
+
+            <div className="budgetUtilization">
+              <div>
+                <span>
+                  Actual
+                </span>
+                <strong>
+                  {money(
+                    dashboard
+                      .budgetUtilization
+                      .actualCost,
+                    dashboard.currency
+                  )}
+                </strong>
+              </div>
+
+              <div className="horizontalTrack">
+                <div
+                  style={{
+                    width: `${Math.min(
+                      100,
+                      (dashboard
+                        .budgetUtilization
+                        .actualCost /
+                        revisedBudget) *
+                        100
+                    )}%`,
+                  }}
+                />
+              </div>
+
+              <div>
+                <span>
+                  Forecast
+                </span>
+                <strong>
+                  {money(
+                    dashboard
+                      .budgetUtilization
+                      .forecastCost,
+                    dashboard.currency
+                  )}
+                </strong>
+              </div>
+
+              <div className="horizontalTrack">
+                <div
+                  style={{
+                    width: `${Math.min(
+                      100,
+                      (dashboard
+                        .budgetUtilization
+                        .forecastCost /
+                        revisedBudget) *
+                        100
+                    )}%`,
+                  }}
+                />
               </div>
             </div>
+          </article>
+        </section>
 
-            <div className="dataList">
-              {projectMembers.length ===
+        <section className="dashboardTwoColumn">
+          <article className="dashboardPanel">
+            <header>
+              <div>
+                <span>
+                  TASKS
+                </span>
+                <h2>
+                  Task Status
+                </h2>
+              </div>
+            </header>
+
+            <div className="statusAnalytics">
+              {dashboard.taskStatus.length ===
                 0 && (
                 <div className="emptyState">
-                  No project members.
+                  No tasks yet.
                 </div>
               )}
 
-              {projectMembers.map(
-                (member) => (
-                  <div
-                    className="dataRow"
-                    key={member.id}
-                  >
+              {dashboard.taskStatus.map(
+                (item) => (
+                  <div key={item.status}>
                     <div>
-                      <strong>
-                        {member.firstName}
-                        {" "}
-                        {member.lastName}
-                      </strong>
-
                       <span>
-                        {member.email}
+                        {item.status.replace(
+                          "_",
+                          " "
+                        )}
                       </span>
+
+                      <strong>
+                        {item.count}
+                      </strong>
                     </div>
-
-                    <span>
-                      {member.projectRole}
-                    </span>
-
-                    <span>
-                      Assigned
-                    </span>
-
-                    <span>
-                      {project
-                        .projectManagerMembershipId
-                        === member.membershipId
-                        ? "PRIMARY PM"
-                        : ""}
-                    </span>
                   </div>
                 )
               )}
             </div>
+          </article>
+
+          <article className="dashboardPanel">
+            <header>
+              <div>
+                <span>
+                  EXPENSES
+                </span>
+                <h2>
+                  Monthly Expenses
+                </h2>
+              </div>
+            </header>
+
+            <Bars
+              values={
+                dashboard.monthlyExpenses
+              }
+            />
+          </article>
+        </section>
+
+        <section className="dashboardPanel">
+          <header>
+            <div>
+              <span>
+                NEXT 30 DAYS
+              </span>
+              <h2>
+                Upcoming Deadlines
+              </h2>
+            </div>
+          </header>
+
+          <div className="dashboardDeadlineList">
+            {dashboard.upcomingDeadlines.length ===
+              0 && (
+              <div className="emptyState">
+                No upcoming deadlines.
+              </div>
+            )}
+
+            {dashboard.upcomingDeadlines.map(
+              (deadline) => (
+                <article
+                  key={`${deadline.type}-${deadline.id}`}
+                >
+                  <span
+                    className={`deadlineType ${deadline.type.toLowerCase()}`}
+                  >
+                    {deadline.type}
+                  </span>
+
+                  <div>
+                    <strong>
+                      {deadline.title}
+                    </strong>
+                    <span>
+                      {deadline.priority
+                        ?? "MEDIUM"}
+                    </span>
+                  </div>
+
+                  <time>
+                    {deadline.dueDate
+                      ?? "—"}
+                  </time>
+                </article>
+              )
+            )}
           </div>
-
-          <aside className="moduleFormCard">
-            <h2>
-              Assign member
-            </h2>
-
-            <form
-              className="authForm"
-              onSubmit={addMember}
-            >
-              <label>
-                Organization member
-                <select
-                  required
-                  value={membershipId}
-                  onChange={(event) =>
-                    setMembershipId(
-                      event.target.value
-                    )
-                  }
-                >
-                  <option value="">
-                    Select member
-                  </option>
-
-                  {availableMembers.map(
-                    (member) => (
-                      <option
-                        key={member.membershipId}
-                        value={member.membershipId}
-                      >
-                        {member.firstName}
-                        {" "}
-                        {member.lastName}
-                      </option>
-                    )
-                  )}
-                </select>
-              </label>
-
-              <label>
-                Project role
-                <select
-                  value={projectRole}
-                  onChange={(event) =>
-                    setProjectRole(
-                      event.target.value as ProjectRole
-                    )
-                  }
-                >
-                  {projectRoles.map(
-                    (role) => (
-                      <option
-                        key={role}
-                        value={role}
-                      >
-                        {role}
-                      </option>
-                    )
-                  )}
-                </select>
-              </label>
-
-              <button
-                className="authSubmit"
-                type="submit"
-                disabled={!membershipId}
-              >
-                Assign member
-              </button>
-            </form>
-          </aside>
         </section>
       </section>
     </main>

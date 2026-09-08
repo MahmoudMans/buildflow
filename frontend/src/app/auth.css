@@ -3548,3 +3548,426 @@ a.dataRow:hover {
     gap: 4px;
   }
 }
+
+/* BUILDFLOW_PHASE11_DASHBOARDS_ANALYTICS */
+
+.dashboardHeader,
+.projectDashboardHeader {
+  align-items: center;
+}
+
+.dashboardHeader > div:first-child > span,
+.projectDashboardHeader > div:first-child > span {
+  color: #64748b;
+  font-size: 9px;
+}
+
+.dashboardMetricGrid {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+  gap: 10px;
+}
+
+.dashboardMetricGrid article,
+.projectOperationalGrid article,
+.projectOverviewDetails article {
+  min-width: 0;
+  padding: 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+  background: #ffffff;
+}
+
+.dashboardMetricGrid article span,
+.projectOperationalGrid article span,
+.projectOverviewDetails article span {
+  display: block;
+  color: #64748b;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.dashboardMetricGrid article strong,
+.projectOperationalGrid article strong,
+.projectOverviewDetails article strong {
+  display: block;
+  margin-top: 6px;
+  overflow: hidden;
+  color: #0f172a;
+  font-size: 18px;
+  text-overflow: ellipsis;
+}
+
+.dashboardTwoColumn {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+  gap: 12px;
+}
+
+.dashboardPanel {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.dashboardPanel > header {
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 12px;
+}
+
+.dashboardPanel > header span {
+  color: #f59e0b;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.dashboardPanel > header h2 {
+  margin: 3px 0 0;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.analyticsBars {
+  height: 190px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      12,
+      minmax(0, 1fr)
+    );
+  gap: 5px;
+  align-items: end;
+}
+
+.analyticsBars.compact {
+  height: 160px;
+}
+
+.analyticsBarColumn {
+  height: 100%;
+  display: grid;
+  grid-template-rows:
+    minmax(0, 1fr)
+    16px;
+  gap: 5px;
+}
+
+.analyticsBarTrack {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: end;
+  border-radius: 4px 4px 2px 2px;
+  background: #f1f5f9;
+}
+
+.analyticsBarFill {
+  width: 100%;
+  min-height: 3px;
+  border-radius: 4px 4px 0 0;
+  background: #f59e0b;
+}
+
+.analyticsBarColumn > span {
+  overflow: hidden;
+  color: #94a3b8;
+  font-size: 7px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.statusAnalytics {
+  display: grid;
+  gap: 13px;
+}
+
+.statusAnalytics > div > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.statusAnalytics span {
+  color: #475569;
+  font-size: 9px;
+  text-transform: capitalize;
+}
+
+.statusAnalytics strong {
+  color: #0f172a;
+  font-size: 10px;
+}
+
+.horizontalTrack {
+  height: 7px;
+  margin-top: 5px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: #f1f5f9;
+}
+
+.horizontalTrack > div {
+  height: 100%;
+  min-width: 2px;
+  border-radius: inherit;
+  background: #f59e0b;
+}
+
+.budgetPerformanceList {
+  display: grid;
+}
+
+.budgetPerformanceList > a {
+  padding: 9px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  text-decoration: none;
+}
+
+.budgetPerformanceList > a:last-child {
+  border-bottom: 0;
+}
+
+.budgetPerformanceList > a > div {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.budgetPerformanceList strong {
+  overflow: hidden;
+  color: #334155;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.budgetPerformanceList span {
+  color: #94a3b8;
+  font-size: 7px;
+}
+
+.positiveValue {
+  color: #16a34a !important;
+}
+
+.negativeValue {
+  color: #dc2626 !important;
+}
+
+.dashboardDeadlineList {
+  display: grid;
+}
+
+.dashboardDeadlineList > a,
+.dashboardDeadlineList > article {
+  padding: 10px 0;
+  display: grid;
+  grid-template-columns:
+    80px
+    minmax(0, 1fr)
+    auto;
+  gap: 10px;
+  align-items: center;
+  border-bottom: 1px solid #f1f5f9;
+  color: inherit;
+  text-decoration: none;
+}
+
+.dashboardDeadlineList > a:last-child,
+.dashboardDeadlineList > article:last-child {
+  border-bottom: 0;
+}
+
+.dashboardDeadlineList > a > div,
+.dashboardDeadlineList > article > div {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.dashboardDeadlineList strong {
+  overflow: hidden;
+  color: #334155;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboardDeadlineList div span,
+.dashboardDeadlineList time {
+  color: #94a3b8;
+  font-size: 8px;
+}
+
+.deadlineType {
+  width: max-content;
+  padding: 3px 6px;
+  border-radius: 999px;
+  font-size: 7px;
+  font-weight: 800;
+}
+
+.deadlineType.task {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.deadlineType.milestone {
+  background: #fffbeb;
+  color: #d97706;
+}
+
+.healthBadge {
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.healthBadge.on-track {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.healthBadge.at-risk {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.healthBadge.critical {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.healthBadge.not-applicable {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.healthReasons {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.healthReasons span {
+  padding: 5px 8px;
+  border: 1px solid #fed7aa;
+  border-radius: 999px;
+  background: #fff7ed;
+  color: #c2410c;
+  font-size: 8px;
+}
+
+.projectOverviewDetails {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+  gap: 10px;
+}
+
+.projectFinancialGrid {
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+}
+
+.projectOperationalGrid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+  gap: 10px;
+}
+
+.budgetUtilization {
+  display: grid;
+  gap: 8px;
+}
+
+.budgetUtilization > div:not(.horizontalTrack) {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.budgetUtilization span {
+  color: #64748b;
+  font-size: 9px;
+}
+
+.budgetUtilization strong {
+  color: #0f172a;
+  font-size: 9px;
+}
+
+@media (max-width: 1100px) {
+  .dashboardMetricGrid,
+  .projectFinancialGrid,
+  .projectOperationalGrid,
+  .projectOverviewDetails {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboardMetricGrid,
+  .projectFinancialGrid,
+  .projectOperationalGrid,
+  .projectOverviewDetails,
+  .dashboardTwoColumn {
+    grid-template-columns: 1fr;
+  }
+
+  .analyticsBars {
+    height: 150px;
+    gap: 3px;
+  }
+
+  .dashboardDeadlineList > a,
+  .dashboardDeadlineList > article {
+    grid-template-columns:
+      70px
+      minmax(0, 1fr);
+  }
+
+  .dashboardDeadlineList time {
+    grid-column: 2;
+  }
+}
