@@ -1,0 +1,684 @@
+/* BUILDFLOW_PHASE14_UX_POLISH */
+
+:root {
+  --ux-border: #e2e8f0;
+  --ux-muted: #64748b;
+  --ux-text: #0f172a;
+  --ux-surface: #ffffff;
+  --ux-background: #f8fafc;
+  --ux-accent: #f59e0b;
+  --ux-success: #16a34a;
+  --ux-warning: #d97706;
+  --ux-danger: #dc2626;
+  --ux-info: #2563eb;
+  --ux-focus: #f59e0b;
+}
+
+.uxApplicationRoot {
+  min-height: 100%;
+}
+
+.uxSrOnly {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.uxSkipLink {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 200;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: var(--ux-text);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  transform: translateY(-160%);
+  transition: transform 140ms ease;
+}
+
+.uxSkipLink:focus {
+  transform: translateY(0);
+}
+
+:where(
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  [tabindex]
+):focus-visible {
+  outline: 3px solid
+    color-mix(
+      in srgb,
+      var(--ux-focus) 55%,
+      transparent
+    );
+  outline-offset: 2px;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+[aria-invalid="true"] {
+  border-color: var(--ux-danger) !important;
+}
+
+.uxRouteState {
+  display: grid;
+  align-content: start;
+}
+
+.uxSkeleton {
+  width: 100%;
+  padding: 18px;
+  border: 1px solid var(--ux-border);
+  border-radius: 12px;
+  background: var(--ux-surface);
+}
+
+.uxSkeletonCards {
+  margin-bottom: 16px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+  gap: 10px;
+}
+
+.uxSkeletonCard {
+  min-height: 92px;
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+  align-content: center;
+  border-radius: 10px;
+  background: #f1f5f9;
+}
+
+.uxSkeletonCard span,
+.uxSkeletonCard strong,
+.uxSkeletonLines span {
+  display: block;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      90deg,
+      #e2e8f0 25%,
+      #f8fafc 50%,
+      #e2e8f0 75%
+    );
+  background-size: 200% 100%;
+  animation:
+    uxSkeletonPulse
+    1.35s
+    infinite;
+}
+
+.uxSkeletonCard span {
+  width: 48%;
+  height: 8px;
+}
+
+.uxSkeletonCard strong {
+  width: 72%;
+  height: 19px;
+}
+
+.uxSkeletonLines {
+  display: grid;
+  gap: 9px;
+}
+
+.uxSkeletonLines span {
+  height: 10px;
+}
+
+@keyframes uxSkeletonPulse {
+  from {
+    background-position:
+      200% 0;
+  }
+
+  to {
+    background-position:
+      -200% 0;
+  }
+}
+
+@media (
+  prefers-reduced-motion:
+    reduce
+) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+.uxEmptyState,
+.uxErrorState {
+  min-height: 180px;
+  padding: 24px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  border: 1px dashed var(--ux-border);
+  border-radius: 12px;
+  background: var(--ux-surface);
+  text-align: center;
+}
+
+.uxEmptyState.compact,
+.uxErrorState.compact {
+  min-height: 110px;
+  padding: 16px;
+}
+
+.uxEmptyStateIcon,
+.uxErrorStateIcon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: var(--ux-muted);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.uxErrorStateIcon {
+  background: #fef2f2;
+  color: var(--ux-danger);
+}
+
+.uxEmptyState strong,
+.uxErrorState strong {
+  color: var(--ux-text);
+  font-size: 12px;
+}
+
+.uxEmptyState p,
+.uxErrorState p {
+  max-width: 560px;
+  margin: 5px 0 0;
+  color: var(--ux-muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.uxEmptyStateAction {
+  margin-top: 5px;
+}
+
+.uxPrimaryLink,
+.uxPrimaryButton,
+.uxSecondaryButton,
+.uxDangerButton {
+  min-height: 38px;
+  padding: 0 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 9px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.uxPrimaryLink,
+.uxPrimaryButton {
+  border: 1px solid var(--ux-accent);
+  background: var(--ux-accent);
+  color: #111827;
+}
+
+.uxSecondaryButton {
+  border: 1px solid var(--ux-border);
+  background: var(--ux-surface);
+  color: #334155;
+}
+
+.uxDangerButton {
+  border: 1px solid var(--ux-danger);
+  background: var(--ux-danger);
+  color: #ffffff;
+}
+
+.uxStatusBadge {
+  width: max-content;
+  max-width: 100%;
+  min-height: 25px;
+  padding: 4px 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 8px;
+  font-weight: 800;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.uxStatusDot {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.uxStatusBadge.success {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+  color: var(--ux-success);
+}
+
+.uxStatusBadge.warning {
+  border-color: #fde68a;
+  background: #fffbeb;
+  color: var(--ux-warning);
+}
+
+.uxStatusBadge.danger {
+  border-color: #fecaca;
+  background: #fef2f2;
+  color: var(--ux-danger);
+}
+
+.uxStatusBadge.info {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  color: var(--ux-info);
+}
+
+.uxStatusBadge.neutral {
+  border-color: var(--ux-border);
+  background: #f8fafc;
+  color: #475569;
+}
+
+.uxResponsiveTable {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  border-radius: 10px;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.uxResponsiveTable:focus-visible {
+  outline-offset: 4px;
+}
+
+.appContent table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.uxFormField {
+  display: grid;
+  gap: 5px;
+  color: #475569;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.uxFormField input {
+  width: 100%;
+  min-height: 40px;
+}
+
+.uxRequiredMarker {
+  margin-left: 3px;
+  color: var(--ux-danger);
+}
+
+.uxFieldHint,
+.uxFieldError {
+  font-size: 8px;
+  line-height: 1.5;
+}
+
+.uxFieldHint {
+  color: var(--ux-muted);
+}
+
+.uxFieldError {
+  color: var(--ux-danger);
+}
+
+.uxToastRegion {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 100;
+  width: min(
+    360px,
+    calc(100vw - 32px)
+  );
+  display: grid;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.uxToast {
+  padding: 12px;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto;
+  gap: 10px;
+  align-items: start;
+  border: 1px solid var(--ux-border);
+  border-radius: 10px;
+  background: var(--ux-surface);
+  box-shadow:
+    0 14px 35px
+    rgb(15 23 42 / 12%);
+  pointer-events: auto;
+}
+
+.uxToast.success {
+  border-left:
+    4px solid
+    var(--ux-success);
+}
+
+.uxToast.error {
+  border-left:
+    4px solid
+    var(--ux-danger);
+}
+
+.uxToast.warning {
+  border-left:
+    4px solid
+    var(--ux-warning);
+}
+
+.uxToast.info {
+  border-left:
+    4px solid
+    var(--ux-info);
+}
+
+.uxToast strong {
+  color: var(--ux-text);
+  font-size: 10px;
+}
+
+.uxToast p {
+  margin: 3px 0 0;
+  color: var(--ux-muted);
+  font-size: 8px;
+  line-height: 1.5;
+}
+
+.uxToast > button {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #64748b;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.uxToast > button:hover {
+  background: #f1f5f9;
+}
+
+.uxDialogBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  padding: 18px;
+  display: grid;
+  place-items: center;
+  background:
+    rgb(
+      15 23 42
+      / 45%
+    );
+}
+
+.uxConfirmDialog {
+  width: min(
+    440px,
+    100%
+  );
+  padding: 20px;
+  border: 1px solid var(--ux-border);
+  border-radius: 13px;
+  background: var(--ux-surface);
+  box-shadow:
+    0 24px 70px
+    rgb(15 23 42 / 25%);
+}
+
+.uxConfirmDialog h2 {
+  margin: 0;
+  color: var(--ux-text);
+  font-size: 15px;
+}
+
+.uxConfirmDialog p {
+  margin: 8px 0 0;
+  color: var(--ux-muted);
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+.uxDialogActions {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.uxMobileNav {
+  display: none;
+}
+
+.emptyState {
+  border-radius: 10px;
+}
+
+.formError.moduleError {
+  border-radius: 9px;
+}
+
+.projectWorkspaceNav {
+  max-width: 100%;
+}
+
+@media (max-width: 760px) {
+  .appShell {
+    grid-template-columns: 1fr !important;
+  }
+
+  .appSidebar {
+    display: none !important;
+  }
+
+  .appContent {
+    width: 100%;
+    min-width: 0;
+    padding-bottom: 88px !important;
+  }
+
+  .appHeader {
+    gap: 10px;
+    align-items: start;
+  }
+
+  .projectWorkspaceNavShell {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .projectWorkspaceNav {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .projectWorkspaceNav > a {
+    flex: 0 0 auto;
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .uxMobileNav {
+    position: fixed;
+    right: 10px;
+    bottom: max(
+      10px,
+      env(
+        safe-area-inset-bottom
+      )
+    );
+    left: 10px;
+    z-index: 70;
+    min-height: 58px;
+    padding: 5px;
+    display: grid;
+    grid-template-columns:
+      repeat(
+        5,
+        minmax(0, 1fr)
+      );
+    gap: 3px;
+    border: 1px solid var(--ux-border);
+    border-radius: 14px;
+    background:
+      rgb(
+        255 255 255
+        / 96%
+      );
+    box-shadow:
+      0 18px 50px
+      rgb(15 23 42 / 16%);
+    backdrop-filter: blur(14px);
+  }
+
+  .uxMobileNav a {
+    min-width: 0;
+    min-height: 46px;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    color: #64748b;
+    font-size: 8px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .uxMobileNav a.active {
+    background: #fff7ed;
+    color: #b45309;
+  }
+
+  .uxSkeletonCards {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .appContent table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .dashboardDeadlineList > a,
+  .dashboardDeadlineList > article {
+    min-height: 54px;
+  }
+
+  button,
+  .smallButton,
+  .reportLinkButton,
+  input,
+  select {
+    min-height: 44px;
+  }
+
+  .uxToastRegion {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+  }
+
+  .uxDialogActions {
+    display: grid;
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .uxDialogActions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .uxSkeletonCards {
+    grid-template-columns: 1fr;
+  }
+
+  .uxMobileNav {
+    right: 6px;
+    left: 6px;
+  }
+
+  .uxMobileNav a {
+    font-size: 7px;
+  }
+}

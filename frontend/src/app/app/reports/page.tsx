@@ -1,6 +1,11 @@
 "use client";
 
 import {
+  isCanonicalUuid,
+} from "@/lib/ux-validation";
+
+
+import {
   useState,
 } from "react";
 
@@ -70,6 +75,14 @@ export default function ReportsPage() {
 
   const [documentId, setDocumentId] =
     useState("");
+
+  const normalizedDocumentId =
+    documentId.trim();
+
+  const documentIdValid =
+    isCanonicalUuid(
+      normalizedDocumentId
+    );
 
   async function download(
     key: string,
@@ -237,26 +250,47 @@ export default function ReportsPage() {
               <input
                 value={documentId}
                 placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                required
+                pattern="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+                aria-invalid={
+                  documentId.length > 0
+                  && !documentIdValid
+                }
+                aria-describedby="document-id-validation"
                 onChange={(event) =>
                   setDocumentId(
                     event.target.value
                   )
                 }
               />
+
+              <small
+                id="document-id-validation"
+                className={
+                  documentId.length > 0
+                  && !documentIdValid
+                    ? "uxFieldError"
+                    : "uxFieldHint"
+                }
+              >
+                {documentId.length > 0
+                && !documentIdValid
+                  ? "Enter a valid UUID."
+                  : "Use the UUID shown on the BuildFlow document record."}
+              </small>
             </label>
 
             <button
               type="button"
               disabled={
                 busy !== null
-                || documentId.trim()
-                  .length === 0
+                || !documentIdValid
               }
               onClick={() =>
                 void download(
                   "document-pdf",
-                  `/reports/${commercialType}/${documentId.trim()}.pdf`,
-                  `${commercialType}-${documentId.trim()}.pdf`
+                  `/reports/${commercialType}/${normalizedDocumentId}.pdf`,
+                  `${commercialType}-${normalizedDocumentId}.pdf`
                 )
               }
             >

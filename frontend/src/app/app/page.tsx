@@ -1,6 +1,19 @@
 "use client";
 
 import {
+  EmptyState,
+} from "@/components/ux/EmptyState";
+
+import {
+  ErrorState,
+} from "@/components/ux/ErrorState";
+
+import {
+  LoadingSkeleton,
+} from "@/components/ux/LoadingSkeleton";
+
+
+import {
   useCallback,
   useEffect,
   useMemo,
@@ -256,15 +269,22 @@ export default function DashboardPage() {
         </header>
 
         {error && (
-          <div className="formError moduleError">
-            {error}
-          </div>
+          <ErrorState
+            title="Dashboard unavailable"
+            message={error}
+            onRetry={() =>
+              void load()
+            }
+            compact
+          />
         )}
 
         {!dashboard && !error && (
-          <div className="emptyState">
-            Loading dashboard...
-          </div>
+          <LoadingSkeleton
+            cards={4}
+            lines={4}
+            label="Loading organization dashboard"
+          />
         )}
 
         {dashboard && (
@@ -527,9 +547,11 @@ export default function DashboardPage() {
               <div className="dashboardDeadlineList">
                 {dashboard.upcomingDeadlines.length ===
                   0 && (
-                  <div className="emptyState">
-                    No upcoming deadlines.
-                  </div>
+                  <EmptyState
+                    title="No upcoming deadlines"
+                    description="Nothing is due within the next 30 days."
+                    compact
+                  />
                 )}
 
                 {dashboard.upcomingDeadlines.map(

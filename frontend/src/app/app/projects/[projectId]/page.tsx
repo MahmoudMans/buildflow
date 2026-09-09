@@ -1,6 +1,19 @@
 "use client";
 
 import {
+  ErrorState,
+} from "@/components/ux/ErrorState";
+
+import {
+  LoadingSkeleton,
+} from "@/components/ux/LoadingSkeleton";
+
+import {
+  StatusBadge,
+} from "@/components/ux/StatusBadge";
+
+
+import {
   useCallback,
   useEffect,
   useState,
@@ -202,23 +215,25 @@ export default function ProjectDashboardPage() {
 
         <section className="appContent">
           {error ? (
-            <div className="formError moduleError">
-              {error}
-            </div>
+            <ErrorState
+              title="Project dashboard unavailable"
+              message={error}
+              onRetry={() =>
+                void load()
+              }
+              compact
+            />
           ) : (
-            <div className="emptyState">
-              Loading project dashboard...
-            </div>
+            <LoadingSkeleton
+              cards={4}
+              lines={4}
+              label="Loading project dashboard"
+            />
           )}
         </section>
       </main>
     );
   }
-
-  const healthClass =
-    dashboard.health.status
-      .toLowerCase()
-      .replace("_", "-");
 
   const revisedBudget =
     Math.max(
@@ -252,14 +267,10 @@ export default function ProjectDashboardPage() {
             </span>
           </div>
 
-          <div
-            className={`healthBadge ${healthClass}`}
-          >
-            {dashboard.health.status.replace(
-              "_",
-              " "
-            )}
-          </div>
+          <StatusBadge
+            value={dashboard.health.status}
+            label="Project health"
+          />
         </header>
 
         <ProjectWorkspaceNav

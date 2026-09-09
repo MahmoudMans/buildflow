@@ -1,3 +1,5 @@
+import { UxProvider } from "@/components/ux/UxProvider";
+import "./ux.css";
 import type { Metadata } from "next";
 
 import { AuthProvider } from "@/components/AuthProvider";
@@ -20,7 +22,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <AuthProvider>
-          {children}
+          <UxProvider>
+            {children}
+          </UxProvider>
         </AuthProvider>
       </body>
     </html>

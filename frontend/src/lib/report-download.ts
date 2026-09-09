@@ -79,6 +79,25 @@ export async function downloadApiFile(
       // Keep the HTTP fallback.
     }
 
+    if (
+      typeof window !== "undefined"
+    ) {
+      window.dispatchEvent(
+        new CustomEvent(
+          "buildflow:toast",
+          {
+            detail: {
+              title:
+                "Download failed",
+              message,
+              tone:
+                "error",
+            },
+          }
+        )
+      );
+    }
+
     throw new Error(message);
   }
 
@@ -110,6 +129,22 @@ export async function downloadApiFile(
     anchor.click();
 
     anchor.remove();
+
+    window.dispatchEvent(
+      new CustomEvent(
+        "buildflow:toast",
+        {
+          detail: {
+            title:
+              "Download ready",
+            message:
+              filename,
+            tone:
+              "success",
+          },
+        }
+      )
+    );
   } finally {
     URL.revokeObjectURL(url);
   }
