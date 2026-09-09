@@ -2,6 +2,7 @@
 services:
   backend:
     environment:
+      BUILDFLOW_DEMO_ENABLED: "true"
       BUILDFLOW_STORAGE_ENDPOINT: http://minio:9000
       BUILDFLOW_STORAGE_ACCESS_KEY: ${MINIO_ACCESS_KEY:-buildflow-local}
       BUILDFLOW_STORAGE_SECRET_KEY: ${MINIO_SECRET_KEY:-buildflow-local-secret}

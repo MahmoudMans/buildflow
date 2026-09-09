@@ -1,0 +1,1119 @@
+/* BUILDFLOW_PHASE15_PORTFOLIO */
+
+.portfolioLanding,
+.demoExperience,
+.portfolioDocumentation {
+  min-height: 100vh;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.portfolioNav,
+.demoTopbar {
+  width: min(1180px, calc(100% - 40px));
+  min-height: 74px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.portfolioBrand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #0f172a;
+  text-decoration: none;
+}
+
+.portfolioBrand > span {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #0f172a;
+  color: #f59e0b;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.portfolioBrand > div {
+  display: grid;
+}
+
+.portfolioBrand strong {
+  font-size: 13px;
+}
+
+.portfolioBrand small {
+  color: #64748b;
+  font-size: 7px;
+}
+
+.portfolioNavLinks,
+.demoTopbar > div {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.portfolioNavLinks a,
+.demoTopbar > a,
+.demoTopbar > div a {
+  color: #475569;
+  font-size: 9px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.portfolioNavPrimary {
+  min-height: 38px;
+  padding: 0 13px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 7px;
+  background: #0f172a;
+  color: #ffffff !important;
+}
+
+.portfolioHero {
+  width: min(1180px, calc(100% - 40px));
+  min-height: 670px;
+  margin: 0 auto;
+  padding: 72px 0 90px;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 0.9fr)
+    minmax(520px, 1.1fr);
+  gap: 68px;
+  align-items: center;
+}
+
+.portfolioEyebrow,
+.portfolioSectionHeader > span,
+.portfolioDocsSection > header > span,
+.demoProjectPreview > header > span {
+  color: #d97706;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+.portfolioHero h1 {
+  max-width: 620px;
+  margin: 16px 0 0;
+  font-size: clamp(44px, 5vw, 72px);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+
+.portfolioHero h1 strong {
+  display: block;
+  color: #d97706;
+}
+
+.portfolioHeroCopy > p {
+  max-width: 590px;
+  margin: 24px 0 0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.portfolioHeroActions {
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.portfolioPrimaryButton,
+.portfolioSecondaryButton,
+.portfolioDarkLink {
+  min-height: 46px;
+  padding: 0 17px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-size: 9px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.portfolioPrimaryButton {
+  border: 1px solid #f59e0b;
+  background: #f59e0b;
+  color: #111827;
+}
+
+.portfolioSecondaryButton {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+}
+
+.portfolioAssurance {
+  margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  color: #64748b;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.portfolioAssurance span::before {
+  content: "✓";
+  margin-right: 5px;
+  color: #16a34a;
+}
+
+.portfolioProductPreview {
+  overflow: hidden;
+  border: 1px solid #cbd5e1;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow:
+    0 30px 80px
+    rgb(15 23 42 / 13%);
+}
+
+.portfolioProductPreview > header {
+  min-height: 58px;
+  padding: 0 17px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.portfolioProductPreview > header > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.portfolioProductPreview > header > div > span {
+  width: 27px;
+  height: 27px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: #0f172a;
+  color: #f59e0b;
+  font-size: 7px;
+  font-weight: 900;
+}
+
+.portfolioProductPreview header strong {
+  font-size: 8px;
+}
+
+.portfolioProductPreview header small {
+  color: #94a3b8;
+  font-size: 7px;
+}
+
+.portfolioPreviewBody {
+  min-height: 390px;
+  display: grid;
+  grid-template-columns: 110px 1fr;
+}
+
+.portfolioPreviewBody > aside {
+  padding: 22px 12px;
+  display: grid;
+  align-content: start;
+  gap: 15px;
+  border-right: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #94a3b8;
+  font-size: 7px;
+}
+
+.portfolioPreviewBody > aside strong {
+  color: #b45309;
+}
+
+.portfolioPreviewBody > section {
+  min-width: 0;
+  padding: 23px;
+}
+
+.portfolioPreviewTitle {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.portfolioPreviewTitle > div {
+  display: grid;
+  gap: 3px;
+}
+
+.portfolioPreviewTitle small {
+  color: #f59e0b;
+  font-size: 7px;
+  font-weight: 800;
+}
+
+.portfolioPreviewTitle strong {
+  font-size: 15px;
+}
+
+.portfolioPreviewTitle > span {
+  height: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #f0fdf4;
+  color: #16a34a;
+  font-size: 7px;
+  font-weight: 900;
+}
+
+.portfolioPreviewMetrics {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+  gap: 7px;
+}
+
+.portfolioPreviewMetrics article {
+  padding: 13px;
+  display: grid;
+  gap: 6px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+}
+
+.portfolioPreviewMetrics small {
+  color: #94a3b8;
+  font-size: 6px;
+  font-weight: 800;
+}
+
+.portfolioPreviewMetrics strong {
+  font-size: 12px;
+}
+
+.portfolioPreviewChart {
+  height: 180px;
+  margin-top: 26px;
+  padding: 20px 18px 0;
+  display: flex;
+  align-items: end;
+  gap: 9px;
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+  background:
+    linear-gradient(
+      to bottom,
+      #ffffff,
+      #f8fafc
+    );
+}
+
+.portfolioPreviewChart span {
+  flex: 1;
+  min-width: 8px;
+  border-radius: 4px 4px 0 0;
+  background: #f59e0b;
+}
+
+.portfolioProofStrip {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto 110px;
+  padding: 24px 0;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.portfolioProofStrip > div {
+  display: grid;
+  gap: 3px;
+  text-align: center;
+}
+
+.portfolioProofStrip strong {
+  font-size: 22px;
+}
+
+.portfolioProofStrip span {
+  color: #64748b;
+  font-size: 8px;
+}
+
+.portfolioSection {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 95px 0;
+}
+
+.portfolioSectionHeader {
+  max-width: 720px;
+}
+
+.portfolioSectionHeader.compact {
+  max-width: 560px;
+}
+
+.portfolioSectionHeader h2,
+.portfolioDarkSection h2,
+.portfolioDocsHero h1,
+.portfolioDocsSection h2,
+.demoHero h1,
+.demoProjectPreview h2,
+.portfolioFinalCta h2 {
+  margin: 13px 0 0;
+  font-size: clamp(28px, 3.5vw, 46px);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.portfolioSectionHeader p,
+.portfolioDocsHero p,
+.demoHero p {
+  margin: 15px 0 0;
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.portfolioFeatureGrid {
+  margin-top: 42px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+  gap: 10px;
+}
+
+.portfolioFeatureGrid article {
+  min-height: 215px;
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.portfolioFeatureGrid article > span,
+.portfolioModuleGrid article > span {
+  color: #f59e0b;
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.portfolioFeatureGrid h3 {
+  margin: 30px 0 0;
+  font-size: 15px;
+}
+
+.portfolioFeatureGrid p {
+  margin: 10px 0 0;
+  color: #64748b;
+  font-size: 9px;
+  line-height: 1.65;
+}
+
+.portfolioDarkSection {
+  margin-top: 75px;
+  padding: 100px max(
+    40px,
+    calc(
+      (
+        100vw
+        - 1180px
+      )
+      / 2
+    )
+  );
+  display: grid;
+  grid-template-columns:
+    0.9fr 1.1fr;
+  gap: 80px;
+  align-items: center;
+  background: #0f172a;
+  color: #ffffff;
+}
+
+.portfolioDarkSection > div:first-child > p {
+  max-width: 570px;
+  margin: 18px 0 0;
+  color: #94a3b8;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.portfolioDarkLink {
+  margin-top: 25px;
+  border: 1px solid #334155;
+  color: #f8fafc;
+}
+
+.portfolioArchitectureMini {
+  padding: 34px;
+  display: grid;
+  gap: 13px;
+  border: 1px solid #334155;
+  border-radius: 14px;
+  background: #111c31;
+  text-align: center;
+}
+
+.portfolioArchitectureMini > span,
+.portfolioArchitectureMini > div span {
+  padding: 17px;
+  border: 1px solid #475569;
+  border-radius: 8px;
+  background: #172033;
+  color: #f8fafc;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.portfolioArchitectureMini > b {
+  color: #f59e0b;
+}
+
+.portfolioArchitectureMini > div {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+  gap: 7px;
+}
+
+.portfolioStack {
+  margin-top: 35px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.portfolioStack span {
+  padding: 10px 13px;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #475569;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.portfolioFinalCta {
+  width: min(1180px, calc(100% - 40px));
+  margin: 80px auto;
+  padding: 70px;
+  border-radius: 18px;
+  background: #fff7ed;
+  text-align: center;
+}
+
+.portfolioFinalCta > span {
+  color: #d97706;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+.portfolioFinalCta h2 {
+  max-width: 690px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.portfolioFinalCta p {
+  max-width: 600px;
+  margin: 15px auto 25px;
+  color: #64748b;
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+.portfolioFooter {
+  width: min(1180px, calc(100% - 40px));
+  min-height: 110px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #e2e8f0;
+}
+
+.portfolioFooter > div:first-child {
+  display: grid;
+}
+
+.portfolioFooter strong {
+  font-size: 12px;
+}
+
+.portfolioFooter span {
+  color: #94a3b8;
+  font-size: 7px;
+}
+
+.portfolioFooter > div:last-child {
+  display: flex;
+  gap: 18px;
+}
+
+.portfolioFooter a {
+  color: #64748b;
+  font-size: 8px;
+  text-decoration: none;
+}
+
+/* DEMO */
+
+.demoExperience,
+.portfolioDocumentation {
+  padding-bottom: 80px;
+}
+
+.demoHero,
+.portfolioDocsHero {
+  width: min(900px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 90px 0 55px;
+  text-align: center;
+}
+
+.demoHero p,
+.portfolioDocsHero p {
+  max-width: 690px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+
+.demoRoleSummary {
+  max-width: 720px;
+  margin: 18px auto 0;
+  color: #64748b;
+  font-size: 9px;
+  line-height: 1.7;
+}
+
+.demoRoleSummary strong {
+  color: #334155;
+  font-weight: 800;
+}
+
+.demoOrganizationBadge {
+  width: max-content;
+  max-width: 100%;
+  margin: 24px auto 0;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid #fed7aa;
+  border-radius: 999px;
+  background: #fff7ed;
+}
+
+.demoOrganizationBadge strong {
+  font-size: 9px;
+}
+
+.demoOrganizationBadge span {
+  color: #b45309;
+  font-size: 8px;
+}
+
+.demoRoleGrid {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      5,
+      minmax(0, 1fr)
+    );
+  gap: 9px;
+}
+
+.demoRoleGrid article {
+  min-height: 330px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.demoRoleGrid article > span {
+  color: #f59e0b;
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.demoRoleGrid h2 {
+  margin: 22px 0 0;
+  font-size: 15px;
+}
+
+.demoRoleGrid p {
+  min-height: 65px;
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 8px;
+  line-height: 1.6;
+}
+
+.demoRoleGrid dl {
+  margin: 16px 0 20px;
+  display: grid;
+  gap: 8px;
+}
+
+.demoRoleGrid dl > div {
+  display: grid;
+  gap: 2px;
+}
+
+.demoRoleGrid dt {
+  color: #94a3b8;
+  font-size: 6px;
+  font-weight: 800;
+}
+
+.demoRoleGrid dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: #334155;
+  font-size: 7px;
+}
+
+.demoRoleGrid .portfolioPrimaryButton {
+  width: 100%;
+  margin-top: auto;
+}
+
+.demoProjectPreview {
+  width: min(1180px, calc(100% - 40px));
+  margin: 90px auto 0;
+}
+
+.demoProjectPreview > div {
+  margin-top: 26px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+  gap: 9px;
+}
+
+.demoProjectPreview article {
+  padding: 22px;
+  display: grid;
+  gap: 6px;
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+  background: #ffffff;
+}
+
+.demoProjectPreview article strong {
+  font-size: 12px;
+}
+
+.demoProjectPreview article span {
+  color: #64748b;
+  font-size: 8px;
+}
+
+.demoProjectPreview article b {
+  margin-top: 12px;
+  color: #d97706;
+  font-size: 17px;
+}
+
+.demoLoginState {
+  min-height: 100vh;
+  padding: 30px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 12px;
+  background: #f8fafc;
+  text-align: center;
+}
+
+.demoLoginState h1 {
+  margin: 0;
+  font-size: 27px;
+}
+
+.demoLoginState p {
+  color: #64748b;
+  font-size: 10px;
+}
+
+.demoLoginError {
+  color: #dc2626 !important;
+}
+
+.demoLoginSpinner {
+  width: 42px;
+  height: 42px;
+  border: 4px solid #e2e8f0;
+  border-top-color: #f59e0b;
+  border-radius: 999px;
+  animation:
+    demoSpin
+    800ms linear
+    infinite;
+}
+
+@keyframes demoSpin {
+  to {
+    transform:
+      rotate(360deg);
+  }
+}
+
+/* PORTFOLIO DOCUMENTATION */
+
+.portfolioDocsSection {
+  width: min(1080px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 75px 0;
+  border-top: 1px solid #e2e8f0;
+}
+
+.portfolioDocsSection > header {
+  max-width: 660px;
+}
+
+.portfolioArchitectureDiagram {
+  margin-top: 35px;
+  display: grid;
+  gap: 12px;
+  text-align: center;
+}
+
+.portfolioArchitectureDiagram > article,
+.portfolioArchitectureDiagram > div article {
+  padding: 24px;
+  display: grid;
+  gap: 5px;
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+  background: #ffffff;
+}
+
+.portfolioArchitectureDiagram > b {
+  color: #d97706;
+  font-size: 8px;
+}
+
+.portfolioArchitectureDiagram > div {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+  gap: 9px;
+}
+
+.portfolioArchitectureDiagram small {
+  color: #f59e0b;
+  font-size: 7px;
+  font-weight: 900;
+}
+
+.portfolioArchitectureDiagram strong {
+  font-size: 15px;
+}
+
+.portfolioArchitectureDiagram span {
+  color: #64748b;
+  font-size: 8px;
+}
+
+.portfolioLifecycle {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+  gap: 7px;
+}
+
+.portfolioLifecycle > div {
+  min-height: 76px;
+  padding: 13px;
+  display: grid;
+  align-content: center;
+  gap: 5px;
+  border-radius: 9px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.portfolioLifecycle span,
+.portfolioDeployment > article > span {
+  color: #f59e0b;
+  font-size: 7px;
+  font-weight: 900;
+}
+
+.portfolioLifecycle strong {
+  font-size: 9px;
+}
+
+.portfolioModuleGrid {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+  gap: 7px;
+}
+
+.portfolioModuleGrid article {
+  padding: 15px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.portfolioModuleGrid strong {
+  font-size: 8px;
+}
+
+.portfolioSecurityCards {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+  gap: 8px;
+}
+
+.portfolioSecurityCards article {
+  min-height: 150px;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.portfolioSecurityCards strong {
+  font-size: 11px;
+}
+
+.portfolioSecurityCards p {
+  color: #64748b;
+  font-size: 8px;
+  line-height: 1.65;
+}
+
+.portfolioDeployment {
+  margin-top: 30px;
+  display: grid;
+  gap: 7px;
+}
+
+.portfolioDeployment article {
+  padding: 16px;
+  display: grid;
+  grid-template-columns:
+    34px
+    minmax(0, 1fr);
+  gap: 13px;
+  align-items: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+  background: #ffffff;
+}
+
+.portfolioDeployment article > div {
+  display: grid;
+  gap: 4px;
+}
+
+.portfolioDeployment strong {
+  font-size: 9px;
+}
+
+.portfolioDeployment code {
+  width: max-content;
+  max-width: 100%;
+  padding: 5px 7px;
+  overflow-x: auto;
+  border-radius: 5px;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 8px;
+}
+
+.portfolioDocsFinal {
+  width: min(1080px, calc(100% - 40px));
+  margin: 50px auto 0;
+  padding: 55px;
+  border-radius: 14px;
+  background: #0f172a;
+  color: #ffffff;
+  text-align: center;
+}
+
+.portfolioDocsFinal h2 {
+  max-width: 650px;
+  margin: 0 auto 22px;
+  font-size: 30px;
+}
+
+@media (max-width: 980px) {
+  .portfolioHero {
+    grid-template-columns: 1fr;
+  }
+
+  .portfolioProductPreview {
+    max-width: 720px;
+  }
+
+  .portfolioFeatureGrid,
+  .portfolioSecurityCards {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .portfolioDarkSection {
+    grid-template-columns: 1fr;
+  }
+
+  .demoRoleGrid {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+}
+
+@media (max-width: 700px) {
+  .portfolioNavLinks > a:not(
+    .portfolioNavPrimary
+  ) {
+    display: none;
+  }
+
+  .portfolioHero {
+    min-height: 0;
+    padding-top: 50px;
+    grid-template-columns: 1fr;
+  }
+
+  .portfolioHero h1 {
+    font-size: 46px;
+  }
+
+  .portfolioPreviewBody {
+    grid-template-columns: 1fr;
+  }
+
+  .portfolioPreviewBody > aside {
+    display: none;
+  }
+
+  .portfolioPreviewMetrics {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+
+  .portfolioProofStrip {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+    gap: 20px;
+  }
+
+  .portfolioFeatureGrid,
+  .portfolioSecurityCards,
+  .demoProjectPreview > div,
+  .portfolioArchitectureDiagram > div,
+  .portfolioModuleGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .portfolioDarkSection {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .portfolioArchitectureMini > div {
+    grid-template-columns: 1fr;
+  }
+
+  .portfolioFinalCta,
+  .portfolioDocsFinal {
+    padding: 38px 20px;
+  }
+
+  .portfolioFooter {
+    padding: 25px 0;
+    display: grid;
+    gap: 15px;
+  }
+
+  .demoRoleGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .portfolioLifecycle {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+}
+
+@media (
+  prefers-reduced-motion:
+    reduce
+) {
+  .demoLoginSpinner {
+    animation: none;
+  }
+}

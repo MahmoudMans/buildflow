@@ -1,5 +1,6 @@
 import { UxProvider } from "@/components/ux/UxProvider";
 import "./ux.css";
+import "./portfolio.css";
 import type { Metadata } from "next";
 
 import { AuthProvider } from "@/components/AuthProvider";
