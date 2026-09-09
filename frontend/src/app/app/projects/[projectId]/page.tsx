@@ -19,6 +19,10 @@ import {
 } from "@/components/ProjectWorkspaceNav";
 
 import {
+  ProjectReportActions,
+} from "@/components/ProjectReportActions";
+
+import {
   useAuth,
 } from "@/components/AuthProvider";
 
@@ -261,6 +265,12 @@ export default function ProjectDashboardPage() {
         <ProjectWorkspaceNav
           projectId={projectId}
           active="overview"
+        />
+
+        <ProjectReportActions
+          organizationId={organizationId ?? ""}
+          projectId={projectId}
+          projectNumber={dashboard.projectNumber}
         />
 
         {error && (

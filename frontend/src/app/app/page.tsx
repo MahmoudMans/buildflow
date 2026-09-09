@@ -243,7 +243,16 @@ export default function DashboardPage() {
             </span>
           </div>
 
-          <NotificationBell />
+          <div className="dashboardHeaderActions">
+            <Link
+              className="reportLinkButton"
+              href="/app/reports"
+            >
+              Reports & Exports
+            </Link>
+
+            <NotificationBell />
+          </div>
         </header>
 
         {error && (
