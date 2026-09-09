@@ -1,0 +1,187 @@
+name: buildflow-production
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+
+    volumes:
+      - buildflow_postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - private
+
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+
+  mailpit:
+    image: axllent/mailpit:v1.31.1
+    restart: unless-stopped
+
+    environment:
+      MP_DATABASE: /data/mailpit.db
+      MP_MAX_MESSAGES: "5000"
+
+    volumes:
+      - buildflow_mailpit_data:/data
+
+    expose:
+      - "1025"
+      - "8025"
+
+    networks:
+      - private
+
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+
+    command:
+      - server
+      - /data
+      - --console-address
+      - ":9001"
+
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:?MINIO_ACCESS_KEY is required}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:?MINIO_SECRET_KEY is required}
+
+    volumes:
+      - buildflow_minio_data:/data
+
+    expose:
+      - "9000"
+      - "9001"
+
+    networks:
+      - private
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    restart: unless-stopped
+
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+
+      FRONTEND_URL: ${BUILDFLOW_PUBLIC_URL:?BUILDFLOW_PUBLIC_URL is required}
+
+      MAIL_HOST: ${SMTP_HOST:-mailpit}
+      MAIL_PORT: ${SMTP_PORT:-1025}
+
+      BUILDFLOW_STORAGE_ENDPOINT: http://minio:9000
+      BUILDFLOW_STORAGE_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      BUILDFLOW_STORAGE_SECRET_KEY: ${MINIO_SECRET_KEY}
+      BUILDFLOW_STORAGE_BUCKET: ${MINIO_BUCKET:-buildflow}
+
+      BUILDFLOW_SESSION_COOKIE_SECURE: ${BUILDFLOW_SESSION_COOKIE_SECURE:-true}
+
+      BUILDFLOW_DEMO_ENABLED: ${BUILDFLOW_DEMO_ENABLED:-false}
+      BUILDFLOW_DEMO_PASSWORD: ${BUILDFLOW_DEMO_PASSWORD:-BuildFlowDemo2026!}
+
+      SERVER_FORWARD_HEADERS_STRATEGY: framework
+
+    expose:
+      - "8080"
+
+    networks:
+      - edge
+      - private
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+      mailpit:
+        condition: service_started
+
+      minio:
+        condition: service_started
+
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - --fail
+        - --silent
+        - http://localhost:8080/actuator/health
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 25s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+
+      args:
+        NEXT_PUBLIC_API_BASE_URL: ${BUILDFLOW_PUBLIC_URL:?BUILDFLOW_PUBLIC_URL is required}/api/v1
+
+    restart: unless-stopped
+
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: ${BUILDFLOW_PUBLIC_URL}/api/v1
+
+    expose:
+      - "3000"
+
+    networks:
+      - edge
+
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+
+    environment:
+      BUILDFLOW_SITE_ADDRESS: ${BUILDFLOW_SITE_ADDRESS:?BUILDFLOW_SITE_ADDRESS is required}
+
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - buildflow_caddy_data:/data
+      - buildflow_caddy_config:/config
+
+    networks:
+      - edge
+
+    depends_on:
+      backend:
+        condition: service_healthy
+
+      frontend:
+        condition: service_started
+
+networks:
+  edge:
+  private:
+    internal: true
+
+volumes:
+  buildflow_postgres_data:
+  buildflow_mailpit_data:
+  buildflow_minio_data:
+  buildflow_caddy_data:
+  buildflow_caddy_config:

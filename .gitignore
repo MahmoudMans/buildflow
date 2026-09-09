@@ -21,3 +21,7 @@ frontend/coverage/
 *.tmp
 *.swp
 *.tsbuildinfo
+
+# BuildFlow production secrets
+deploy/.env.production
+deploy/.env.portfolio
