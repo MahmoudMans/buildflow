@@ -1,528 +1,451 @@
 import Link from "next/link";
+import styles from "./page.module.css";
 
-import {
-  portfolioConfig,
-} from "../lib/portfolio-config";
+const capabilities = [
+  {
+    title: "Project management",
+    description:
+      "Plan projects, assign teams and follow tasks, milestones and schedules from a shared workspace.",
+  },
+  {
+    title: "Cost control",
+    description:
+      "Bring budgets, expenses, purchase orders and commitments together to review project costs and forecasts.",
+  },
+  {
+    title: "Site operations",
+    description:
+      "Keep daily reports, incidents, construction photos and progress updates connected to each project.",
+  },
+  {
+    title: "Commercial management",
+    description:
+      "Follow quotations, change orders, invoices, payments and outstanding balances across the client relationship.",
+  },
+  {
+    title: "Project insights",
+    description:
+      "Review project health, revenue, expenses and forecast profit across organization and project dashboards.",
+  },
+  {
+    title: "Client portal",
+    description:
+      "Give clients access to explicitly shared project information through a separate, restricted view.",
+  },
+] as const;
 
-const features = [
+const roles = [
   {
-    index: "01",
-    title:
-      "Project management",
+    title: "Owner",
     description:
-      "Projects, teams, milestones, tasks, schedules and operational progress in one workspace.",
+      "Review company-wide projects, finances and administration.",
   },
   {
-    index: "02",
-    title:
-      "Cost control",
+    title: "Project Manager",
     description:
-      "Budgets, expenses, purchase orders, commitments and project cost forecasts.",
+      "Explore planning, execution and financial visibility for assigned projects.",
   },
   {
-    index: "03",
-    title:
-      "Site operations",
+    title: "Site Manager",
     description:
-      "Daily reports, incidents, construction photos and mobile-friendly site workflows.",
+      "Review site reports, incidents and project progress.",
   },
   {
-    index: "04",
-    title:
-      "Client commercial",
+    title: "Accountant",
     description:
-      "Quotations, change orders, invoices, payments and outstanding receivables.",
+      "Explore invoices, payments, expenses and financial reporting.",
   },
   {
-    index: "05",
-    title:
-      "Analytics",
+    title: "Client",
     description:
-      "Organization and project dashboards with health, revenue, expenses and forecast profit.",
+      "View project information explicitly shared with the client.",
   },
-  {
-    index: "06",
-    title:
-      "Client portal",
-    description:
-      "Security-first document visibility, tenant isolation, RBAC and restricted financial exposure.",
-  },
-];
+] as const;
 
-const stack = [
-  "Java 21",
-  "Spring Boot",
-  "PostgreSQL",
-  "Flyway",
-  "Next.js",
-  "React",
-  "TypeScript",
-  "MinIO",
-  "Mailpit",
-  "Docker",
-];
+const architectureLayers = [
+  {
+    label: "Application interface",
+    technologies: "Next.js 16.3.3 · React 19.2 · TypeScript",
+    responsibility:
+      "Presents the public experience and authenticated construction workflows.",
+  },
+  {
+    label: "Application API",
+    technologies: "Spring Boot 4.1.1 · Java 21",
+    responsibility:
+      "Coordinates application rules, access control, calculations and workflow operations.",
+  },
+  {
+    label: "Data and file storage",
+    technologies: "PostgreSQL 17 · MinIO",
+    responsibility:
+      "Stores application records and project file assets in distinct persistence layers.",
+  },
+] as const;
+
+const supportingTools = [
+  {
+    title: "Flyway",
+    description: "Database schema migrations",
+  },
+  {
+    title: "Docker",
+    description: "Repeatable local runtime",
+  },
+  {
+    title: "Mailpit",
+    description: "Development email testing",
+  },
+] as const;
 
 export default function HomePage() {
   return (
-    <main className="portfolioLanding">
-      <nav
-        className="portfolioNav"
-        aria-label="Public navigation"
-      >
-        <Link
-          className="portfolioBrand"
-          href="/"
-        >
-          <span>
-            BF
-          </span>
+    <div className={styles.page}>
+      <header className={styles.header}>
+        <div className={`${styles.container} ${styles.headerInner}`}>
+          <Link href="/" className={styles.brand} aria-label="BuildFlow home">
+            <span className={styles.brandMark} aria-hidden="true">
+              BF
+            </span>
 
-          <div>
-            <strong>
-              BuildFlow
-            </strong>
-
-            <small>
-              Construction Operations
-            </small>
-          </div>
-        </Link>
-
-        <div className="portfolioNavLinks">
-          <a href="#features">
-            Features
-          </a>
-
-          <Link href="/portfolio">
-            Architecture
+            <span className={styles.brandText}>
+              <strong>BuildFlow</strong>
+              <span>Construction operations</span>
+            </span>
           </Link>
 
-          <Link href="/login">
-            Sign in
-          </Link>
+          <nav className={styles.desktopNav} aria-label="Primary navigation">
+            <a href="#features" className={styles.navLink}>
+              Features
+            </a>
 
-          <Link
-            className="portfolioNavPrimary"
-            href="/demo"
-          >
-            Explore Demo
-          </Link>
-        </div>
-      </nav>
-
-      <section className="portfolioHero">
-        <div className="portfolioHeroCopy">
-          <span className="portfolioEyebrow">
-            CONSTRUCTION PROJECT MANAGEMENT
-          </span>
-
-          <h1>
-            Build better projects.
-            <strong>
-              Control every cost.
-            </strong>
-          </h1>
-
-          <p>
-            Manage construction projects,
-            budgets, teams, suppliers and
-            clients from one professional
-            multi-tenant platform.
-          </p>
-
-          <div className="portfolioHeroActions">
-            <Link
-              className="portfolioPrimaryButton"
-              href="/demo"
-            >
-              Explore Demo
+            <Link href="/portfolio" className={styles.navLink}>
+              Architecture
             </Link>
 
-            <a
-              className="portfolioSecondaryButton"
-              href={
-                portfolioConfig
-                  .githubUrl
-              }
-              target="_blank"
-              rel="noreferrer"
-            >
-              View Project
-            </a>
-          </div>
+            <Link href="/login" className={styles.navLink}>
+              Sign in
+            </Link>
 
-          <div className="portfolioAssurance">
-            <span>
-              Multi-tenant
-            </span>
-            <span>
-              Role-based access
-            </span>
-            <span>
-              Financial controls
-            </span>
-            <span>
-              Audit-ready
-            </span>
-          </div>
+            <Link href="/demo" className={styles.primaryButtonSmall}>
+              Explore demo
+            </Link>
+          </nav>
+
+          <details className={styles.mobileMenu}>
+            <summary>Menu</summary>
+
+            <nav className={styles.mobileNav} aria-label="Mobile navigation">
+              <a href="#features">Features</a>
+              <Link href="/portfolio">Architecture</Link>
+              <Link href="/login">Sign in</Link>
+              <Link href="/demo" className={styles.mobilePrimaryAction}>
+                Explore demo
+              </Link>
+            </nav>
+          </details>
         </div>
+      </header>
 
-        <div
-          className="portfolioProductPreview"
-          aria-label="Illustrative BuildFlow project dashboard"
-        >
-          <header>
-            <div>
-              <span>
-                BF
-              </span>
+      <main>
+        <section className={styles.hero} aria-labelledby="hero-title">
+          <div className={`${styles.container} ${styles.heroGrid}`}>
+            <div className={styles.heroCopy}>
+              <p className={styles.eyebrow}>Construction operations</p>
 
-              <strong>
-                NorthBuild Construction
-              </strong>
+              <h1 id="hero-title" className={styles.heroTitle}>
+                Projects in sync.{" "}
+                <span className={styles.heroAccent}>Costs in view.</span>
+              </h1>
+
+              <p className={styles.heroDescription}>
+                BuildFlow brings project planning, site reporting and financial
+                workflows into one construction management workspace.
+              </p>
+
+              <div className={styles.heroActions}>
+                <Link href="/demo" className={styles.primaryButton}>
+                  Explore demo
+                </Link>
+
+                <a
+                  href="https://github.com/MahmoudMans/buildflow"
+                  target="_blank"
+                  rel="noreferrer"
+                  className={styles.secondaryButton}
+                  aria-label="View source on GitHub, opens in a new tab"
+                >
+                  View source on GitHub
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+
+              <p className={styles.helperText}>
+                <span className={styles.helperDot} aria-hidden="true" />
+                Explore a sample construction company through five demo roles.
+              </p>
             </div>
 
-            <small>
-              Project overview
-            </small>
-          </header>
-
-          <div className="portfolioPreviewBody">
-            <aside>
-              <strong>
-                Overview
-              </strong>
-              <span>
-                Projects
-              </span>
-              <span>
-                Clients
-              </span>
-              <span>
-                Finances
-              </span>
-              <span>
-                Reports
-              </span>
-            </aside>
-
-            <section>
-              <div className="portfolioPreviewTitle">
+            <figure
+              className={styles.projectPreview}
+              aria-labelledby="preview-title"
+            >
+              <div className={styles.previewTop}>
                 <div>
-                  <small>
-                    PRJ-2026-0001
-                  </small>
+                  <div className={styles.organizationRow}>
+                    <span className={styles.organizationName}>
+                      NorthBuild Construction
+                    </span>
 
-                  <strong>
-                    Rivoli Hotel Renovation
-                  </strong>
+                    <span className={styles.sampleBadge}>Sample data</span>
+                  </div>
+
+                  <p className={styles.previewKicker}>
+                    Construction project overview
+                  </p>
                 </div>
 
-                <span>
-                  ON TRACK
+                <span className={styles.previewMark} aria-hidden="true">
+                  BF
                 </span>
               </div>
 
-              <div className="portfolioPreviewMetrics">
-                <article>
-                  <small>
-                    CONTRACT
-                  </small>
-                  <strong>
-                    €1.85M
-                  </strong>
-                </article>
+              <div className={styles.previewProject}>
+                <p className={styles.previewLabel}>Current project</p>
 
-                <article>
-                  <small>
-                    PROGRESS
-                  </small>
-                  <strong>
-                    62%
-                  </strong>
-                </article>
-
-                <article>
-                  <small>
-                    FORECAST
-                  </small>
-                  <strong>
-                    €1.42M
-                  </strong>
-                </article>
-
-                <article>
-                  <small>
-                    MARGIN
-                  </small>
-                  <strong>
-                    23.2%
-                  </strong>
-                </article>
+                <h2 id="preview-title">Rivoli Hotel Renovation</h2>
               </div>
 
-              <div className="portfolioPreviewChart">
-                {[
-                  35,
-                  48,
-                  42,
-                  63,
-                  57,
-                  76,
-                  70,
-                  88,
-                  82,
-                  94,
-                ].map(
-                  (
-                    height,
-                    index
-                  ) => (
-                    <span
-                      key={
-                        index
-                      }
-                      style={{
-                        height:
-                          `${height}%`,
-                      }}
-                    />
-                  )
-                )}
+              <div className={styles.summaryGrid}>
+                <div className={styles.summaryItem}>
+                  <span className={styles.summaryLabel}>Contract value</span>
+                  <strong className={styles.summaryValue}>€1.85M</strong>
+                </div>
+
+                <div className={styles.summaryItem}>
+                  <div className={styles.progressHeading}>
+                    <span className={styles.summaryLabel}>Progress</span>
+                    <strong className={styles.progressValue}>62%</strong>
+                  </div>
+
+                  <div
+                    className={styles.progressTrack}
+                    role="progressbar"
+                    aria-label="Illustrative project progress"
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={62}
+                  >
+                    <span className={styles.progressFill} />
+                  </div>
+                </div>
               </div>
-            </section>
+
+              <figcaption className={styles.previewCaption}>
+                Illustrative project overview. Open the demo to inspect the
+                workflows.
+              </figcaption>
+            </figure>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section
-        className="portfolioProofStrip"
-        aria-label="BuildFlow capabilities"
-      >
-        <div>
-          <strong>
-            15
-          </strong>
-          <span>
-            delivery phases
-          </span>
-        </div>
+        <section
+          id="features"
+          className={styles.featuresSection}
+          aria-labelledby="features-title"
+        >
+          <div className={styles.container}>
+            <div className={styles.sectionIntro}>
+              <p className={styles.eyebrow}>Functional scope</p>
 
-        <div>
-          <strong>
-            7
-          </strong>
-          <span>
-            organization roles
-          </span>
-        </div>
+              <h2 id="features-title" className={styles.sectionTitle}>
+                Plan, deliver and report.
+              </h2>
 
-        <div>
-          <strong>
-            100%
-          </strong>
-          <span>
-            backend-authoritative finance
-          </span>
-        </div>
+              <p className={styles.sectionDescription}>
+                Explore the operational, commercial and financial areas included
+                in the BuildFlow demo.
+              </p>
+            </div>
 
-        <div>
-          <strong>
-            0
-          </strong>
-          <span>
-            paid external APIs
-          </span>
-        </div>
-      </section>
+            <div className={styles.featureGrid}>
+              {capabilities.map((capability) => (
+                <article className={styles.featureCard} key={capability.title}>
+                  <h3>{capability.title}</h3>
+                  <p>{capability.description}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
 
-      <section
-        id="features"
-        className="portfolioSection"
-      >
-        <header className="portfolioSectionHeader">
-          <span>
-            BUILT FOR THE FULL PROJECT LIFECYCLE
-          </span>
+        <section
+          className={styles.rolesSection}
+          aria-labelledby="roles-title"
+        >
+          <div className={`${styles.container} ${styles.rolesLayout}`}>
+            <div className={styles.rolesIntro}>
+              <p className={styles.eyebrow}>Demo perspectives</p>
 
-          <h2>
-            From the first client conversation
-            to final project reporting.
-          </h2>
+              <h2 id="roles-title" className={styles.sectionTitle}>
+                One company. Different responsibilities.
+              </h2>
 
-          <p>
-            BuildFlow combines operational,
-            commercial and financial project
-            management without turning the
-            product into a generic CRUD
-            dashboard.
-          </p>
-        </header>
+              <p className={styles.sectionDescription}>
+                Explore NorthBuild Construction as an Owner, Project Manager,
+                Site Manager, Accountant or Client.
+              </p>
+            </div>
 
-        <div className="portfolioFeatureGrid">
-          {features.map(
-            (feature) => (
-              <article
-                key={
-                  feature.index
-                }
+            <div className={styles.roleContent}>
+              <div className={styles.roleList}>
+                {roles.map((role) => (
+                  <div className={styles.roleRow} key={role.title}>
+                    <h3>{role.title}</h3>
+                    <p>{role.description}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className={styles.roleActions}>
+                <Link href="/demo" className={styles.primaryButton}>
+                  Explore demo
+                </Link>
+
+                <div className={styles.roleHelper}>
+                  <span>Choose a role on the next page.</span>
+                  <span className={styles.sampleReminder}>
+                    Use sample data only.
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="architecture"
+          className={styles.architectureSection}
+          aria-labelledby="architecture-title"
+        >
+          <div className={`${styles.container} ${styles.architectureGrid}`}>
+            <div className={styles.architectureCopy}>
+              <p className={styles.inverseEyebrow}>Engineering</p>
+
+              <h2
+                id="architecture-title"
+                className={styles.inverseSectionTitle}
               >
-                <span>
-                  {feature.index}
-                </span>
+                Inside the BuildFlow architecture.
+              </h2>
 
-                <h3>
-                  {feature.title}
-                </h3>
+              <p className={styles.inverseDescription}>
+                Follow the application layers behind the demo, from the
+                interface to the API, data storage and supporting tools.
+              </p>
+
+              <p className={styles.inverseDescriptionSecondary}>
+                Explore the design decisions around tenant isolation, access
+                control, financial calculations and audit records.
+              </p>
+
+              <Link href="/portfolio" className={styles.inverseButton}>
+                View architecture
+              </Link>
+            </div>
+
+            <div className={styles.architectureDiagram}>
+              <div className={styles.layerStack}>
+                {architectureLayers.map((layer, index) => (
+                  <div key={layer.label}>
+                    <div className={styles.layerNode}>
+                      <p className={styles.layerLabel}>{layer.label}</p>
+                      <h3>{layer.technologies}</h3>
+                      <p>{layer.responsibility}</p>
+                    </div>
+
+                    {index < architectureLayers.length - 1 ? (
+                      <div
+                        className={styles.layerConnector}
+                        aria-hidden="true"
+                      >
+                        ↓
+                      </div>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+
+              <div className={styles.supportingTools}>
+                <p className={styles.supportingToolsLabel}>
+                  Supporting implementation tools
+                </p>
+
+                <div className={styles.supportingToolsGrid}>
+                  {supportingTools.map((tool) => (
+                    <div className={styles.toolItem} key={tool.title}>
+                      <strong>{tool.title}</strong>
+                      <span>{tool.description}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section
+          className={styles.finalSection}
+          aria-labelledby="final-title"
+        >
+          <div className={styles.container}>
+            <div className={styles.finalBand}>
+              <div className={styles.finalCopy}>
+                <h2 id="final-title">
+                  Explore the work. Inspect the implementation.
+                </h2>
 
                 <p>
-                  {
-                    feature.description
-                  }
+                  Open the role-based demo, or review the architecture behind it.
                 </p>
-              </article>
-            )
-          )}
-        </div>
-      </section>
+              </div>
 
-      <section className="portfolioDarkSection">
-        <div>
-          <span className="portfolioEyebrow">
-            ARCHITECTED AS A REAL B2B SAAS
-          </span>
+              <div className={styles.finalActions}>
+                <Link href="/demo" className={styles.primaryButton}>
+                  Explore demo
+                </Link>
 
-          <h2>
-            Secure boundaries.
-            Authoritative calculations.
-            Traceable decisions.
-          </h2>
-
-          <p>
-            UUID identifiers, tenant-scoped
-            persistence, backend RBAC,
-            controlled state transitions,
-            audit logs and secure object
-            storage are part of the core
-            architecture rather than
-            frontend conventions.
-          </p>
-
-          <Link
-            className="portfolioDarkLink"
-            href="/portfolio"
-          >
-            Explore the architecture
-          </Link>
-        </div>
-
-        <div className="portfolioArchitectureMini">
-          <span>
-            Next.js
-          </span>
-          <b>
-            ↓
-          </b>
-          <span>
-            Spring Boot REST API
-          </span>
-          <b>
-            ↓
-          </b>
-
-          <div>
-            <span>
-              PostgreSQL
-            </span>
-            <span>
-              MinIO
-            </span>
-            <span>
-              Mailpit
-            </span>
+                <Link href="/portfolio" className={styles.secondaryButton}>
+                  View architecture
+                </Link>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
-      <section className="portfolioSection">
-        <header className="portfolioSectionHeader compact">
-          <span>
-            TECHNOLOGY
-          </span>
+      <footer className={styles.footer}>
+        <div className={`${styles.container} ${styles.footerInner}`}>
+          <div className={styles.footerBrand}>
+            <strong>BuildFlow</strong>
+            <span>Construction management · Portfolio demo</span>
+          </div>
 
-          <h2>
-            Production-style tooling
-            without paid platform APIs.
-          </h2>
-        </header>
-
-        <div className="portfolioStack">
-          {stack.map(
-            (technology) => (
-              <span key={technology}>
-                {technology}
-              </span>
-            )
-          )}
-        </div>
-      </section>
-
-      <section className="portfolioFinalCta">
-        <span>
-          EXPERIENCE BUILDFLOW
-        </span>
-
-        <h2>
-          Explore a populated construction
-          company from five different roles.
-        </h2>
-
-        <p>
-          The demo includes an Owner,
-          Project Manager, Site Manager,
-          Accountant and restricted Client
-          view.
-        </p>
-
-        <Link
-          className="portfolioPrimaryButton"
-          href="/demo"
-        >
-          Open the demo
-        </Link>
-      </section>
-
-      <footer className="portfolioFooter">
-        <div>
-          <strong>
-            BuildFlow
-          </strong>
-          <span>
-            Construction Project Management Platform
-          </span>
-        </div>
-
-        <div>
-          <Link href="/portfolio">
-            Architecture
-          </Link>
-
-          <Link href="/demo">
-            Demo
-          </Link>
-
-          <a
-            href={
-              portfolioConfig
-                .githubUrl
-            }
-            target="_blank"
-            rel="noreferrer"
-          >
-            GitHub
-          </a>
+          <nav className={styles.footerNav} aria-label="Footer navigation">
+            <a href="#features">Features</a>
+            <Link href="/demo">Demo</Link>
+            <Link href="/portfolio">Architecture</Link>
+            <a
+              href="https://github.com/MahmoudMans/buildflow"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="GitHub repository, opens in a new tab"
+            >
+              GitHub ↗
+            </a>
+          </nav>
         </div>
       </footer>
-    </main>
+    </div>
   );
 }
