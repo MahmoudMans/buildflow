@@ -1,0 +1,726 @@
+.page {
+  --login-white: #ffffff;
+  --login-navy: #0f172a;
+  --login-navy-hover: #1e293b;
+  --login-navy-pressed: #020617;
+  --login-body: #475569;
+  --login-secondary: #64748b;
+  --login-border: #64748b;
+  --login-border-hover: #334155;
+  --login-focus: #2563eb;
+  --login-amber: #f59e0b;
+  --login-amber-light: #fbbf24;
+  --login-inverse-body: #cbd5e1;
+  --login-divider: #d8e0ea;
+  --login-error: #b91c1c;
+  --login-error-bg: #fef2f2;
+  --login-status-bg: #eff6ff;
+  --login-status: #1d4ed8;
+
+  min-height: 100vh;
+  min-height: 100svh;
+
+  display: grid;
+  grid-template-columns:
+    minmax(0, 58fr)
+    minmax(0, 42fr);
+
+  background:
+    var(--login-white);
+
+  color:
+    var(--login-navy);
+}
+
+.page,
+.page *,
+.page *::before,
+.page *::after {
+  box-sizing:
+    border-box;
+}
+
+/* ==========================================================================
+   Authentication pane
+   ========================================================================== */
+
+.authenticationPane {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding:
+    48px;
+
+  background:
+    var(--login-white);
+}
+
+.authenticationStack {
+  width: 100%;
+  max-width: 440px;
+}
+
+/* ==========================================================================
+   Brand
+   ========================================================================== */
+
+.brand {
+  width: fit-content;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+
+  color:
+    var(--login-navy);
+
+  text-decoration:
+    none;
+}
+
+.brandMark {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+  background:
+    var(--login-navy);
+
+  color:
+    var(--login-amber);
+
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+
+  letter-spacing:
+    -0.02em;
+}
+
+.brandName {
+  font-size: 22px;
+  font-weight: 760;
+  line-height: 1.2;
+
+  letter-spacing:
+    -0.025em;
+}
+
+.brand:focus-visible {
+  outline:
+    3px solid
+    var(--login-focus);
+
+  outline-offset:
+    4px;
+
+  border-radius:
+    6px;
+}
+
+/* ==========================================================================
+   Introduction
+   ========================================================================== */
+
+.introduction {
+  margin-top: 40px;
+}
+
+.introduction h1 {
+  margin: 0;
+
+  color:
+    var(--login-navy);
+
+  font-size: 36px;
+  font-weight: 780;
+  line-height: 1.15;
+
+  letter-spacing:
+    -0.04em;
+}
+
+.introduction p {
+  margin:
+    12px 0 0;
+
+  color:
+    var(--login-body);
+
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   Form
+   ========================================================================== */
+
+.form {
+  margin-top: 28px;
+}
+
+.formError,
+.statusMessage {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+
+  border-radius: 8px;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.formError {
+  border:
+    1px solid #fecaca;
+
+  background:
+    var(--login-error-bg);
+
+  color:
+    var(--login-error);
+}
+
+.statusMessage {
+  border:
+    1px solid #bfdbfe;
+
+  background:
+    var(--login-status-bg);
+
+  color:
+    var(--login-status);
+}
+
+.fieldGroup {
+  display: grid;
+  gap: 8px;
+}
+
+.passwordGroup {
+  margin-top: 20px;
+}
+
+.fieldLabel {
+  color:
+    var(--login-navy);
+
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.fieldControl {
+  width: 100%;
+  min-width: 0;
+  min-height: 52px;
+
+  padding:
+    0 14px;
+
+  border:
+    1px solid
+    var(--login-border);
+
+  border-radius:
+    8px;
+
+  outline:
+    none;
+
+  background:
+    var(--login-white);
+
+  color:
+    var(--login-navy);
+
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.5;
+
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.fieldControl:hover {
+  border-color:
+    var(--login-border-hover);
+}
+
+.fieldControl:focus-visible {
+  border-color:
+    var(--login-focus);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(37, 99, 235, 0.18);
+}
+
+.fieldControlError {
+  border-color:
+    var(--login-error);
+}
+
+.fieldError {
+  margin: 0;
+
+  color:
+    var(--login-error);
+
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+/* ==========================================================================
+   Password assembly
+   ========================================================================== */
+
+.passwordControl {
+  width: 100%;
+  min-width: 0;
+  min-height: 52px;
+
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto;
+
+  overflow: visible;
+
+  border:
+    1px solid
+    var(--login-border);
+
+  border-radius:
+    8px;
+
+  background:
+    var(--login-white);
+
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.passwordControl:hover {
+  border-color:
+    var(--login-border-hover);
+}
+
+.passwordControl:focus-within {
+  border-color:
+    var(--login-focus);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(37, 99, 235, 0.18);
+}
+
+.passwordControlError {
+  border-color:
+    var(--login-error);
+}
+
+.passwordInput {
+  width: 100%;
+  min-width: 0;
+  min-height: 50px;
+
+  padding:
+    0 14px;
+
+  border: 0;
+  outline: 0;
+
+  border-radius:
+    7px 0 0 7px;
+
+  background:
+    transparent;
+
+  color:
+    var(--login-navy);
+
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.visibilityButton {
+  min-width: 62px;
+  min-height: 50px;
+
+  padding:
+    0 12px;
+
+  border: 0;
+  border-left:
+    1px solid
+    var(--login-divider);
+
+  border-radius:
+    0 7px 7px 0;
+
+  background:
+    transparent;
+
+  color:
+    var(--login-navy);
+
+  cursor:
+    pointer;
+
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+.visibilityButton:hover {
+  background:
+    #f8fafc;
+}
+
+.visibilityButton:focus-visible {
+  position: relative;
+  z-index: 1;
+
+  outline:
+    3px solid
+    var(--login-focus);
+
+  outline-offset:
+    3px;
+}
+
+/* ==========================================================================
+   Recovery
+   ========================================================================== */
+
+.recoveryRow {
+  margin-top: 8px;
+
+  display: flex;
+  justify-content: flex-end;
+}
+
+.recoveryRow a,
+.registrationLine a,
+.demoAlternative a {
+  color:
+    var(--login-navy);
+
+  font-weight: 700;
+
+  text-decoration-line:
+    underline;
+
+  text-decoration-thickness:
+    1px;
+
+  text-underline-offset:
+    3px;
+}
+
+.recoveryRow a {
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.recoveryRow a:hover,
+.registrationLine a:hover,
+.demoAlternative a:hover {
+  text-decoration-thickness:
+    2px;
+}
+
+.recoveryRow a:focus-visible,
+.registrationLine a:focus-visible,
+.demoAlternative a:focus-visible {
+  outline:
+    3px solid
+    var(--login-focus);
+
+  outline-offset:
+    3px;
+
+  border-radius:
+    3px;
+}
+
+/* ==========================================================================
+   Primary authentication action
+   ========================================================================== */
+
+.submitButton {
+  width: 100%;
+  min-height: 52px;
+
+  margin-top: 20px;
+  padding:
+    0 18px;
+
+  border:
+    1px solid
+    var(--login-navy);
+
+  border-radius:
+    8px;
+
+  background:
+    var(--login-navy);
+
+  color:
+    #ffffff;
+
+  cursor:
+    pointer;
+
+  font: inherit;
+  font-size: 16px;
+  font-weight: 720;
+  line-height: 1.4;
+
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease;
+}
+
+.submitButton:hover:not(:disabled) {
+  border-color:
+    var(--login-navy-hover);
+
+  background:
+    var(--login-navy-hover);
+}
+
+.submitButton:active:not(:disabled) {
+  border-color:
+    var(--login-navy-pressed);
+
+  background:
+    var(--login-navy-pressed);
+}
+
+.submitButton:focus-visible {
+  outline:
+    3px solid
+    var(--login-focus);
+
+  outline-offset:
+    3px;
+}
+
+.submitButton:disabled {
+  cursor:
+    wait;
+
+  opacity:
+    0.78;
+}
+
+/* ==========================================================================
+   Secondary authentication journeys
+   ========================================================================== */
+
+.registrationLine {
+  margin:
+    20px 0 0;
+
+  color:
+    var(--login-secondary);
+
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.demoAlternative {
+  margin-top: 24px;
+}
+
+.demoDivider {
+  display: block;
+
+  width: 100%;
+  height: 1px;
+
+  background:
+    var(--login-divider);
+}
+
+.demoAlternative p {
+  margin:
+    16px 0 0;
+
+  color:
+    var(--login-secondary);
+
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* ==========================================================================
+   Supporting identity pane
+   ========================================================================== */
+
+.supportingPane {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  padding:
+    48px;
+
+  background:
+    var(--login-navy);
+
+  color:
+    #ffffff;
+}
+
+.supportingContent {
+  width: 100%;
+  max-width: 360px;
+
+  margin-inline:
+    auto;
+}
+
+.supportingCategory {
+  margin: 0;
+
+  color:
+    var(--login-amber-light);
+
+  font-size: 12px;
+  font-weight: 760;
+  line-height: 1.45;
+
+  letter-spacing:
+    0.09em;
+
+  text-transform:
+    uppercase;
+}
+
+.supportingContent h2 {
+  margin:
+    12px 0 0;
+
+  color:
+    #ffffff;
+
+  font-size:
+    clamp(
+      32px,
+      2.7vw,
+      36px
+    );
+
+  font-weight: 760;
+  line-height: 1.15;
+
+  letter-spacing:
+    -0.035em;
+}
+
+.supportingDescription {
+  margin:
+    16px 0 0;
+
+  color:
+    var(--login-inverse-body);
+
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 1199px) {
+  .authenticationPane,
+  .supportingPane {
+    padding:
+      40px 32px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .page {
+    display: block;
+  }
+
+  .authenticationPane {
+    min-height:
+      100vh;
+
+    min-height:
+      100svh;
+
+    align-items:
+      flex-start;
+
+    padding:
+      32px;
+  }
+
+  .authenticationStack {
+    margin-inline:
+      auto;
+  }
+
+  .supportingPane {
+    display:
+      none;
+  }
+
+  .introduction {
+    margin-top:
+      32px;
+  }
+}
+
+@media (max-width: 639px) {
+  .authenticationPane {
+    padding:
+      32px 20px;
+  }
+
+  .introduction h1 {
+    font-size:
+      32px;
+  }
+}
+
+/* ==========================================================================
+   Enlarged text / reduced motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .fieldControl,
+  .passwordControl,
+  .visibilityButton,
+  .submitButton {
+    transition-duration:
+      0.01ms;
+  }
+}
