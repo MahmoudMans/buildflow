@@ -1,0 +1,1025 @@
+.suppliersContent {
+  --supplier-surface: #ffffff;
+  --supplier-subtle: #f1f5f9;
+  --supplier-heading: #0f172a;
+  --supplier-body: #475569;
+  --supplier-meta: #64748b;
+  --supplier-divider: #d8e0ea;
+  --supplier-control: #64748b;
+  --supplier-focus: #2563eb;
+  --supplier-error: #b91c1c;
+  --supplier-error-bg: #fef2f2;
+
+  width:
+    100%;
+
+  max-width:
+    1440px;
+
+  min-width:
+    0;
+
+  margin-inline:
+    auto;
+
+  padding:
+    32px;
+
+  color:
+    var(--supplier-heading);
+}
+
+.suppliersContent,
+.suppliersContent *,
+.suppliersContent *::before,
+.suppliersContent *::after {
+  box-sizing:
+    border-box;
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.suppliersContent
+:global(.appHeader) {
+  margin-bottom:
+    24px;
+
+  align-items:
+    flex-start;
+
+  gap:
+    24px;
+}
+
+.suppliersContent
+:global(.appHeader)
+h1 {
+  margin:
+    0;
+
+  color:
+    var(--supplier-heading);
+
+  font-size:
+    clamp(
+      30px,
+      3vw,
+      32px
+    );
+
+  font-weight:
+    780;
+
+  line-height:
+    1.15;
+
+  letter-spacing:
+    -0.035em;
+}
+
+.pageDescription {
+  max-width:
+    640px;
+
+  margin:
+    8px 0 0;
+
+  color:
+    var(--supplier-body) !important;
+
+  font-size:
+    15px !important;
+
+  font-weight:
+    400 !important;
+
+  line-height:
+    1.5 !important;
+
+  letter-spacing:
+    0 !important;
+
+  text-transform:
+    none !important;
+}
+
+.mobileAddSupplierLink {
+  display:
+    none;
+}
+
+/* ==========================================================================
+   Organization
+   ========================================================================== */
+
+.organizationControl {
+  width:
+    clamp(
+      280px,
+      24vw,
+      320px
+    );
+
+  display:
+    grid;
+
+  gap:
+    8px;
+
+  color:
+    var(--supplier-heading);
+
+  font-size:
+    14px;
+
+  font-weight:
+    650;
+}
+
+.organizationLabel {
+  display:
+    block;
+
+  color:
+    var(--supplier-heading);
+
+  font-size:
+    14px;
+
+  font-weight:
+    650;
+}
+
+.organizationControl
+select {
+  width:
+    100%;
+
+  min-height:
+    48px;
+
+  padding:
+    0 40px
+    0 14px;
+
+  border:
+    1px solid
+    var(--supplier-control);
+
+  border-radius:
+    8px;
+
+  outline:
+    none;
+
+  background:
+    var(--supplier-surface);
+
+  color:
+    var(--supplier-heading);
+
+  font:
+    inherit;
+
+  font-size:
+    16px;
+}
+
+.organizationControl
+select:hover {
+  border-color:
+    #334155;
+}
+
+.organizationControl
+select:focus-visible {
+  border-color:
+    var(--supplier-focus);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(
+      37,
+      99,
+      235,
+      0.18
+    );
+}
+
+.organizationControl
+select:disabled {
+  cursor:
+    wait;
+
+  opacity:
+    0.72;
+}
+
+/* ==========================================================================
+   Main layout
+   ========================================================================== */
+
+.suppliersContent
+[data-buildflow-suppliers-layout="true"] {
+  width:
+    100%;
+
+  min-width:
+    0;
+
+  display:
+    grid !important;
+
+  grid-template-columns:
+    minmax(
+      0,
+      1fr
+    )
+    384px !important;
+
+  align-items:
+    start !important;
+
+  gap:
+    24px !important;
+}
+
+.suppliersContent
+[data-buildflow-supplier-directory="true"],
+.suppliersContent
+[data-buildflow-add-supplier-panel="true"] {
+  min-width:
+    0;
+
+  align-self:
+    start;
+}
+
+.suppliersContent
+[data-buildflow-add-supplier-panel="true"] {
+  width:
+    384px;
+
+  max-width:
+    100%;
+
+  scroll-margin-top:
+    24px;
+}
+
+.suppliersContent
+[data-buildflow-supplier-directory="true"]
+h2,
+.suppliersContent
+[data-buildflow-add-supplier-panel="true"]
+h2 {
+  color:
+    var(--supplier-heading);
+
+  font-size:
+    20px;
+
+  font-weight:
+    750;
+
+  line-height:
+    1.3;
+
+  letter-spacing:
+    -0.02em;
+}
+
+/* ==========================================================================
+   Empty directory
+   ========================================================================== */
+
+.emptyState {
+  min-height:
+    150px;
+
+  max-width:
+    440px;
+
+  margin-inline:
+    auto;
+
+  padding:
+    32px 24px;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  text-align:
+    center;
+}
+
+.emptyState strong {
+  color:
+    var(--supplier-heading);
+
+  font-size:
+    16px;
+
+  font-weight:
+    720;
+
+  line-height:
+    1.4;
+}
+
+.emptyState p {
+  max-width:
+    390px;
+
+  margin:
+    8px 0 0;
+
+  color:
+    var(--supplier-body);
+
+  font-size:
+    14px;
+
+  line-height:
+    1.5;
+}
+
+.emptyState a {
+  min-height:
+    40px;
+
+  margin-top:
+    16px;
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  color:
+    var(--supplier-heading);
+
+  font-size:
+    14px;
+
+  font-weight:
+    700;
+
+  text-decoration:
+    underline;
+
+  text-underline-offset:
+    3px;
+}
+
+/* ==========================================================================
+   Populated supplier record
+
+   Existing desktop record composition is intentionally preserved until real
+   populated supplier data can be visually inspected. The repeated item itself
+   is marked so responsive layouts can reflow safely.
+   ========================================================================== */
+
+.suppliersContent
+[data-buildflow-supplier-row="true"] {
+  min-width:
+    0;
+
+  padding:
+    20px 24px !important;
+
+  border-bottom:
+    1px solid
+    var(--supplier-divider);
+}
+
+.suppliersContent
+[data-buildflow-supplier-row="true"]:last-child {
+  border-bottom:
+    0;
+}
+
+.suppliersContent
+[data-buildflow-supplier-cell] {
+  min-width:
+    0;
+
+  overflow-wrap:
+    anywhere;
+}
+
+/* ==========================================================================
+   Form context
+   ========================================================================== */
+
+.supplierFormContext {
+  margin:
+    8px 0 24px;
+
+  display:
+    grid;
+
+  gap:
+    8px;
+}
+
+.supplierFormContext p {
+  margin:
+    0;
+
+  color:
+    var(--supplier-body);
+
+  font-size:
+    13px;
+
+  line-height:
+    1.45;
+}
+
+.supplierFormContext strong {
+  color:
+    var(--supplier-heading);
+
+  font-weight:
+    650;
+}
+
+.requiredInstruction {
+  color:
+    var(--supplier-meta) !important;
+}
+
+.requiredMark {
+  color:
+    var(--supplier-error);
+
+  font-weight:
+    800;
+}
+
+/* ==========================================================================
+   Create supplier form
+   ========================================================================== */
+
+.suppliersContent
+[data-buildflow-create-supplier-form="true"] {
+  display:
+    grid;
+
+  gap:
+    20px;
+}
+
+.suppliersContent
+[data-buildflow-create-supplier-form="true"]
+label {
+  min-width:
+    0;
+
+  color:
+    var(--supplier-heading);
+
+  font-size:
+    14px;
+
+  font-weight:
+    650;
+
+  line-height:
+    1.45;
+}
+
+.fieldLabelText {
+  width:
+    fit-content;
+
+  display:
+    inline-flex;
+
+  align-items:
+    baseline;
+
+  gap:
+    4px;
+}
+
+.fieldRequiredMark {
+  color:
+    var(--supplier-error);
+
+  font-size:
+    14px;
+
+  font-weight:
+    800;
+
+  line-height:
+    1;
+}
+
+/* ==========================================================================
+   Editable controls
+   ========================================================================== */
+
+.suppliersContent
+[data-buildflow-create-supplier-form="true"]
+input,
+.suppliersContent
+[data-buildflow-create-supplier-form="true"]
+select,
+.suppliersContent
+[data-buildflow-create-supplier-form="true"]
+textarea {
+  width:
+    100%;
+
+  min-height:
+    48px;
+
+  margin-top:
+    8px;
+
+  padding:
+    0 14px;
+
+  border:
+    1px solid
+    var(--supplier-control) !important;
+
+  border-radius:
+    8px;
+
+  outline:
+    none;
+
+  background:
+    var(--supplier-surface);
+
+  color:
+    var(--supplier-heading);
+
+  font:
+    inherit;
+
+  font-size:
+    16px;
+
+  transition:
+    border-color
+    140ms ease,
+    box-shadow
+    140ms ease;
+}
+
+.suppliersContent
+[data-buildflow-create-supplier-form="true"]
+textarea {
+  min-height:
+    96px;
+
+  padding-block:
+    12px;
+
+  resize:
+    vertical;
+}
+
+.suppliersContent
+[data-buildflow-create-supplier-form="true"]
+input:hover,
+.suppliersContent
+[data-buildflow-create-supplier-form="true"]
+select:hover,
+.suppliersContent
+[data-buildflow-create-supplier-form="true"]
+textarea:hover {
+  border-color:
+    #334155 !important;
+}
+
+.suppliersContent
+[data-buildflow-create-supplier-form="true"]
+input:focus-visible,
+.suppliersContent
+[data-buildflow-create-supplier-form="true"]
+select:focus-visible,
+.suppliersContent
+[data-buildflow-create-supplier-form="true"]
+textarea:focus-visible {
+  border-color:
+    var(--supplier-focus) !important;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(
+      37,
+      99,
+      235,
+      0.18
+    );
+}
+
+.paymentTermsHelper {
+  margin-top:
+    6px;
+
+  display:
+    block;
+
+  color:
+    var(--supplier-meta);
+
+  font-size:
+    12px;
+
+  font-weight:
+    400;
+
+  line-height:
+    1.45;
+}
+
+/* ==========================================================================
+   Primary action
+   ========================================================================== */
+
+.suppliersContent
+[data-buildflow-create-supplier-form="true"]
+button[type="submit"] {
+  width:
+    100%;
+
+  min-height:
+    48px;
+
+  margin-top:
+    4px;
+
+  padding:
+    0 16px;
+
+  border:
+    1px solid
+    var(--supplier-heading);
+
+  border-radius:
+    8px;
+
+  background:
+    var(--supplier-heading);
+
+  color:
+    #ffffff;
+
+  cursor:
+    pointer;
+
+  font:
+    inherit;
+
+  font-size:
+    15px;
+
+  font-weight:
+    720;
+
+  line-height:
+    1.3;
+}
+
+.suppliersContent
+[data-buildflow-create-supplier-form="true"]
+button[type="submit"]:hover:not(:disabled) {
+  background:
+    #1e293b;
+
+  border-color:
+    #1e293b;
+}
+
+.suppliersContent
+[data-buildflow-create-supplier-form="true"]
+button[type="submit"]:focus-visible {
+  outline:
+    3px solid
+    var(--supplier-focus);
+
+  outline-offset:
+    3px;
+}
+
+.suppliersContent
+[data-buildflow-create-supplier-form="true"]
+button[type="submit"]:disabled {
+  cursor:
+    wait;
+
+  opacity:
+    0.72;
+}
+
+/* ==========================================================================
+   Existing error presentation
+   ========================================================================== */
+
+.suppliersContent
+:global(.formError) {
+  padding:
+    11px 12px;
+
+  border:
+    1px solid
+    #fecaca;
+
+  border-radius:
+    8px;
+
+  background:
+    var(--supplier-error-bg);
+
+  color:
+    var(--supplier-error);
+
+  font-size:
+    13px;
+
+  line-height:
+    1.5;
+}
+
+/* ==========================================================================
+   Screen-reader pending status
+   ========================================================================== */
+
+.creationStatus {
+  position:
+    absolute;
+
+  width:
+    1px;
+
+  height:
+    1px;
+
+  padding:
+    0;
+
+  margin:
+    -1px;
+
+  overflow:
+    hidden;
+
+  clip:
+    rect(
+      0,
+      0,
+      0,
+      0
+    );
+
+  white-space:
+    nowrap;
+
+  border:
+    0;
+}
+
+/* ==========================================================================
+   Focus
+   ========================================================================== */
+
+.suppliersContent
+a:focus-visible,
+.suppliersContent
+button:focus-visible {
+  outline:
+    3px solid
+    var(--supplier-focus);
+
+  outline-offset:
+    3px;
+}
+
+/* ==========================================================================
+   Narrow workspace
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+  .suppliersContent {
+    padding:
+      24px;
+  }
+
+  .suppliersContent
+  :global(.appHeader) {
+    display:
+      grid;
+
+    grid-template-columns:
+      minmax(
+        0,
+        1fr
+      );
+
+    gap:
+      18px;
+  }
+
+  .organizationControl {
+    width:
+      min(
+        100%,
+        420px
+      );
+  }
+
+  .mobileAddSupplierLink {
+    width:
+      fit-content;
+
+    min-height:
+      40px;
+
+    margin-top:
+      12px;
+
+    display:
+      inline-flex;
+
+    align-items:
+      center;
+
+    color:
+      var(--supplier-heading);
+
+    font-size:
+      14px;
+
+    font-weight:
+      700;
+
+    text-decoration:
+      underline;
+
+    text-underline-offset:
+      3px;
+  }
+
+  .suppliersContent
+  [data-buildflow-suppliers-layout="true"] {
+    grid-template-columns:
+      minmax(
+        0,
+        1fr
+      ) !important;
+  }
+
+  .suppliersContent
+  [data-buildflow-add-supplier-panel="true"] {
+    width:
+      min(
+        100%,
+        640px
+      );
+
+    max-width:
+      640px;
+
+    justify-self:
+      start;
+  }
+}
+
+/* ==========================================================================
+   Responsive supplier records
+   ========================================================================== */
+
+@media (max-width: 760px) {
+  .suppliersContent
+  [data-buildflow-supplier-row="true"] {
+    display:
+      grid !important;
+
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(
+          0,
+          1fr
+        )
+      ) !important;
+
+    align-items:
+      start;
+
+    gap:
+      16px 20px !important;
+  }
+
+  .suppliersContent
+  [data-buildflow-supplier-cell]::before {
+    content:
+      attr(
+        data-buildflow-label
+      );
+
+    display:
+      block;
+
+    margin-bottom:
+      4px;
+
+    color:
+      var(--supplier-meta);
+
+    font-size:
+      12px;
+
+    font-weight:
+      700;
+
+    line-height:
+      1.35;
+
+    letter-spacing:
+      0.03em;
+
+    text-transform:
+      uppercase;
+  }
+
+  .suppliersContent
+  [data-buildflow-supplier-cell="supplier"] {
+    grid-column:
+      1 / -1;
+  }
+}
+
+/* ==========================================================================
+   Phone
+   ========================================================================== */
+
+@media (max-width: 520px) {
+  .suppliersContent {
+    padding:
+      24px 16px;
+  }
+
+  .suppliersContent
+  [data-buildflow-supplier-row="true"] {
+    padding:
+      18px 16px !important;
+
+    grid-template-columns:
+      minmax(
+        0,
+        1fr
+      ) !important;
+  }
+
+  .suppliersContent
+  [data-buildflow-supplier-cell] {
+    grid-column:
+      1 !important;
+  }
+
+  .emptyState {
+    padding:
+      28px 16px;
+  }
+}
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .organizationControl
+  select,
+  .suppliersContent
+  [data-buildflow-create-supplier-form="true"]
+  input,
+  .suppliersContent
+  [data-buildflow-create-supplier-form="true"]
+  select,
+  .suppliersContent
+  [data-buildflow-create-supplier-form="true"]
+  textarea {
+    transition-duration:
+      0.01ms;
+  }
+}

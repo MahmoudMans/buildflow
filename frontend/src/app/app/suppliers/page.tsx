@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "./suppliers.module.css";
+
 import {
   FormEvent,
   useEffect,
@@ -20,7 +22,31 @@ import type {
   Supplier,
 } from "@/lib/types";
 
+
+function formatSupplierDisplayValue(
+  value: string | null | undefined
+) {
+  if (!value) {
+    return "—";
+  }
+
+  return value
+    .toLowerCase()
+    .replaceAll("_", " ")
+    .replace(
+      /\b\w/g,
+      (letter) =>
+        letter.toUpperCase()
+    );
+}
+
 export default function SuppliersPage() {
+
+  const [
+    creatingSupplier,
+    setCreatingSupplier,
+  ] = useState(false);
+
   const {
     user,
     organizations,
@@ -152,7 +178,7 @@ useEffect(() => {
     <main className="appShell">
       <AppSidebar active="suppliers" />
 
-      <section className="appContent">
+      <section className={`appContent ${styles.suppliersContent}`}>
         <header className="appHeader">
           <div>
             <p>
@@ -162,9 +188,39 @@ useEffect(() => {
             <h1>
               Suppliers
             </h1>
+
+              <p
+                className={
+                  styles.pageDescription
+                }
+              >
+                Manage supplier records and payment terms for the selected organization.
+              </p>
+
+              <a
+                className={
+                  styles.mobileAddSupplierLink
+                }
+                href="#add-supplier"
+              >
+                Add supplier
+              </a>
+
           </div>
 
-          <select
+          <label
+              className={
+                styles.organizationControl
+              }
+            >
+              <span
+                className={
+                  styles.organizationLabel
+                }
+              >
+                Organization
+              </span>
+<select
             className="organizationSelector"
             value={organizationId}
             onChange={(event) => {
@@ -179,8 +235,7 @@ useEffect(() => {
                 "buildflow.organizationId",
                 value
               );
-            }}
-          >
+            }} disabled={creatingSupplier}>
             {organizations.map(
               (organization) => (
                 <option
@@ -192,6 +247,7 @@ useEffect(() => {
               )
             )}
           </select>
+            </label>
         </header>
 
         {error && (
@@ -200,54 +256,74 @@ useEffect(() => {
           </div>
         )}
 
-        <section className="moduleLayout">
+        <section className="moduleLayout" data-buildflow-suppliers-layout="true">
           <div className="moduleTableCard">
             <div className="moduleCardHeader">
-              <div>
+              <div data-buildflow-supplier-directory="true" role="region" aria-label="Supplier directory">
                 <h2>
                   Supplier directory
                 </h2>
 
                 <p>
-                  {suppliers.length} suppliers
+                  {suppliers.length} {
+                  suppliers.length === 1
+                    ? "supplier"
+                    : "suppliers"
+                }
                 </p>
               </div>
             </div>
 
             <div className="dataList">
               {suppliers.length === 0 && (
-                <div className="emptyState">
-                  No suppliers yet.
-                </div>
+                <div
+                className={
+                  styles.emptyState
+                }
+                data-buildflow-supplier-empty="true"
+              >
+                <strong>
+                  No suppliers in this organization
+                </strong>
+
+                <p>
+                  Add a supplier to make it available to your procurement workflows.
+                </p>
+
+                <a
+                  href="#add-supplier"
+                >
+                  Add supplier
+                </a>
+              </div>
               )}
 
               {suppliers.map(
                 (supplier) => (
                   <div
                     className="dataRow"
-                    key={supplier.id}
-                  >
+                    key={supplier.id} data-buildflow-supplier-row="true">
                     <div>
-                      <strong>
+                      <strong data-buildflow-supplier-cell="supplier" data-buildflow-label="Supplier">
                         {supplier.name}
                       </strong>
 
-                      <span>
+                      <span data-buildflow-supplier-cell="contact" data-buildflow-label="Contact">
                         {supplier.contactName
                           || "No contact"}
                       </span>
                     </div>
 
-                    <span>
+                    <span data-buildflow-supplier-cell="email" data-buildflow-label="Email">
                       {supplier.email || "—"}
                     </span>
 
-                    <span>
+                    <span data-buildflow-supplier-cell="phone" data-buildflow-label="Phone">
                       {supplier.phone || "—"}
                     </span>
 
-                    <span className="statusBadge">
-                      {supplier.status}
+                    <span className="statusBadge" data-buildflow-supplier-cell="status" data-buildflow-label="Status">
+                      {formatSupplierDisplayValue(supplier.status)}
                     </span>
                   </div>
                 )
@@ -255,18 +331,88 @@ useEffect(() => {
             </div>
           </div>
 
-          <aside className="moduleFormCard">
+          <aside className="moduleFormCard" data-buildflow-add-supplier-panel="true" id="add-supplier">
             <h2>
               Add supplier
             </h2>
 
-            <form
-              className="authForm"
-              onSubmit={createSupplier}
+
+            <div
+              className={
+                styles.supplierFormContext
+              }
             >
-              <label>
-                Supplier name
-                <input
+              <p>
+                Organization:{" "}
+                <strong>
+                  {
+                    organizations.find(
+                      (organization) =>
+                        organization.id
+                        === organizationId
+                    )?.name
+                    ?? "Selected organization"
+                  }
+                </strong>
+              </p>
+
+              <p
+                className={
+                  styles.requiredInstruction
+                }
+              >
+                Fields marked{" "}
+                <span
+                  className={
+                    styles.requiredMark
+                  }
+                  aria-hidden="true"
+                >
+                  *
+                </span>
+                {" "}are required.
+              </p>
+            </div>
+
+<form
+              className="authForm"
+              onSubmit={async (event) => {
+              if (creatingSupplier) {
+                event.preventDefault();
+                return;
+              }
+
+              setCreatingSupplier(
+                true,
+              );
+
+              try {
+                await createSupplier(
+                  event,
+                );
+              } finally {
+                setCreatingSupplier(
+                  false,
+                );
+              }
+            }} data-buildflow-create-supplier-form="true">
+              <label data-buildflow-required="true">
+                <span
+                  className={
+                    styles.fieldLabelText
+                  }
+                >
+                  Supplier name
+                  <span
+                    className={
+                      styles.fieldRequiredMark
+                    }
+                    aria-hidden="true"
+                  >
+                    *
+                  </span>
+                </span>
+<input
                   required
                   value={name}
                   onChange={(event) =>
@@ -324,14 +470,43 @@ useEffect(() => {
                     )
                   }
                 />
+
+                <span
+                  className={
+                    styles.paymentTermsHelper
+                  }
+                >
+                  Enter the agreed payment terms for this supplier.
+                </span>
+
               </label>
 
               <button
                 className="authSubmit"
                 type="submit"
-              >
-                Create supplier
+               disabled={creatingSupplier} aria-busy={creatingSupplier}>
+                {
+                  creatingSupplier
+                    ? "Creating supplier…"
+                    : "Create supplier"
+                }
               </button>
+
+              <span
+                className={
+                  styles.creationStatus
+                }
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                {
+                  creatingSupplier
+                    ? "Creating supplier…"
+                    : ""
+                }
+              </span>
+
             </form>
           </aside>
         </section>
