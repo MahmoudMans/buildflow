@@ -454,10 +454,8 @@ Owner
                                 roleOption
                               }
                             >
-                              {
-                                roleOption
-                              }
-                            </option>
+                  {formatTeamRole(roleOption)}
+                </option>
                           )
                         )}
                       </select>
@@ -622,8 +620,8 @@ Owner
                           roleOption
                         }
                       >
-                        {roleOption}
-                      </option>
+                  {formatTeamRole(roleOption)}
+                </option>
                     )
                   )}
                 </select>
