@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import styles from "./demo.module.css";
+
 import {
   demoAccounts,
   portfolioConfig,
@@ -7,8 +9,8 @@ import {
 
 export default function DemoPage() {
   return (
-    <main className="demoExperience">
-      <nav className="demoTopbar">
+    <main className={`demoExperience ${styles.demoPage}`}>
+      <nav className="demoTopbar" aria-label="Demo navigation">
         <Link
           className="portfolioBrand"
           href="/"
@@ -29,7 +31,7 @@ export default function DemoPage() {
         </Link>
 
         <Link href="/">
-          Back to product
+          Back to BuildFlow
         </Link>
       </nav>
 
@@ -39,31 +41,15 @@ export default function DemoPage() {
         </span>
 
         <h1>
-          Explore BuildFlow without
-          creating data manually.
+          Explore BuildFlow from five
+          working perspectives.
         </h1>
 
         <p>
           NorthBuild Construction is
           pre-populated with three realistic
-          construction projects. Choose the
-          role you want to experience.
-        </p>
-
-        <p className="demoRoleSummary">
-          Available demo roles:
-          {" "}
-          <strong>Owner</strong>,
-          {" "}
-          <strong>Project Manager</strong>,
-          {" "}
-          <strong>Site Manager</strong>,
-          {" "}
-          <strong>Accountant</strong>
-          {" "}
-          and
-          {" "}
-          <strong>Client</strong>.
+          construction projects. Choose a
+          role to enter the demo.
         </p>
 
         <div className="demoOrganizationBadge">
@@ -75,12 +61,38 @@ export default function DemoPage() {
           </strong>
 
           <span>
-            3 portfolio projects
+            3 demo projects
           </span>
         </div>
       </section>
 
-      <section className="demoRoleGrid">
+      <section
+        className={
+          styles.roleSection
+        }
+        aria-labelledby="demo-role-heading"
+      >
+        <header
+          className={
+            styles.roleSectionHeader
+          }
+        >
+          <h2
+            id="demo-role-heading"
+          >
+            Choose a role
+          </h2>
+
+          <p>
+            Each role opens the same demo
+            organization from a different
+            working perspective.
+          </p>
+        </header>
+
+        <div
+          className="demoRoleGrid"
+        >
         {demoAccounts.map(
           (
             account,
@@ -110,49 +122,34 @@ export default function DemoPage() {
                 }
               </p>
 
-              <dl>
-                <div>
-                  <dt>
-                    Email
-                  </dt>
-                  <dd>
-                    {account.email}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt>
-                    Password
-                  </dt>
-                  <dd>
-                    {
-                      portfolioConfig
-                        .demoPassword
-                    }
-                  </dd>
-                </div>
-              </dl>
-
               <Link
                 className="portfolioPrimaryButton"
                 href={`/demo/login/${account.key}`}
               >
-                Login as {
+                Enter demo as {
                   account.label
                 }
               </Link>
             </article>
           )
         )}
+
+        </div>
       </section>
 
-      <section className="demoProjectPreview">
+      <section
+        className="demoProjectPreview"
+        aria-labelledby="demo-projects-heading"
+      >
+
         <header>
           <span>
             DEMO PROJECTS
           </span>
 
-          <h2>
+          <h2
+            id="demo-projects-heading"
+          >
             Realistic construction scenarios
           </h2>
         </header>
