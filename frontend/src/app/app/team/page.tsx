@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "./team.module.css";
+
 import type { FormEvent } from "react";
 
 import { useRouter } from "next/navigation";
@@ -35,7 +37,61 @@ const assignableRoles: OrganizationRole[] = [
   "CLIENT",
 ];
 
+
+function formatTeamRole(
+  value: string | null | undefined
+) {
+  if (!value) {
+    return "—";
+  }
+
+  return value
+    .toLowerCase()
+    .replaceAll("_", " ")
+    .replace(
+      /\b\w/g,
+      (letter) =>
+        letter.toUpperCase()
+    );
+}
+
+function formatTeamStatus(
+  value:
+    | string
+    | boolean
+    | null
+    | undefined
+) {
+  if (
+    typeof value
+    === "boolean"
+  ) {
+    return value
+      ? "Active"
+      : "Inactive";
+  }
+
+  if (!value) {
+    return "—";
+  }
+
+  return value
+    .toLowerCase()
+    .replaceAll("_", " ")
+    .replace(
+      /\b\w/g,
+      (letter) =>
+        letter.toUpperCase()
+    );
+}
+
 export default function TeamPage() {
+
+  const [
+    sendingInvitation,
+    setSendingInvitation,
+  ] = useState(false);
+
   const router = useRouter();
 
   const {
@@ -221,7 +277,7 @@ useEffect(() => {
     <main className="appShell">
       <AppSidebar active="team" />
 
-      <section className="appContent">
+      <section className={`appContent ${styles.teamContent}`}>
         <header className="appHeader">
           <div>
             <p>
@@ -231,9 +287,39 @@ useEffect(() => {
             <h1>
               Team management
             </h1>
+
+              <p
+                className={
+                  styles.pageDescription
+                }
+              >
+                Manage organization members, roles, and invitations.
+              </p>
+
+              <a
+                className={
+                  styles.mobileInviteLink
+                }
+                href="#invite-member"
+              >
+                Invite member
+              </a>
+
           </div>
 
-          <select
+          <label
+              className={
+                styles.organizationControl
+              }
+            >
+              <span
+                className={
+                  styles.organizationLabel
+                }
+              >
+                Organization
+              </span>
+<select
             className="organizationSelector"
             value={organizationId}
             onChange={(event) => {
@@ -249,7 +335,7 @@ useEffect(() => {
                 value
               );
             }}
-          >
+           disabled={sendingInvitation}>
             {organizations.map(
               (organization) => (
                 <option
@@ -261,6 +347,7 @@ useEffect(() => {
               )
             )}
           </select>
+            </label>
         </header>
 
         {error && (
@@ -269,20 +356,56 @@ useEffect(() => {
           </div>
         )}
 
-        <section className="teamLayout">
-          <div className="teamTableCard">
+        <section className="teamLayout" data-buildflow-team-layout="true">
+          <div className="teamTableCard" data-buildflow-members-panel="true" role="region" aria-label="Organization members">
             <h2>Members</h2>
 
+            <p
+              className={
+                styles.memberCount
+              }
+            >
+              {members.length} {
+                members.length === 1
+                  ? "member"
+                  : "members"
+              }
+            </p>
+
+
             <div className="teamTable">
-              {members.map(
+
+            <div
+              className={
+                styles.memberColumns
+              }
+              aria-hidden="true"
+            >
+              <span>
+                Member
+              </span>
+
+              <span>
+                Role
+              </span>
+
+              <span>
+                Status
+              </span>
+
+              <span>
+                Action
+              </span>
+            </div>
+
+{members.map(
                 (member) => (
                   <div
                     className="teamRow"
                     key={
                       member.membershipId
-                    }
-                  >
-                    <div>
+                    } data-buildflow-member-row="true">
+                    <div data-buildflow-member-cell="member" data-buildflow-label="Member">
                       <strong>
                         {member.firstName}
                         {" "}
@@ -297,10 +420,14 @@ useEffect(() => {
                     {member.role ===
                     "OWNER" ? (
                       <strong>
-                        OWNER
-                      </strong>
+Owner
+</strong>
                     ) : (
-                      <select
+                      <div
+                  data-buildflow-member-cell="role"
+                  data-buildflow-label="Role"
+                >
+<select
                         value={
                           member.role
                         }
@@ -334,6 +461,7 @@ useEffect(() => {
                           )
                         )}
                       </select>
+                </div>
                     )}
 
                     <span
@@ -343,26 +471,30 @@ useEffect(() => {
                           ? "memberActive"
                           : "memberInactive"
                       }
-                    >
-                      {member.status}
+                     data-buildflow-member-cell="status" data-buildflow-label="Status" data-buildflow-member-status="true">
+                      {formatTeamStatus(member.status)}
                     </span>
 
                     {member.role !==
                       "OWNER" && (
-                      <button
+                      <div
+                  data-buildflow-member-cell="action"
+                  data-buildflow-label="Action"
+                >
+<button
                         type="button"
                         className="smallButton"
                         onClick={() =>
                           toggleMembership(
                             member
                           )
-                        }
-                      >
+                        } data-buildflow-deactivate-button="true">
                         {member.status ===
                         "ACTIVE"
                           ? "Deactivate"
                           : "Activate"}
                       </button>
+                </div>
                     )}
                   </div>
                 )
@@ -370,16 +502,87 @@ useEffect(() => {
             </div>
           </div>
 
-          <aside className="inviteCard">
+          <aside className="inviteCard" data-buildflow-invite-panel="true" id="invite-member">
             <h2>Invite member</h2>
 
-            <form
-              className="authForm"
-              onSubmit={invite}
+
+            <div
+              className={
+                styles.inviteContext
+              }
             >
-              <label>
-                Email
-                <input
+              <p>
+                Organization:{" "}
+                <strong>
+                  {
+                    organizations.find(
+                      (organization) =>
+                        organization.id
+                        === organizationId
+                    )?.name
+                    ?? "Selected organization"
+                  }
+                </strong>
+              </p>
+
+              <p
+                className={
+                  styles.requiredInstruction
+                }
+              >
+                Fields marked{" "}
+                <span
+                  className={
+                    styles.requiredMark
+                  }
+                  aria-hidden="true"
+                >
+                  *
+                </span>
+                {" "}are required.
+              </p>
+
+            </div>
+
+<form
+              className="authForm"
+              onSubmit={async (event) => {
+              if (sendingInvitation) {
+                event.preventDefault();
+                return;
+              }
+
+              setSendingInvitation(
+                true,
+              );
+
+              try {
+                await invite(
+                  event,
+                );
+              } finally {
+                setSendingInvitation(
+                  false,
+                );
+              }
+            }} data-buildflow-invite-form="true">
+              <label data-buildflow-required="true">
+                <span
+                  className={
+                    styles.fieldLabelText
+                  }
+                >
+                  Email
+                  <span
+                    className={
+                      styles.fieldRequiredMark
+                    }
+                    aria-hidden="true"
+                  >
+                    *
+                  </span>
+                </span>
+<input
                   type="email"
                   required
                   value={email}
@@ -429,9 +632,29 @@ useEffect(() => {
               <button
                 className="authSubmit"
                 type="submit"
-              >
-                Send invitation
+               disabled={sendingInvitation} aria-busy={sendingInvitation}>
+                {
+                  sendingInvitation
+                    ? "Sending invitation…"
+                    : "Send invitation"
+                }
               </button>
+
+              <span
+                className={
+                  styles.invitationStatus
+                }
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                {
+                  sendingInvitation
+                    ? "Sending invitation…"
+                    : ""
+                }
+              </span>
+
             </form>
 
             <div className="pendingInvitations">
@@ -441,9 +664,20 @@ useEffect(() => {
 
               {invitations.length ===
                 0 && (
+                <div
+                className={
+                  styles.invitationEmpty
+                }
+                data-buildflow-invitation-empty="true"
+              >
+                <strong>
+                  No invitations for this organization
+                </strong>
+
                 <p>
-                  No invitations yet.
+                  Invitations you send will appear here.
                 </p>
+              </div>
               )}
 
               {invitations.map(
@@ -451,13 +685,12 @@ useEffect(() => {
                   <div
                     key={
                       invitation.id
-                    }
-                  >
-                    <strong>
+                    } data-buildflow-invitation-row="true">
+                    <strong data-buildflow-invitation-cell="invitee" data-buildflow-label="Invitee">
                       {invitation.email}
                     </strong>
 
-                    <span>
+                    <span data-buildflow-invitation-cell="details" data-buildflow-label="Role / Status">
                       {
                         invitation.role
                       }
