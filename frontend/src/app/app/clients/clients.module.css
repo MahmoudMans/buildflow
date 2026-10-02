@@ -1,0 +1,1271 @@
+.clientsContent {
+  --clients-canvas: #f8fafc;
+  --clients-surface: #ffffff;
+  --clients-subtle: #f1f5f9;
+
+  --clients-heading: #0f172a;
+  --clients-body: #475569;
+  --clients-meta: #64748b;
+
+  --clients-divider: #d8e0ea;
+  --clients-control: #64748b;
+
+  --clients-focus: #2563eb;
+
+  --clients-error: #b91c1c;
+  --clients-error-bg: #fef2f2;
+
+  --clients-success: #166534;
+  --clients-success-bg: #dcfce7;
+
+  width: 100%;
+  max-width: 1440px;
+  min-width: 0;
+
+  margin-inline: auto;
+
+  padding:
+    32px;
+
+  color:
+    var(--clients-heading);
+}
+
+.clientsContent,
+.clientsContent *,
+.clientsContent *::before,
+.clientsContent *::after {
+  box-sizing:
+    border-box;
+}
+
+/* ==========================================================================
+   Page header
+   ========================================================================== */
+
+.clientsContent
+:global(.appHeader) {
+  margin-bottom:
+    24px;
+
+  align-items:
+    flex-start;
+
+  gap:
+    24px;
+}
+
+.clientsContent
+:global(.appHeader)
+h1 {
+  margin:
+    0;
+
+  color:
+    var(--clients-heading);
+
+  font-size:
+    clamp(
+      30px,
+      3vw,
+      32px
+    );
+
+  font-weight:
+    780;
+
+  line-height:
+    1.15;
+
+  letter-spacing:
+    -0.035em;
+}
+
+.pageDescription {
+  max-width:
+    640px;
+
+  margin:
+    8px 0 0;
+
+  color:
+    var(--clients-body);
+
+  font-size:
+    15px;
+
+  font-weight:
+    400;
+
+  line-height:
+    1.5;
+
+  letter-spacing:
+    0;
+
+  text-transform:
+    none;
+}
+
+.mobileAddClientLink {
+  display:
+    none;
+}
+
+/* ==========================================================================
+   Organization scope
+   ========================================================================== */
+
+.organizationControl {
+  width:
+    clamp(
+      280px,
+      24vw,
+      320px
+    );
+
+  display:
+    grid;
+
+  gap:
+    8px;
+
+  color:
+    var(--clients-heading);
+
+  font-size:
+    14px;
+
+  font-weight:
+    650;
+
+  line-height:
+    1.4;
+}
+
+.organizationLabel {
+  display:
+    block;
+
+  color:
+    var(--clients-heading);
+
+  font-size:
+    14px;
+
+  font-weight:
+    650;
+}
+
+.organizationControl
+select {
+  width:
+    100%;
+
+  min-height:
+    48px;
+
+  padding:
+    0 40px
+    0 14px;
+
+  border:
+    1px solid
+    var(--clients-control);
+
+  border-radius:
+    8px;
+
+  outline:
+    none;
+
+  background:
+    var(--clients-surface);
+
+  color:
+    var(--clients-heading);
+
+  font:
+    inherit;
+
+  font-size:
+    16px;
+
+  transition:
+    border-color
+    140ms ease,
+    box-shadow
+    140ms ease;
+}
+
+.organizationControl
+select:hover {
+  border-color:
+    #334155;
+}
+
+.organizationControl
+select:focus-visible {
+  border-color:
+    var(--clients-focus);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(
+      37,
+      99,
+      235,
+      0.18
+    );
+}
+
+.organizationControl
+select:disabled {
+  cursor:
+    wait;
+
+  opacity:
+    0.72;
+}
+
+/* ==========================================================================
+   Main workspace
+   ========================================================================== */
+
+.clientsContent
+[data-buildflow-clients-layout="true"] {
+  width:
+    100%;
+
+  min-width:
+    0;
+
+  display:
+    grid !important;
+
+  grid-template-columns:
+    minmax(
+      0,
+      1fr
+    )
+    384px !important;
+
+  align-items:
+    start !important;
+
+  gap:
+    24px !important;
+}
+
+.clientsContent
+[data-buildflow-client-directory="true"],
+.clientsContent
+[data-buildflow-add-client-panel="true"] {
+  min-width:
+    0;
+
+  align-self:
+    start;
+}
+
+.clientsContent
+[data-buildflow-add-client-panel="true"] {
+  width:
+    384px;
+
+  max-width:
+    100%;
+
+  scroll-margin-top:
+    24px;
+}
+
+/* ==========================================================================
+   Directory header
+   ========================================================================== */
+
+.clientsContent
+[data-buildflow-client-directory="true"]
+h2,
+.clientsContent
+[data-buildflow-add-client-panel="true"]
+h2 {
+  color:
+    var(--clients-heading);
+
+  font-size:
+    20px;
+
+  font-weight:
+    750;
+
+  line-height:
+    1.3;
+
+  letter-spacing:
+    -0.02em;
+}
+
+.clientsContent
+[data-buildflow-client-directory="true"]
+h2 {
+  margin-bottom:
+    4px;
+}
+
+/* ==========================================================================
+   Directory columns
+   ========================================================================== */
+
+.clientColumns {
+  padding:
+    11px 24px;
+
+  display:
+    grid;
+
+  grid-template-columns:
+    minmax(
+      240px,
+      2fr
+    )
+    120px
+    minmax(
+      170px,
+      1fr
+    )
+    auto;
+
+  align-items:
+    center;
+
+  gap:
+    24px;
+
+  border-top:
+    1px solid
+    var(--clients-divider);
+
+  border-bottom:
+    1px solid
+    var(--clients-divider);
+
+  background:
+    #fbfcfe;
+
+  color:
+    var(--clients-meta);
+
+  font-size:
+    12px;
+
+  font-weight:
+    720;
+
+  line-height:
+    1.35;
+
+  letter-spacing:
+    0.04em;
+
+  text-transform:
+    uppercase;
+}
+
+.clientColumns
+span:last-child {
+  text-align:
+    right;
+}
+
+/* ==========================================================================
+   Client rows
+   ========================================================================== */
+
+.clientsContent
+[data-buildflow-client-row="true"] {
+  min-height:
+    0 !important;
+
+  padding:
+    20px 24px !important;
+
+  display:
+    grid !important;
+
+  grid-template-columns:
+    minmax(
+      240px,
+      2fr
+    )
+    120px
+    minmax(
+      170px,
+      1fr
+    )
+    auto !important;
+
+  align-items:
+    center !important;
+
+  gap:
+    24px !important;
+
+  border-bottom:
+    1px solid
+    var(--clients-divider);
+
+  background:
+    var(--clients-surface);
+
+  color:
+    var(--clients-body);
+}
+
+.clientsContent
+[data-buildflow-client-row="true"]:last-child {
+  border-bottom:
+    0;
+}
+
+.clientsContent
+[data-buildflow-client-cell] {
+  min-width:
+    0;
+}
+
+.clientsContent
+[data-buildflow-client-cell="client"] {
+  display:
+    grid;
+
+  gap:
+    4px;
+
+  align-content:
+    center;
+}
+
+.clientsContent
+[data-buildflow-client-cell="client"]
+strong,
+.clientNameLink {
+  color:
+    var(--clients-heading);
+
+  font-size:
+    15px;
+
+  font-weight:
+    700;
+
+  line-height:
+    1.4;
+
+  overflow-wrap:
+    anywhere;
+}
+
+.clientNameLink {
+  width:
+    fit-content;
+
+  text-decoration-line:
+    underline;
+
+  text-decoration-thickness:
+    1px;
+
+  text-decoration-color:
+    #94a3b8;
+
+  text-underline-offset:
+    3px;
+}
+
+.clientNameLink:hover {
+  text-decoration-thickness:
+    2px;
+
+  text-decoration-color:
+    var(--clients-heading);
+}
+
+.clientsContent
+[data-buildflow-client-cell="client"]
+span,
+.clientsContent
+[data-buildflow-client-cell="client"]
+small {
+  color:
+    var(--clients-meta);
+
+  font-size:
+    13px;
+
+  font-weight:
+    450;
+
+  line-height:
+    1.4;
+
+  overflow-wrap:
+    anywhere;
+}
+
+.clientsContent
+[data-buildflow-client-cell="type"],
+.clientsContent
+[data-buildflow-client-cell="phone"] {
+  color:
+    var(--clients-body);
+
+  font-size:
+    14px;
+
+  font-weight:
+    520;
+
+  line-height:
+    1.4;
+
+  overflow-wrap:
+    anywhere;
+}
+
+/* ==========================================================================
+   Status badge
+   ========================================================================== */
+
+.clientsContent
+[data-buildflow-client-status="true"] {
+  width:
+    fit-content !important;
+
+  min-width:
+    0 !important;
+
+  height:
+    auto !important;
+
+  min-height:
+    0 !important;
+
+  padding:
+    4px 10px !important;
+
+  display:
+    inline-flex !important;
+
+  align-items:
+    center !important;
+
+  justify-content:
+    center !important;
+
+  justify-self:
+    end !important;
+
+  border:
+    0 !important;
+
+  border-radius:
+    999px !important;
+
+  background:
+    var(--clients-subtle) !important;
+
+  color:
+    var(--clients-body) !important;
+
+  font-size:
+    12px !important;
+
+  font-weight:
+    720 !important;
+
+  line-height:
+    1.35 !important;
+
+  white-space:
+    nowrap !important;
+}
+
+/* ==========================================================================
+   Add-client context
+   ========================================================================== */
+
+.clientFormContext {
+  margin:
+    8px 0 24px;
+
+  display:
+    grid;
+
+  gap:
+    8px;
+}
+
+.clientFormContext
+p {
+  margin:
+    0;
+
+  color:
+    var(--clients-body);
+
+  font-size:
+    13px;
+
+  font-weight:
+    400;
+
+  line-height:
+    1.45;
+}
+
+.clientFormContext
+strong {
+  color:
+    var(--clients-heading);
+
+  font-weight:
+    650;
+}
+
+.requiredInstruction {
+  color:
+    var(--clients-meta) !important;
+}
+
+.requiredMark {
+  color:
+    var(--clients-error);
+
+  font-weight:
+    800;
+}
+
+/* ==========================================================================
+   Form
+   ========================================================================== */
+
+.clientsContent
+[data-buildflow-create-client-form="true"] {
+  display:
+    grid;
+
+  gap:
+    20px;
+}
+
+.clientsContent
+[data-buildflow-create-client-form="true"]
+label {
+  min-width:
+    0;
+
+  color:
+    var(--clients-heading);
+
+  font-size:
+    14px;
+
+  font-weight:
+    650;
+
+  line-height:
+    1.45;
+}
+
+/*
+ * Required indication is attached to the labels whose controls already have
+ * native `required` semantics. No independent field list is maintained.
+ */
+.clientsContent
+[data-buildflow-create-client-form="true"]
+label[data-buildflow-required="true"] {
+  position:
+    relative;
+}
+
+.clientsContent
+[data-buildflow-create-client-form="true"]
+label[data-buildflow-required="true"]::after {
+  content:
+    "*";
+
+  position:
+    absolute;
+
+  top:
+    1px;
+
+  right:
+    1px;
+
+  color:
+    var(--clients-error);
+
+  font-size:
+    14px;
+
+  font-weight:
+    800;
+
+  line-height:
+    1;
+}
+
+/* ==========================================================================
+   Editable controls
+   ========================================================================== */
+
+.clientsContent
+[data-buildflow-create-client-form="true"]
+input,
+.clientsContent
+[data-buildflow-create-client-form="true"]
+select,
+.clientsContent
+[data-buildflow-create-client-form="true"]
+textarea {
+  width:
+    100%;
+
+  min-height:
+    48px;
+
+  margin-top:
+    8px;
+
+  padding:
+    0 14px;
+
+  border:
+    1px solid
+    var(--clients-control) !important;
+
+  border-radius:
+    8px;
+
+  outline:
+    none;
+
+  background:
+    var(--clients-surface);
+
+  color:
+    var(--clients-heading);
+
+  font:
+    inherit;
+
+  font-size:
+    16px;
+
+  transition:
+    border-color
+    140ms ease,
+    box-shadow
+    140ms ease;
+}
+
+.clientsContent
+[data-buildflow-create-client-form="true"]
+textarea {
+  min-height:
+    96px;
+
+  padding-block:
+    12px;
+
+  resize:
+    vertical;
+}
+
+.clientsContent
+[data-buildflow-create-client-form="true"]
+input:hover,
+.clientsContent
+[data-buildflow-create-client-form="true"]
+select:hover,
+.clientsContent
+[data-buildflow-create-client-form="true"]
+textarea:hover {
+  border-color:
+    #334155 !important;
+}
+
+.clientsContent
+[data-buildflow-create-client-form="true"]
+input:focus-visible,
+.clientsContent
+[data-buildflow-create-client-form="true"]
+select:focus-visible,
+.clientsContent
+[data-buildflow-create-client-form="true"]
+textarea:focus-visible {
+  border-color:
+    var(--clients-focus) !important;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(
+      37,
+      99,
+      235,
+      0.18
+    );
+}
+
+/* ==========================================================================
+   Create-client action
+   ========================================================================== */
+
+.clientsContent
+[data-buildflow-create-client-form="true"]
+button[type="submit"] {
+  width:
+    100%;
+
+  min-height:
+    48px;
+
+  margin-top:
+    4px;
+
+  padding:
+    0 16px;
+
+  border:
+    1px solid
+    var(--clients-heading);
+
+  border-radius:
+    8px;
+
+  background:
+    var(--clients-heading);
+
+  color:
+    #ffffff;
+
+  cursor:
+    pointer;
+
+  font:
+    inherit;
+
+  font-size:
+    15px;
+
+  font-weight:
+    720;
+
+  line-height:
+    1.3;
+
+  transition:
+    background-color
+    140ms ease,
+    border-color
+    140ms ease;
+}
+
+.clientsContent
+[data-buildflow-create-client-form="true"]
+button[type="submit"]:hover:not(:disabled) {
+  border-color:
+    #1e293b;
+
+  background:
+    #1e293b;
+}
+
+.clientsContent
+[data-buildflow-create-client-form="true"]
+button[type="submit"]:active:not(:disabled) {
+  border-color:
+    #020617;
+
+  background:
+    #020617;
+}
+
+.clientsContent
+[data-buildflow-create-client-form="true"]
+button[type="submit"]:focus-visible {
+  outline:
+    3px solid
+    var(--clients-focus);
+
+  outline-offset:
+    3px;
+}
+
+.clientsContent
+[data-buildflow-create-client-form="true"]
+button[type="submit"]:disabled {
+  cursor:
+    wait;
+
+  opacity:
+    0.72;
+}
+
+/* ==========================================================================
+   Existing error treatment
+   ========================================================================== */
+
+.clientsContent
+:global(.formError) {
+  padding:
+    11px 12px;
+
+  border:
+    1px solid
+    #fecaca;
+
+  border-radius:
+    8px;
+
+  background:
+    var(--clients-error-bg);
+
+  color:
+    var(--clients-error);
+
+  font-size:
+    13px;
+
+  line-height:
+    1.5;
+}
+
+/* ==========================================================================
+   Screen-reader pending status
+   ========================================================================== */
+
+.creationStatus {
+  position:
+    absolute;
+
+  width:
+    1px;
+
+  height:
+    1px;
+
+  padding:
+    0;
+
+  margin:
+    -1px;
+
+  overflow:
+    hidden;
+
+  clip:
+    rect(
+      0,
+      0,
+      0,
+      0
+    );
+
+  white-space:
+    nowrap;
+
+  border:
+    0;
+}
+
+/* ==========================================================================
+   Keyboard focus
+   ========================================================================== */
+
+.clientsContent
+a:focus-visible,
+.clientsContent
+button:focus-visible {
+  outline:
+    3px solid
+    var(--clients-focus);
+
+  outline-offset:
+    3px;
+}
+
+/* ==========================================================================
+   Intermediate workspace
+   ========================================================================== */
+
+@media (max-width: 1199px) {
+  .clientsContent {
+    padding:
+      24px;
+  }
+
+  .clientColumns,
+  .clientsContent
+  [data-buildflow-client-row="true"] {
+    grid-template-columns:
+      minmax(
+        220px,
+        1.7fr
+      )
+      110px
+      minmax(
+        150px,
+        1fr
+      )
+      auto !important;
+
+    gap:
+      18px !important;
+  }
+}
+
+/* ==========================================================================
+   List first, form second
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+  .clientsContent
+  :global(.appHeader) {
+    display:
+      grid;
+
+    grid-template-columns:
+      minmax(
+        0,
+        1fr
+      );
+
+    gap:
+      18px;
+  }
+
+  .organizationControl {
+    width:
+      min(
+        100%,
+        420px
+      );
+  }
+
+  .mobileAddClientLink {
+    width:
+      fit-content;
+
+    min-height:
+      40px;
+
+    margin-top:
+      12px;
+
+    display:
+      inline-flex;
+
+    align-items:
+      center;
+
+    color:
+      var(--clients-heading);
+
+    font-size:
+      14px;
+
+    font-weight:
+      700;
+
+    text-decoration:
+      underline;
+
+    text-underline-offset:
+      3px;
+  }
+
+  .clientsContent
+  [data-buildflow-clients-layout="true"] {
+    grid-template-columns:
+      minmax(
+        0,
+        1fr
+      ) !important;
+  }
+
+  .clientsContent
+  [data-buildflow-add-client-panel="true"] {
+    width:
+      min(
+        100%,
+        640px
+      );
+
+    justify-self:
+      start;
+  }
+}
+
+/* ==========================================================================
+   Compact directory
+   ========================================================================== */
+
+@media (max-width: 760px) {
+  .clientColumns {
+    display:
+      none;
+  }
+
+  .clientsContent
+  [data-buildflow-client-row="true"] {
+    grid-template-columns:
+      minmax(
+        0,
+        1fr
+      )
+      auto !important;
+
+    gap:
+      14px 20px !important;
+  }
+
+  .clientsContent
+  [data-buildflow-client-cell="client"] {
+    grid-column:
+      1 / -1;
+  }
+
+  .clientsContent
+  [data-buildflow-client-cell="type"] {
+    grid-column:
+      1;
+  }
+
+  .clientsContent
+  [data-buildflow-client-cell="status"] {
+    grid-column:
+      2;
+
+    grid-row:
+      2;
+  }
+
+  .clientsContent
+  [data-buildflow-client-cell="phone"] {
+    grid-column:
+      1 / -1;
+  }
+
+  .clientsContent
+  [data-buildflow-client-cell="type"]::before,
+  .clientsContent
+  [data-buildflow-client-cell="phone"]::before,
+  .clientsContent
+  [data-buildflow-client-cell="status"]::before {
+    content:
+      attr(
+        data-buildflow-label
+      );
+
+    display:
+      block;
+
+    margin-bottom:
+      4px;
+
+    color:
+      var(--clients-meta);
+
+    font-size:
+      12px;
+
+    font-weight:
+      700;
+
+    line-height:
+      1.35;
+
+    letter-spacing:
+      0.03em;
+
+    text-transform:
+      uppercase;
+  }
+
+  .clientsContent
+  [data-buildflow-client-status="true"] {
+    justify-self:
+      end !important;
+  }
+}
+
+/* ==========================================================================
+   Phone
+   ========================================================================== */
+
+@media (max-width: 520px) {
+  .clientsContent {
+    padding:
+      24px 16px;
+  }
+
+  .clientsContent
+  [data-buildflow-client-row="true"] {
+    padding:
+      18px 16px !important;
+
+    grid-template-columns:
+      minmax(
+        0,
+        1fr
+      ) !important;
+  }
+
+  .clientsContent
+  [data-buildflow-client-cell="client"],
+  .clientsContent
+  [data-buildflow-client-cell="type"],
+  .clientsContent
+  [data-buildflow-client-cell="phone"],
+  .clientsContent
+  [data-buildflow-client-cell="status"] {
+    grid-column:
+      1 !important;
+
+    grid-row:
+      auto !important;
+  }
+
+  .clientsContent
+  [data-buildflow-client-status="true"] {
+    justify-self:
+      start !important;
+  }
+}
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .organizationControl
+  select,
+  .clientsContent
+  [data-buildflow-create-client-form="true"]
+  input,
+  .clientsContent
+  [data-buildflow-create-client-form="true"]
+  select,
+  .clientsContent
+  [data-buildflow-create-client-form="true"]
+  textarea,
+  .clientsContent
+  [data-buildflow-create-client-form="true"]
+  button[type="submit"] {
+    transition-duration:
+      0.01ms;
+  }
+}

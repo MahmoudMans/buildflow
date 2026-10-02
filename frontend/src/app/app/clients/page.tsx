@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "./clients.module.css";
+
 import Link from "next/link";
 import {
   FormEvent,
@@ -22,7 +24,31 @@ import type {
   ClientType,
 } from "@/lib/types";
 
+
+function formatClientDisplayValue(
+  value: string | null | undefined
+) {
+  if (!value) {
+    return "—";
+  }
+
+  return value
+    .toLowerCase()
+    .replaceAll("_", " ")
+    .replace(
+      /\b\w/g,
+      (letter) =>
+        letter.toUpperCase()
+    );
+}
+
 export default function ClientsPage() {
+
+  const [
+    creatingClient,
+    setCreatingClient,
+  ] = useState(false);
+
   const {
     user,
     organizations,
@@ -169,14 +195,44 @@ useEffect(() => {
     <main className="appShell">
       <AppSidebar active="clients" />
 
-      <section className="appContent">
+      <section className={`appContent ${styles.clientsContent}`} data-buildflow-add-client-panel="true" id="add-client" data-buildflow-clients-layout="true">
         <header className="appHeader">
           <div>
-            <p>CRM</p>
+
             <h1>Clients</h1>
+
+              <p
+                className={
+                  styles.pageDescription
+                }
+              >
+                Review and manage client records for the selected organization.
+              </p>
+
+              <a
+                className={
+                  styles.mobileAddClientLink
+                }
+                href="#add-client"
+              >
+                Add client
+              </a>
+
           </div>
 
-          <select
+          <label
+              className={
+                styles.organizationControl
+              }
+            >
+              <span
+                className={
+                  styles.organizationLabel
+                }
+              >
+                Organization
+              </span>
+<select
             className="organizationSelector"
             value={organizationId}
             onChange={(event) => {
@@ -191,8 +247,7 @@ useEffect(() => {
                 "buildflow.organizationId",
                 value
               );
-            }}
-          >
+            }} disabled={creatingClient}>
             {organizations.map(
               (organization) => (
                 <option
@@ -204,6 +259,7 @@ useEffect(() => {
               )
             )}
           </select>
+            </label>
         </header>
 
         {error && (
@@ -213,7 +269,7 @@ useEffect(() => {
         )}
 
         <section className="moduleLayout">
-          <div className="moduleTableCard">
+          <div className="moduleTableCard" data-buildflow-client-directory="true" role="region" aria-label="Client directory">
             <div className="moduleCardHeader">
               <div>
                 <h2>
@@ -221,29 +277,62 @@ useEffect(() => {
                 </h2>
 
                 <p>
-                  {clients.length} clients
+                  {clients.length} {
+                  clients.length === 1
+                    ? "client"
+                    : "clients"
+                }
                 </p>
               </div>
             </div>
 
-            <div className="dataList">
+            <div className="dataList" data-buildflow-client-row="true">
               {clients.length === 0 && (
                 <div className="emptyState">
-                  No clients yet.
+                  No clients in this organization
                 </div>
               )}
 
-              {clients.map(
+
+            <div
+              className={
+                styles.clientColumns
+              }
+              aria-hidden="true"
+            >
+              <span>
+                Client
+              </span>
+
+              <span>
+                Type
+              </span>
+
+              <span>
+                Phone
+              </span>
+
+              <span>
+                Status
+              </span>
+            </div>
+
+{clients.map(
                 (client) => (
                   <Link
                     className="dataRow"
                     href={`/app/clients/${client.id}`}
                     key={client.id}
                   >
-                    <div>
-                      <strong>
+                    <div data-buildflow-client-cell="client" data-buildflow-label="Client">
+                      <Link
+                  className={
+                    styles.clientNameLink
+                  }
+                  href={`/app/clients/${client.id}`}
+                >
                         {client.displayName}
-                      </strong>
+                      </Link>
 
                       <span>
                         {client.email ??
@@ -251,19 +340,19 @@ useEffect(() => {
                       </span>
                     </div>
 
-                    <span>
-                      {client.type}
+                    <span data-buildflow-client-cell="type" data-buildflow-label="Type">
+                      {formatClientDisplayValue(client.type)}
                     </span>
 
-                    <span>
+                    <span data-buildflow-client-cell="phone" data-buildflow-label="Phone">
                       {client.phone ??
                         "—"}
                     </span>
 
                     <span
                       className="statusBadge"
-                    >
-                      {client.status}
+                     data-buildflow-client-cell="status" data-buildflow-label="Status" data-buildflow-client-status="true">
+                      {formatClientDisplayValue(client.status)}
                     </span>
                   </Link>
                 )
@@ -274,10 +363,63 @@ useEffect(() => {
           <aside className="moduleFormCard">
             <h2>Add client</h2>
 
-            <form
-              className="authForm"
-              onSubmit={createClient}
+
+            <div
+              className={
+                styles.clientFormContext
+              }
             >
+              <p>
+                Organization:{" "}
+                <strong>
+                  {
+                    organizations.find(
+                      (organization) =>
+                        organization.id
+                        === organizationId
+                    )?.name
+                    ?? "Selected organization"
+                  }
+                </strong>
+              </p>
+
+              <p
+                className={
+                  styles.requiredInstruction
+                }
+              >
+                Fields marked{" "}
+                <span
+                  className={
+                    styles.requiredMark
+                  }
+                  aria-hidden="true"
+                >
+                  *
+                </span>
+                {" "}are required.
+              </p>
+
+            </div>
+
+<form
+              className="authForm"
+              onSubmit={async (event) => {
+              if (creatingClient) {
+                event.preventDefault();
+                return;
+              }
+
+              setCreatingClient(true);
+
+              try {
+                await createClient(
+                  event
+                );
+              } finally {
+                setCreatingClient(false);
+              }
+            }} data-buildflow-create-client-form="true">
               <label>
                 Client type
                 <select
@@ -301,7 +443,7 @@ useEffect(() => {
               </label>
 
               {type === "COMPANY" ? (
-                <label>
+                <label data-buildflow-required="true">
                   Company name
                   <input
                     required
@@ -315,7 +457,7 @@ useEffect(() => {
                 </label>
               ) : (
                 <div className="fieldRow">
-                  <label>
+                  <label data-buildflow-required="true">
                     First name
                     <input
                       required
@@ -328,7 +470,7 @@ useEffect(() => {
                     />
                   </label>
 
-                  <label>
+                  <label data-buildflow-required="true">
                     Last name
                     <input
                       required
@@ -371,9 +513,29 @@ useEffect(() => {
               <button
                 className="authSubmit"
                 type="submit"
-              >
-                Create client
+               disabled={creatingClient} aria-busy={creatingClient}>
+                {
+                  creatingClient
+                    ? "Creating client…"
+                    : "Create client"
+                }
               </button>
+
+              <span
+                className={
+                  styles.creationStatus
+                }
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                {
+                  creatingClient
+                    ? "Creating client…"
+                    : ""
+                }
+              </span>
+
             </form>
           </aside>
         </section>
