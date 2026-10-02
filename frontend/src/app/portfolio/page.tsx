@@ -39,7 +39,7 @@ const modules = [
 export default function PortfolioPage() {
   return (
     <main className="portfolioDocumentation">
-      <nav className="demoTopbar">
+      <nav className="demoTopbar" aria-label="Portfolio navigation">
         <Link
           className="portfolioBrand"
           href="/"
@@ -59,7 +59,34 @@ export default function PortfolioPage() {
           </div>
         </Link>
 
-        <div>
+        <div
+          className="portfolioDocsNav"
+        >
+          <div
+            className="portfolioDocsAnchors"
+            aria-label="Architecture sections"
+          >
+            <a href="#flow">
+              Flow
+            </a>
+
+            <a href="#workflow">
+              Workflow
+            </a>
+
+            <a href="#modules">
+              Modules
+            </a>
+
+            <a href="#security">
+              Security
+            </a>
+
+            <a href="#deployment">
+              Local setup
+            </a>
+          </div>
+
           <Link href="/demo">
             Demo
           </Link>
@@ -89,16 +116,16 @@ export default function PortfolioPage() {
         </h1>
 
         <p>
-          BuildFlow separates frontend
-          presentation, authoritative
+          BuildFlow separates presentation,
           backend business rules, tenant
-          security, relational persistence,
-          object storage and infrastructure
-          services.
+          authorization, relational data,
+          file storage and supporting
+          infrastructure into explicit
+          system boundaries.
         </p>
       </header>
 
-      <section className="portfolioDocsSection">
+      <section className="portfolioDocsSection" id="flow">
         <header>
           <span>
             SYSTEM ARCHITECTURE
@@ -125,9 +152,20 @@ export default function PortfolioPage() {
             </span>
           </article>
 
-          <b>
+          <div
+          className="portfolioFlowConnector"
+          aria-label="Request boundary"
+        >
+          <span>
             REST / HTTP-only session
+          </span>
+
+          <b
+            aria-hidden="true"
+          >
+            ↓
           </b>
+        </div>
 
           <article>
             <small>
@@ -141,9 +179,20 @@ export default function PortfolioPage() {
             </span>
           </article>
 
-          <b>
+          <div
+          className="portfolioFlowConnector"
+          aria-label="Persistence boundary"
+        >
+          <span>
             Persistence boundaries
+          </span>
+
+          <b
+            aria-hidden="true"
+          >
+            ↓
           </b>
+        </div>
 
           <div>
             <article>
@@ -185,7 +234,7 @@ export default function PortfolioPage() {
         </div>
       </section>
 
-      <section className="portfolioDocsSection">
+      <section className="portfolioDocsSection" id="workflow">
         <header>
           <span>
             PRODUCT LIFECYCLE
@@ -222,7 +271,7 @@ export default function PortfolioPage() {
         </div>
       </section>
 
-      <section className="portfolioDocsSection">
+      <section className="portfolioDocsSection" id="modules">
         <header>
           <span>
             MODULES
@@ -260,7 +309,7 @@ export default function PortfolioPage() {
         </div>
       </section>
 
-      <section className="portfolioDocsSection">
+      <section className="portfolioDocsSection" id="security">
         <header>
           <span>
             SECURITY MODEL
@@ -342,7 +391,7 @@ export default function PortfolioPage() {
         </div>
       </section>
 
-      <section className="portfolioDocsSection">
+      <section className="portfolioDocsSection" id="deployment">
         <header>
           <span>
             LOCAL DEPLOYMENT
@@ -420,11 +469,25 @@ export default function PortfolioPage() {
         </div>
       </section>
 
-      <section className="portfolioDocsFinal">
+      <section
+        id="demo"
+        className="portfolioDocsFinal"
+      >
+        <span
+          className="portfolioEyebrow portfolioDocsFinalEyebrow"
+        >
+          EXPERIENCE BUILDFLOW
+        </span>
+
         <h2>
-          See the architecture from the
-          perspective of a real user.
+          See how the architecture behaves
+          from the perspective of a real user.
         </h2>
+
+        <p>
+          Move from the architecture model
+          into the role-based BuildFlow demo.
+        </p>
 
         <Link
           className="portfolioPrimaryButton"
