@@ -958,3 +958,396 @@ button:focus-visible {
 
   border: 0;
 }
+
+/* BUILDFLOW_PROJECTS_V2_FINAL_START */
+
+/* ==========================================================================
+   Regression consolidation
+   ========================================================================== */
+
+/*
+ * Supporting copy is ordinary page guidance, never an amber eyebrow.
+ */
+.projectsContent .pageDescription {
+  margin:
+    8px 0 0 !important;
+
+  color:
+    #475569 !important;
+
+  font-size:
+    15px !important;
+
+  font-weight:
+    400 !important;
+
+  line-height:
+    1.5 !important;
+
+  letter-spacing:
+    0 !important;
+
+  text-transform:
+    none !important;
+}
+
+/*
+ * One count header only.
+ */
+.projectListCount {
+  min-height:
+    0 !important;
+
+  margin:
+    0 !important;
+
+  padding:
+    16px 24px !important;
+
+  border-bottom:
+    1px solid #d8e0ea !important;
+}
+
+.projectListCount strong {
+  color:
+    #0f172a;
+
+  font-size:
+    14px;
+
+  font-weight:
+    720;
+
+  line-height:
+    1.4;
+
+  letter-spacing:
+    0;
+}
+
+/*
+ * All rows use exactly the same metadata tracks.
+ */
+.projectsContent
+[data-buildflow-metadata-grid="true"] {
+  width:
+    100% !important;
+
+  max-width:
+    640px !important;
+
+  margin-top:
+    16px !important;
+
+  display:
+    grid !important;
+
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(
+        0,
+        1fr
+      )
+    ) !important;
+
+  align-items:
+    start !important;
+
+  gap:
+    16px !important;
+}
+
+.projectsContent
+[data-buildflow-meta] {
+  min-width:
+    0 !important;
+
+  margin:
+    0 !important;
+
+  padding:
+    0 !important;
+
+  display:
+    grid !important;
+
+  gap:
+    4px !important;
+
+  align-content:
+    start !important;
+}
+
+.projectsContent
+[data-buildflow-meta]::before {
+  display:
+    block;
+
+  color:
+    #64748b;
+
+  font-size:
+    13px;
+
+  font-weight:
+    650;
+
+  line-height:
+    1.35;
+
+  letter-spacing:
+    0;
+}
+
+/*
+ * Required instructions sit directly above the real form.
+ */
+.requiredInstruction {
+  margin:
+    8px 0 24px !important;
+
+  color:
+    #64748b !important;
+
+  font-size:
+    13px !important;
+
+  font-weight:
+    400 !important;
+
+  line-height:
+    1.45 !important;
+}
+
+.requiredInstruction strong {
+  color:
+    #b91c1c;
+}
+
+/*
+ * Create form spacing.
+ */
+.projectsContent
+[data-buildflow-create-form="true"] {
+  display:
+    grid !important;
+
+  gap:
+    20px !important;
+}
+
+.projectsContent
+[data-buildflow-create-form="true"]
+label {
+  min-width:
+    0;
+
+  position:
+    relative;
+
+  color:
+    #0f172a;
+
+  font-size:
+    14px;
+
+  font-weight:
+    650;
+
+  line-height:
+    1.45;
+}
+
+/*
+ * Visible marker is derived from the same native-required state used by
+ * browser semantics / existing validation.
+ */
+.projectsContent
+[data-buildflow-create-form="true"]
+label[data-buildflow-required="true"]::after {
+  content:
+    "*";
+
+  position:
+    absolute;
+
+  top:
+    1px;
+
+  right:
+    1px;
+
+  color:
+    #b91c1c;
+
+  font-size:
+    14px;
+
+  font-weight:
+    800;
+
+  line-height:
+    1;
+}
+
+/*
+ * Start and Planned end each span the full parent field grid.
+ * No JSX nodes are moved.
+ */
+.projectsContent
+[data-buildflow-create-form="true"]
+label[data-buildflow-date-field="start"],
+.projectsContent
+[data-buildflow-create-form="true"]
+label[data-buildflow-date-field="planned-end"] {
+  width:
+    100% !important;
+
+  grid-column:
+    1 / -1 !important;
+
+  display:
+    grid !important;
+
+  gap:
+    8px !important;
+}
+
+/*
+ * Strong default control boundary. Only editable form controls use it;
+ * decorative panel separators remain lighter.
+ */
+.projectsContent
+[data-buildflow-create-form="true"]
+input,
+.projectsContent
+[data-buildflow-create-form="true"]
+select,
+.projectsContent
+[data-buildflow-create-form="true"]
+textarea {
+  width:
+    100%;
+
+  min-height:
+    48px;
+
+  padding-inline:
+    14px;
+
+  border:
+    1px solid #64748b !important;
+
+  border-radius:
+    8px;
+
+  background:
+    #ffffff;
+
+  color:
+    #0f172a;
+
+  font-size:
+    16px;
+}
+
+.projectsContent
+[data-buildflow-create-form="true"]
+input:hover,
+.projectsContent
+[data-buildflow-create-form="true"]
+select:hover,
+.projectsContent
+[data-buildflow-create-form="true"]
+textarea:hover {
+  border-color:
+    #334155 !important;
+}
+
+.projectsContent
+[data-buildflow-create-form="true"]
+input:focus-visible,
+.projectsContent
+[data-buildflow-create-form="true"]
+select:focus-visible,
+.projectsContent
+[data-buildflow-create-form="true"]
+textarea:focus-visible {
+  border-color:
+    #2563eb !important;
+
+  outline:
+    0;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(
+      37,
+      99,
+      235,
+      0.18
+    );
+}
+
+/*
+ * Keep the already-successful content-sized status treatment.
+ */
+.projectsContent
+[data-buildflow-project-status="true"] {
+  width:
+    fit-content !important;
+
+  height:
+    auto !important;
+
+  min-height:
+    0 !important;
+
+  padding:
+    4px 10px !important;
+
+  align-self:
+    start !important;
+
+  justify-self:
+    end !important;
+}
+
+/* ==========================================================================
+   Responsive metadata
+   ========================================================================== */
+
+@media (max-width: 1199px) {
+  .projectsContent
+  [data-buildflow-metadata-grid="true"] {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(
+          0,
+          1fr
+        )
+      ) !important;
+  }
+}
+
+@media (max-width: 639px) {
+  .projectListCount {
+    padding:
+      16px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .projectsContent
+  [data-buildflow-metadata-grid="true"] {
+    grid-template-columns:
+      minmax(
+        0,
+        1fr
+      ) !important;
+  }
+}
+
+/* BUILDFLOW_PROJECTS_V2_FINAL_END */

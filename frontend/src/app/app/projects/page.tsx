@@ -328,15 +328,7 @@ useEffect(() => {
         <section className="moduleLayout">
           <div className="moduleTableCard">
             <div className="moduleCardHeader">
-              <div>
-                <h2>
-                  Projects
-                </h2>
 
-                <p>
-                  {projects.length} projects
-                </p>
-              </div>
             </div>
 
             <div className="projectList" data-buildflow-region="project-list" aria-label="Project list">
@@ -387,7 +379,7 @@ useEffect(() => {
                       </strong>
                     </div>
 
-                    <div className="projectListMeta">
+                    <div className="projectListMeta" data-buildflow-metadata-grid="true">
                       <span data-buildflow-meta="type" data-buildflow-label="Type">
                         {buildflowProjectDisplayLabel(project.projectType)}
                       </span>
@@ -464,9 +456,8 @@ useEffect(() => {
                   false,
                 );
               }
-            }}
-            >
-              <label>
+            }} data-buildflow-create-form="true">
+              <label data-buildflow-required="true">
                 Client
                 <select
                   required
@@ -494,7 +485,7 @@ useEffect(() => {
                 </select>
               </label>
 
-              <label>
+              <label data-buildflow-required="true">
                 Project name
                 <input
                   required
@@ -617,7 +608,7 @@ useEffect(() => {
               </label>
 
               <div className="fieldRow">
-                <label>
+                <label data-buildflow-date-field="start">
                   Start date
                   <input
                     type="date"
@@ -630,7 +621,7 @@ useEffect(() => {
                   />
                 </label>
 
-                <label>
+                <label data-buildflow-date-field="planned-end">
                   Planned end
                   <input
                     type="date"
