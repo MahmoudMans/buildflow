@@ -1,0 +1,960 @@
+.projectsShell {
+  --project-canvas: #f8fafc;
+  --project-surface: #ffffff;
+  --project-subtle: #f1f5f9;
+
+  --project-navy: #0f172a;
+  --project-body: #475569;
+  --project-meta: #64748b;
+
+  --project-divider: #d8e0ea;
+  --project-control: #64748b;
+
+  --project-accent: #b45309;
+  --project-focus: #2563eb;
+
+  --project-warning: #92400e;
+  --project-warning-bg: #fef3c7;
+
+  --project-error: #b91c1c;
+  --project-error-bg: #fef2f2;
+
+  min-height: 100vh;
+
+  background:
+    var(--project-canvas);
+
+  color:
+    var(--project-navy);
+}
+
+.projectsShell,
+.projectsShell *,
+.projectsShell *::before,
+.projectsShell *::after {
+  box-sizing: border-box;
+}
+
+.projectsContent {
+  width: 100%;
+  max-width: 1440px;
+  min-width: 0;
+
+  margin-inline: auto;
+
+  padding: 32px;
+}
+
+/* ==========================================================================
+   Page header
+   ========================================================================== */
+
+.projectsContent
+:global(.appHeader) {
+  margin-bottom: 24px;
+
+  align-items: flex-start;
+
+  gap: 24px;
+}
+
+.projectsContent
+:global(.appHeader)
+h1 {
+  margin: 0;
+
+  color:
+    var(--project-navy);
+
+  font-size:
+    clamp(
+      30px,
+      3vw,
+      32px
+    );
+
+  font-weight: 780;
+  line-height: 1.15;
+
+  letter-spacing:
+    -0.035em;
+}
+
+.pageDescription {
+  max-width: 620px;
+
+  margin:
+    8px 0 0;
+
+  color:
+    var(--project-body);
+
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.mobileNewProjectLink {
+  display: none;
+}
+
+/* ==========================================================================
+   Organization selector
+   ========================================================================== */
+
+.organizationControl,
+.projectsContent
+:global(.appHeader)
+label:has(
+  select
+) {
+  width:
+    clamp(
+      280px,
+      24vw,
+      320px
+    );
+
+  display: grid;
+
+  gap: 8px;
+
+  color:
+    var(--project-navy);
+
+  font-size: 14px;
+  font-weight: 650;
+
+  line-height: 1.4;
+}
+
+.organizationLabel {
+  display: block;
+
+  color:
+    var(--project-navy);
+
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.organizationControl
+select,
+.projectsContent
+:global(.appHeader)
+select {
+  width: 100%;
+  min-height: 48px;
+
+  padding:
+    0 40px
+    0 14px;
+
+  border:
+    1px solid
+    var(--project-control);
+
+  border-radius: 8px;
+
+  outline: 0;
+
+  background:
+    var(--project-surface);
+
+  color:
+    var(--project-navy);
+
+  font: inherit;
+  font-size: 16px;
+}
+
+.organizationControl
+select:hover,
+.projectsContent
+:global(.appHeader)
+select:hover {
+  border-color: #334155;
+}
+
+.organizationControl
+select:focus-visible,
+.projectsContent
+:global(.appHeader)
+select:focus-visible {
+  border-color:
+    var(--project-focus);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(
+      37,
+      99,
+      235,
+      0.18
+    );
+}
+
+/* ==========================================================================
+   Existing side-by-side structure
+   ========================================================================== */
+
+.projectsContent
+[data-buildflow-project-layout="true"] {
+  display: grid;
+
+  grid-template-columns:
+    minmax(
+      0,
+      1fr
+    )
+    384px;
+
+  align-items: start;
+
+  gap: 24px;
+}
+
+.projectsContent
+[data-buildflow-region="project-list"] {
+  min-width: 0;
+
+  width: 100%;
+}
+
+.projectsContent
+[data-buildflow-region="new-project"] {
+  min-width: 0;
+
+  width: 384px;
+  max-width: 100%;
+
+  justify-self: end;
+
+  scroll-margin-top: 24px;
+}
+
+.projectsContent
+[data-buildflow-region="project-list"],
+.projectsContent
+[data-buildflow-region="new-project"] {
+  align-self: start;
+
+  border-radius: 16px;
+}
+
+/* ==========================================================================
+   Compact list header
+   ========================================================================== */
+
+.projectListCount {
+  min-height: 54px;
+
+  padding:
+    16px 24px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom:
+    1px solid
+    var(--project-divider);
+}
+
+.projectListCount strong {
+  color:
+    var(--project-navy);
+
+  font-size: 14px;
+  font-weight: 720;
+
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   Project rows
+   ========================================================================== */
+
+.projectsContent
+[data-buildflow-region="project-list"]
+:global(a),
+.projectsContent
+[data-buildflow-region="project-list"]
+:global(article) {
+  min-width: 0;
+}
+
+.projectsContent
+[data-buildflow-project-title="true"] {
+  color:
+    var(--project-navy);
+
+  font-size:
+    clamp(
+      17px,
+      1.7vw,
+      18px
+    );
+
+  font-weight: 700;
+  line-height: 1.35;
+
+  overflow-wrap: anywhere;
+
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: #94a3b8;
+
+  text-underline-offset: 3px;
+}
+
+.projectsContent
+a[data-buildflow-project-title="true"]:hover {
+  text-decoration-thickness: 2px;
+  text-decoration-color:
+    var(--project-navy);
+}
+
+.projectsContent
+[data-buildflow-project-reference="true"] {
+  color:
+    var(--project-meta);
+
+  font-size: 13px;
+  font-weight: 600;
+
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   Correct stretched status capsule
+   ========================================================================== */
+
+.projectsContent
+[data-buildflow-project-status="true"] {
+  width: fit-content !important;
+  min-width: 0 !important;
+  max-width: max-content !important;
+
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+
+  padding:
+    4px 10px !important;
+
+  display:
+    inline-flex !important;
+
+  align-items:
+    center !important;
+
+  justify-content:
+    center !important;
+
+  align-self:
+    start !important;
+
+  justify-self:
+    end !important;
+
+  border:
+    0 !important;
+
+  border-radius:
+    999px !important;
+
+  background:
+    var(--project-subtle) !important;
+
+  color:
+    var(--project-body) !important;
+
+  font-size:
+    13px !important;
+
+  font-weight:
+    700 !important;
+
+  line-height:
+    1.3 !important;
+
+  white-space:
+    nowrap !important;
+}
+
+/* ==========================================================================
+   Explicit metadata
+   ========================================================================== */
+
+.projectsContent
+[data-buildflow-meta] {
+  min-width: 0;
+
+  display:
+    inline-grid !important;
+
+  align-content:
+    start;
+
+  gap: 4px;
+
+  color:
+    var(--project-body);
+
+  font-size: 14px;
+
+  line-height: 1.4;
+}
+
+.projectsContent
+[data-buildflow-meta]::before {
+  content:
+    attr(
+      data-buildflow-label
+    );
+
+  display: block;
+
+  color:
+    var(--project-meta);
+
+  font-size: 13px;
+
+  font-weight: 650;
+
+  line-height: 1.35;
+}
+
+.projectsContent
+[data-buildflow-meta="priority"] {
+  width: fit-content;
+}
+
+.projectsContent
+[data-buildflow-meta="priority"]
+> * {
+  min-width: 0;
+}
+
+/* High stays a classification, not an error.
+   Existing underlying value is untouched. */
+
+.projectsContent
+[data-buildflow-meta="priority"]
+[data-buildflow-value="HIGH"] {
+  color:
+    var(--project-warning);
+}
+
+/* ==========================================================================
+   Creation header
+   ========================================================================== */
+
+.projectsContent
+[data-buildflow-region="new-project"]
+h2 {
+  margin: 0;
+
+  color:
+    var(--project-navy);
+
+  font-size: 20px;
+  font-weight: 750;
+
+  line-height: 1.3;
+
+  letter-spacing:
+    -0.02em;
+}
+
+.creationOrganization {
+  margin:
+    8px 0 0;
+
+  color:
+    var(--project-body);
+
+  font-size: 14px;
+
+  line-height: 1.45;
+}
+
+.requiredInstruction {
+  margin:
+    7px 0 24px;
+
+  color:
+    var(--project-meta);
+
+  font-size: 13px;
+
+  line-height: 1.45;
+}
+
+.requiredInstruction strong {
+  color:
+    var(--project-error);
+}
+
+.requiredMark {
+  margin-right: 4px;
+
+  color:
+    var(--project-error);
+
+  font-weight: 800;
+}
+
+/* ==========================================================================
+   Form density and controls
+   ========================================================================== */
+
+.projectsContent
+[data-buildflow-region="new-project"]
+form {
+  display: grid;
+
+  gap: 20px;
+}
+
+.projectsContent
+[data-buildflow-region="new-project"]
+label {
+  color:
+    var(--project-navy);
+
+  font-size: 14px;
+  font-weight: 650;
+
+  line-height: 1.45;
+}
+
+.projectsContent
+[data-buildflow-region="new-project"]
+input,
+.projectsContent
+[data-buildflow-region="new-project"]
+select,
+.projectsContent
+[data-buildflow-region="new-project"]
+textarea {
+  width: 100%;
+
+  min-height: 48px;
+
+  padding:
+    0 14px;
+
+  border:
+    1px solid
+    var(--project-control);
+
+  border-radius: 8px;
+
+  outline: 0;
+
+  background:
+    var(--project-surface);
+
+  color:
+    var(--project-navy);
+
+  font: inherit;
+  font-size: 16px;
+
+  transition:
+    border-color
+    140ms ease,
+    box-shadow
+    140ms ease;
+}
+
+.projectsContent
+[data-buildflow-region="new-project"]
+textarea {
+  min-height: 96px;
+
+  padding-block: 12px;
+
+  resize: vertical;
+}
+
+.projectsContent
+[data-buildflow-region="new-project"]
+input:hover,
+.projectsContent
+[data-buildflow-region="new-project"]
+select:hover,
+.projectsContent
+[data-buildflow-region="new-project"]
+textarea:hover {
+  border-color: #334155;
+}
+
+.projectsContent
+[data-buildflow-region="new-project"]
+input:focus-visible,
+.projectsContent
+[data-buildflow-region="new-project"]
+select:focus-visible,
+.projectsContent
+[data-buildflow-region="new-project"]
+textarea:focus-visible {
+  border-color:
+    var(--project-focus);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(
+      37,
+      99,
+      235,
+      0.18
+    );
+}
+
+/* Native date inputs remain native.
+   Force narrow form layouts to give each date its full row. */
+
+.projectsContent
+[data-buildflow-region="new-project"]
+:global(.fieldRow):has(
+  input[type="date"]
+) {
+  grid-template-columns:
+    minmax(
+      0,
+      1fr
+    ) !important;
+}
+
+/* ==========================================================================
+   Existing errors
+   ========================================================================== */
+
+.projectsContent
+[data-buildflow-region="new-project"]
+:global(.formError) {
+  padding:
+    11px 12px;
+
+  border:
+    1px solid
+    #fecaca;
+
+  border-radius:
+    8px;
+
+  background:
+    var(--project-error-bg);
+
+  color:
+    var(--project-error);
+
+  font-size: 13px;
+
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   Create button
+   ========================================================================== */
+
+.projectsContent
+[data-buildflow-region="new-project"]
+button[type="submit"] {
+  width: 100%;
+
+  min-height: 48px;
+
+  margin-top: 4px;
+
+  padding:
+    0 16px;
+
+  border:
+    1px solid
+    var(--project-navy);
+
+  border-radius:
+    8px;
+
+  background:
+    var(--project-navy);
+
+  color:
+    #ffffff;
+
+  cursor:
+    pointer;
+
+  font: inherit;
+  font-size: 15px;
+  font-weight: 720;
+
+  line-height: 1.3;
+
+  transition:
+    background-color
+    140ms ease,
+    border-color
+    140ms ease;
+}
+
+.projectsContent
+[data-buildflow-region="new-project"]
+button[type="submit"]:hover:not(:disabled) {
+  border-color:
+    #1e293b;
+
+  background:
+    #1e293b;
+}
+
+.projectsContent
+[data-buildflow-region="new-project"]
+button[type="submit"]:active:not(:disabled) {
+  border-color:
+    #020617;
+
+  background:
+    #020617;
+}
+
+.projectsContent
+[data-buildflow-region="new-project"]
+button[type="submit"]:focus-visible {
+  outline:
+    3px solid
+    var(--project-focus);
+
+  outline-offset:
+    3px;
+}
+
+.projectsContent
+[data-buildflow-region="new-project"]
+button[type="submit"]:disabled {
+  cursor: wait;
+
+  opacity: 0.72;
+}
+
+/* ==========================================================================
+   Keyboard focus
+   ========================================================================== */
+
+.projectsShell
+a:focus-visible,
+.projectsShell
+button:focus-visible {
+  outline:
+    3px solid
+    var(--project-focus);
+
+  outline-offset:
+    3px;
+}
+
+/* ==========================================================================
+   Intermediate layout
+   ========================================================================== */
+
+@media (max-width: 1199px) {
+  .projectsContent {
+    padding: 24px;
+  }
+
+  .projectsContent
+  [data-buildflow-project-layout="true"] {
+    grid-template-columns:
+      minmax(
+        0,
+        1fr
+      )
+      360px;
+  }
+
+  .projectsContent
+  [data-buildflow-region="new-project"] {
+    width: 360px;
+  }
+}
+
+/* ==========================================================================
+   Stacked list → form
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+  .projectsContent {
+    padding: 24px;
+  }
+
+  .projectsContent
+  :global(.appHeader) {
+    display: grid;
+
+    grid-template-columns:
+      minmax(
+        0,
+        1fr
+      );
+
+    gap: 18px;
+  }
+
+  .organizationControl,
+  .projectsContent
+  :global(.appHeader)
+  label:has(
+    select
+  ) {
+    width:
+      min(
+        100%,
+        420px
+      );
+  }
+
+  .mobileNewProjectLink {
+    width: fit-content;
+
+    min-height: 40px;
+
+    margin-top: 12px;
+
+    display:
+      inline-flex;
+
+    align-items:
+      center;
+
+    color:
+      var(--project-navy);
+
+    font-size: 14px;
+    font-weight: 700;
+
+    text-decoration:
+      underline;
+
+    text-underline-offset:
+      3px;
+  }
+
+  .projectsContent
+  [data-buildflow-project-layout="true"] {
+    grid-template-columns:
+      minmax(
+        0,
+        1fr
+      );
+
+    gap: 24px;
+  }
+
+  .projectsContent
+  [data-buildflow-region="new-project"] {
+    width:
+      min(
+        100%,
+        640px
+      );
+
+    max-width: 640px;
+
+    justify-self: start;
+  }
+}
+
+/* ==========================================================================
+   Phone
+   ========================================================================== */
+
+@media (max-width: 639px) {
+  .projectsContent {
+    padding:
+      24px 16px;
+  }
+
+  .projectListCount {
+    padding:
+      16px;
+  }
+
+  .projectsContent
+  [data-buildflow-region="project-list"],
+  .projectsContent
+  [data-buildflow-region="new-project"] {
+    border-radius: 14px;
+  }
+
+  .projectsContent
+  [data-buildflow-project-status="true"] {
+    justify-self:
+      start !important;
+  }
+
+  .projectsContent
+  [data-buildflow-meta] {
+    width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .projectsContent
+  :global(.appHeader)
+  h1 {
+    font-size: 30px;
+  }
+}
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .projectsContent
+  [data-buildflow-region="new-project"]
+  input,
+  .projectsContent
+  [data-buildflow-region="new-project"]
+  select,
+  .projectsContent
+  [data-buildflow-region="new-project"]
+  textarea,
+  .projectsContent
+  [data-buildflow-region="new-project"]
+  button[type="submit"] {
+    transition-duration:
+      0.01ms;
+  }
+}
+
+/* ==========================================================================
+   Project creation status
+   ========================================================================== */
+
+.creationStatus {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  padding: 0;
+  margin: -1px;
+
+  overflow: hidden;
+
+  clip: rect(
+    0,
+    0,
+    0,
+    0
+  );
+
+  white-space: nowrap;
+
+  border: 0;
+}

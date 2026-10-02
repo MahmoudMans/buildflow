@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "./projects.module.css";
+
 import Link from "next/link";
 
 import {
@@ -26,7 +28,35 @@ import type {
   ProjectType,
 } from "@/lib/types";
 
+
+function buildflowProjectDisplayLabel(
+  value: string | null | undefined,
+) {
+  if (!value) {
+    return "Unavailable";
+  }
+
+  return value
+    .toLowerCase()
+    .split("_")
+    .map(
+      (part) =>
+        part.length > 0
+          ? `${
+              part[0].toUpperCase()
+            }${part.slice(1)}`
+          : part,
+    )
+    .join(" ");
+}
+
 export default function ProjectsPage() {
+
+  const [
+    creatingProject,
+    setCreatingProject,
+  ] = useState(false);
+
   const {
     user,
     organizations,
@@ -225,19 +255,39 @@ useEffect(() => {
   }
 
   return (
-    <main className="appShell">
+    <main className={`appShell ${styles.projectsShell}`}>
       <AppSidebar active="projects" />
 
-      <section className="appContent">
+      <section className={`appContent ${styles.projectsContent}`}>
         <header className="appHeader">
-          <div>
-            <p>PROJECTS</p>
+          <div id="new-project" data-buildflow-region="new-project" tabIndex={-1}>
+
             <h1>
               Construction projects
             </h1>
+            <p
+              className={
+                styles.pageDescription
+              }
+            >
+              Review projects for the selected organization.
+            </p>
+
+            <a
+              className={
+                styles.mobileNewProjectLink
+              }
+              href="#new-project"
+            >
+              New project
+            </a>
           </div>
 
-          <select
+          <label className={styles.organizationControl}>
+              <span className={styles.organizationLabel}>
+                Organization
+              </span>
+<select
             className="organizationSelector"
             value={organizationId}
             onChange={(event) => {
@@ -253,7 +303,8 @@ useEffect(() => {
                 value
               );
             }}
-          >
+                disabled={creatingProject}
+              >
             {organizations.map(
               (organization) => (
                 <option
@@ -265,6 +316,7 @@ useEffect(() => {
               )
             )}
           </select>
+            </label>
         </header>
 
         {error && (
@@ -287,10 +339,24 @@ useEffect(() => {
               </div>
             </div>
 
-            <div className="projectList">
+            <div className="projectList" data-buildflow-region="project-list" aria-label="Project list">
+        <header
+          className={
+            styles.projectListCount
+          }
+        >
+          <strong>
+            {
+              projects.length === 1
+                ? "1 project shown"
+                : `${projects.length} projects shown`
+            }
+          </strong>
+        </header>
+
               {projects.length === 0 && (
                 <div className="emptyState">
-                  No projects yet.
+                  No projects in this organization
                 </div>
               )}
 
@@ -303,39 +369,39 @@ useEffect(() => {
                   >
                     <div className="projectListTop">
                       <div>
-                        <span>
+                        <span data-buildflow-project-reference="true">
                           {project.projectNumber}
                         </span>
 
-                        <h3>
+                        <h3 data-buildflow-project-title="true">
                           {project.name}
                         </h3>
 
                         <p>
-                          {project.clientName}
+                          Client: {project.clientName}
                         </p>
                       </div>
 
-                      <strong className="statusBadge">
-                        {project.status}
+                      <strong className="statusBadge" data-buildflow-project-status="true">
+                        {buildflowProjectDisplayLabel(project.status)}
                       </strong>
                     </div>
 
                     <div className="projectListMeta">
-                      <span>
-                        {project.projectType}
+                      <span data-buildflow-meta="type" data-buildflow-label="Type">
+                        {buildflowProjectDisplayLabel(project.projectType)}
                       </span>
 
-                      <span>
-                        {project.priority}
+                      <span data-buildflow-meta="priority" data-buildflow-label="Priority">
+                        {buildflowProjectDisplayLabel(project.priority)}
                       </span>
 
-                      <span>
+                      <span data-buildflow-meta="planned-end" data-buildflow-label="Planned end">
                         {project.plannedEndDate ??
                           "No deadline"}
                       </span>
 
-                      <span>
+                      <span data-buildflow-meta="progress" data-buildflow-label="Progress">
                         {project.progressPercentage}%
                       </span>
                     </div>
@@ -347,10 +413,58 @@ useEffect(() => {
 
           <aside className="moduleFormCard">
             <h2>New project</h2>
+          <p
+            className={
+              styles.creationOrganization
+            }
+          >
+            Organization:{" "}
+            {
+              organizations.find(
+                (organization) =>
+                  organization.id
+                  === organizationId,
+              )?.name
+              ?? "Current organization"
+            }
+          </p>
+
+          <p
+            className={
+              styles.requiredInstruction
+            }
+          >
+            Fields marked{" "}
+            <strong
+              aria-hidden="true"
+            >
+              *
+            </strong>
+            {" "}are required.
+          </p>
 
             <form
               className="authForm"
-              onSubmit={createProject}
+              onSubmit={async (event) => {
+              if (creatingProject) {
+                event.preventDefault();
+                return;
+              }
+
+              setCreatingProject(
+                true,
+              );
+
+              try {
+                await createProject(
+                  event,
+                );
+              } finally {
+                setCreatingProject(
+                  false,
+                );
+              }
+            }}
             >
               <label>
                 Client
@@ -533,10 +647,30 @@ useEffect(() => {
               <button
                 className="authSubmit"
                 type="submit"
-                disabled={!clientId}
-              >
-                Create project
+                disabled={!clientId || creatingProject}
+               aria-busy={creatingProject}>
+                {
+                  creatingProject
+                    ? "Creating project…"
+                    : "Create project"
+                }
               </button>
+
+              <span
+                className={
+                  styles.creationStatus
+                }
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                {
+                  creatingProject
+                    ? "Creating project…"
+                    : ""
+                }
+              </span>
+
             </form>
           </aside>
         </section>
