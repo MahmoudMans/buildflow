@@ -286,7 +286,7 @@ useEffect(() => {
               </div>
             </div>
 
-            <div className="dataList" data-buildflow-client-row="true">
+            <div className="dataList">
               {clients.length === 0 && (
                 <div className="emptyState">
                   No clients in this organization
@@ -322,17 +322,11 @@ useEffect(() => {
                   <Link
                     className="dataRow"
                     href={`/app/clients/${client.id}`}
-                    key={client.id}
-                  >
+                    key={client.id} data-buildflow-client-row="true">
                     <div data-buildflow-client-cell="client" data-buildflow-label="Client">
-                      <Link
-                  className={
-                    styles.clientNameLink
-                  }
-                  href={`/app/clients/${client.id}`}
-                >
+                      <strong className={styles.clientNameLink}>
                         {client.displayName}
-                      </Link>
+                      </strong>
 
                       <span>
                         {client.email ??
@@ -444,8 +438,22 @@ useEffect(() => {
 
               {type === "COMPANY" ? (
                 <label data-buildflow-required="true">
+                <span
+                  className={
+                    styles.fieldLabelText
+                  }
+                >
                   Company name
-                  <input
+                  <span
+                    className={
+                      styles.fieldRequiredMark
+                    }
+                    aria-hidden="true"
+                  >
+                    *
+                  </span>
+                </span>
+<input
                     required
                     value={companyName}
                     onChange={(event) =>
@@ -458,8 +466,22 @@ useEffect(() => {
               ) : (
                 <div className="fieldRow">
                   <label data-buildflow-required="true">
-                    First name
-                    <input
+                <span
+                  className={
+                    styles.fieldLabelText
+                  }
+                >
+                  First name
+                  <span
+                    className={
+                      styles.fieldRequiredMark
+                    }
+                    aria-hidden="true"
+                  >
+                    *
+                  </span>
+                </span>
+<input
                       required
                       value={firstName}
                       onChange={(event) =>
@@ -471,8 +493,22 @@ useEffect(() => {
                   </label>
 
                   <label data-buildflow-required="true">
-                    Last name
-                    <input
+                <span
+                  className={
+                    styles.fieldLabelText
+                  }
+                >
+                  Last name
+                  <span
+                    className={
+                      styles.fieldRequiredMark
+                    }
+                    aria-hidden="true"
+                  >
+                    *
+                  </span>
+                </span>
+<input
                       required
                       value={lastName}
                       onChange={(event) =>

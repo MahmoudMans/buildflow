@@ -1269,3 +1269,282 @@ button:focus-visible {
       0.01ms;
   }
 }
+
+/* BUILDFLOW_CLIENTS_REGRESSION_V2_START */
+
+/* ==========================================================================
+   Regression V2 — page supporting copy
+   ========================================================================== */
+
+.clientsContent
+:global(.appHeader)
+.pageDescription {
+  margin:
+    8px 0 0 !important;
+
+  color:
+    #475569 !important;
+
+  font-size:
+    15px !important;
+
+  font-weight:
+    400 !important;
+
+  line-height:
+    1.5 !important;
+
+  letter-spacing:
+    0 !important;
+
+  text-transform:
+    none !important;
+}
+
+/* ==========================================================================
+   Regression V2 — directory geometry
+
+   Important:
+   data-buildflow-client-row now lives on the element returned by clients.map(),
+   not on the parent list containing all clients.
+   ========================================================================== */
+
+.clientColumns {
+  width:
+    100% !important;
+
+  min-width:
+    0;
+
+  grid-column:
+    1 / -1;
+
+  display:
+    grid !important;
+
+  grid-template-columns:
+    minmax(
+      240px,
+      2fr
+    )
+    120px
+    minmax(
+      170px,
+      1fr
+    )
+    auto !important;
+
+  align-items:
+    center !important;
+
+  gap:
+    24px !important;
+
+  padding:
+    11px 24px !important;
+}
+
+.clientsContent
+[data-buildflow-client-row="true"] {
+  width:
+    100% !important;
+
+  min-width:
+    0 !important;
+
+  min-height:
+    0 !important;
+
+  padding:
+    20px 24px !important;
+
+  display:
+    grid !important;
+
+  grid-template-columns:
+    minmax(
+      240px,
+      2fr
+    )
+    120px
+    minmax(
+      170px,
+      1fr
+    )
+    auto !important;
+
+  align-items:
+    center !important;
+
+  gap:
+    24px !important;
+}
+
+.clientsContent
+[data-buildflow-client-row="true"]
+[data-buildflow-client-cell] {
+  min-width:
+    0;
+}
+
+/* ==========================================================================
+   Regression V2 — required indicators
+
+   The old far-right pseudo marker is suppressed.
+   The new marker sits directly beside the actual field label.
+   ========================================================================== */
+
+.clientsContent
+[data-buildflow-create-client-form="true"]
+label[data-buildflow-required="true"]::after {
+  content:
+    none !important;
+
+  display:
+    none !important;
+}
+
+.fieldLabelText {
+  width:
+    fit-content;
+
+  display:
+    inline-flex;
+
+  align-items:
+    baseline;
+
+  gap:
+    4px;
+
+  color:
+    #0f172a;
+
+  font:
+    inherit;
+}
+
+.fieldRequiredMark {
+  color:
+    #b91c1c;
+
+  font-size:
+    14px;
+
+  font-weight:
+    800;
+
+  line-height:
+    1;
+}
+
+/* ==========================================================================
+   Intermediate directory geometry
+   ========================================================================== */
+
+@media (max-width: 1199px) {
+  .clientColumns,
+  .clientsContent
+  [data-buildflow-client-row="true"] {
+    grid-template-columns:
+      minmax(
+        220px,
+        1.7fr
+      )
+      110px
+      minmax(
+        150px,
+        1fr
+      )
+      auto !important;
+
+    gap:
+      18px !important;
+  }
+}
+
+/* ==========================================================================
+   Compact rows
+   ========================================================================== */
+
+@media (max-width: 760px) {
+  .clientColumns {
+    display:
+      none !important;
+  }
+
+  .clientsContent
+  [data-buildflow-client-row="true"] {
+    grid-template-columns:
+      minmax(
+        0,
+        1fr
+      )
+      auto !important;
+
+    gap:
+      14px 20px !important;
+  }
+
+  .clientsContent
+  [data-buildflow-client-cell="client"] {
+    grid-column:
+      1 / -1 !important;
+  }
+
+  .clientsContent
+  [data-buildflow-client-cell="type"] {
+    grid-column:
+      1 !important;
+  }
+
+  .clientsContent
+  [data-buildflow-client-cell="status"] {
+    grid-column:
+      2 !important;
+
+    grid-row:
+      2 !important;
+  }
+
+  .clientsContent
+  [data-buildflow-client-cell="phone"] {
+    grid-column:
+      1 / -1 !important;
+  }
+}
+
+/* ==========================================================================
+   Phone rows
+   ========================================================================== */
+
+@media (max-width: 520px) {
+  .clientsContent
+  [data-buildflow-client-row="true"] {
+    padding:
+      18px 16px !important;
+
+    grid-template-columns:
+      minmax(
+        0,
+        1fr
+      ) !important;
+  }
+
+  .clientsContent
+  [data-buildflow-client-cell="client"],
+  .clientsContent
+  [data-buildflow-client-cell="type"],
+  .clientsContent
+  [data-buildflow-client-cell="phone"],
+  .clientsContent
+  [data-buildflow-client-cell="status"] {
+    grid-column:
+      1 !important;
+
+    grid-row:
+      auto !important;
+  }
+}
+
+/* BUILDFLOW_CLIENTS_REGRESSION_V2_END */
