@@ -8,15 +8,17 @@ Construction project management and cost control platform: plan projects, track 
 
 - **Multi-tenant organizations** with roles, member management and email invitations
 - **Projects, clients and suppliers** with directories and creation workflows
-- **Tasks and milestones** with progress tracking
+- **Dashboard** with a needs-attention list, receivables aging and expected collections
+- **Tasks and milestones** with progress tracking and a project **timeline** (schedule, milestones and a Today line)
 - **Budgets and expenses** with actual, committed and forecast cost
 - **Procurement**: purchase orders and goods receipts
 - **Commercial**: quotes, invoices and payments
-- **Change orders** with client approval through the portal
-- **Site operations**: daily reports, incidents and progress updates
+- **Change orders** with client approval through the portal, and a preview of the budget, margin and schedule effect before approving
+- **Site operations**: daily reports, incidents and progress updates, plus a phone-friendly **quick report** that shrinks photos before upload and keeps a draft when the signal drops
 - **Documents and photos** in S3-compatible object storage (MinIO)
-- **Notifications, activity feed and audit log**
+- **Notifications, activity feed and a searchable audit log** (filter by project, person, action and date) for owners and administrators
 - **PDF and CSV reports**
+- **Global search** with a ⌘K command palette, limited to what each role can see
 - **Role-based demo mode** with a seeded showcase dataset
 
 ![Demo](portfolio/screenshots/demo.png)
