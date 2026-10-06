@@ -1643,3 +1643,251 @@ textarea:disabled {
     --uxTimelineLabel: 168px;
   }
 }
+
+
+/* Audit log */
+.uxAuditFilters {
+  margin: 4px 0 14px;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  display: grid;
+  gap: 14px;
+}
+.uxAuditSearchRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+.uxAuditChoices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+}
+.uxAuditField {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+.uxAuditField.grow { flex: 1; }
+.uxAuditField label {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.uxAuditField input,
+.uxAuditField select {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--dark);
+  font: inherit;
+  font-size: 14px;
+}
+.uxAuditField select:disabled { opacity: 0.6; }
+.uxAuditActive {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+.uxAuditChips {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.uxAuditChips button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  padding: 5px 10px 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #f8fafc;
+  color: var(--dark);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.uxAuditChips button span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.uxAuditChips button:hover { border-color: #94a3b8; }
+.uxAuditNote {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.uxAuditOrg {
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.uxAuditResults {
+  display: grid;
+  gap: 12px;
+  transition: opacity 120ms ease;
+}
+.uxAuditResults.uxAuditBusy { opacity: 0.55; }
+
+.uxAuditTable {
+  width: 100%;
+  min-width: 780px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.uxAuditTable th,
+.uxAuditTable td {
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+.uxAuditTable thead th {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.uxAuditRow td > * { display: block; }
+.uxAuditRow td > time { display: grid; gap: 2px; }
+.uxAuditRow td > .uxAuditAction { display: inline-flex; }
+.uxAuditRow.open td { border-bottom-color: transparent; background: #f8fafc; }
+.uxAuditDate { font-weight: 700; }
+.uxAuditWho { font-weight: 700; }
+.uxAuditSub {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.uxAuditAction { font-size: 12px; margin-bottom: 2px; }
+.uxAuditToggleCell { text-align: right; white-space: nowrap; }
+.uxAuditDetailRow td {
+  padding: 0 12px 14px;
+  background: #f8fafc;
+}
+.uxAuditDetails {
+  display: grid;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.uxAuditValues h4 {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.uxAuditFields,
+.uxAuditMeta {
+  margin: 0;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 6px 16px;
+}
+.uxAuditFields dt,
+.uxAuditMeta dt { color: var(--muted); font-weight: 600; }
+.uxAuditFields dd,
+.uxAuditMeta dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.uxAuditMeta {
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+}
+.uxAuditMeta code { font-size: 11px; }
+.uxAuditRedacted { color: var(--muted); font-style: italic; }
+.uxAuditRaw {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 9px;
+  background: #f1f5f9;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.uxAuditPager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.uxAuditPagerButtons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+@media (max-width: 720px) {
+  .uxAuditSearchRow { flex-direction: column; align-items: stretch; }
+  .uxAuditTable { min-width: 0; }
+  .uxAuditTable thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .uxAuditTable,
+  .uxAuditTable tbody { display: block; }
+  .uxAuditRow,
+  .uxAuditDetailRow {
+    display: grid;
+    gap: 8px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .uxAuditRow td,
+  .uxAuditDetailRow td {
+    padding: 0;
+    border: 0;
+    display: grid;
+    gap: 2px;
+  }
+  .uxAuditRow.open td { background: transparent; }
+  .uxAuditDetailRow { padding-top: 0; background: #f8fafc; }
+  .uxAuditRow td[data-label]::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .uxAuditToggleCell { text-align: left; justify-items: start; }
+  .uxAuditFields,
+  .uxAuditMeta { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .uxAuditFields dd,
+  .uxAuditMeta dd { margin-bottom: 8px; }
+}
