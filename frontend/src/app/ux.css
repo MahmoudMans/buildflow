@@ -1891,3 +1891,428 @@ textarea:disabled {
   .uxAuditFields dd,
   .uxAuditMeta dd { margin-bottom: 8px; }
 }
+
+/* Quick site report (phone-first) */
+.uxCapturePage { max-width: 720px; }
+.uxCapture {
+  display: grid;
+  gap: 16px;
+}
+.uxCaptureLoading { margin: 0; padding: 24px 0; color: var(--muted); }
+.uxCaptureBack {
+  width: max-content;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--accent);
+  font-weight: 700;
+  text-decoration: none;
+}
+.uxCaptureBanner {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.uxCaptureBanner.warning {
+  border-color: #fde68a;
+  background: #fffbeb;
+  color: #78350f;
+}
+.uxCaptureBanner .uxLinkButton { min-height: 32px; padding: 4px 6px; }
+
+/* Where you are in the report */
+.uxCaptureSteps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+}
+.uxCaptureStep {
+  position: relative;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+.uxCaptureStep:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 15px;
+  left: calc(50% + 20px);
+  right: calc(-50% + 20px);
+  height: 2px;
+  background: var(--border);
+}
+.uxCaptureStep.done:not(:last-child)::after { background: var(--accent); }
+.uxCaptureStepButton {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 4px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+}
+button.uxCaptureStepButton { cursor: pointer; }
+.uxCaptureStepDot {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+.uxCaptureStep.done .uxCaptureStepDot {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+.uxCaptureStep.current .uxCaptureStepDot {
+  border-color: var(--dark);
+  background: var(--dark);
+  color: #fff;
+}
+.uxCaptureStep.current .uxCaptureStepLabel,
+.uxCaptureStep.done .uxCaptureStepLabel { color: var(--dark); }
+
+.uxCaptureProgress {
+  margin: 4px 0 -8px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+.uxCaptureTitle {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.2;
+  outline: none;
+}
+.uxCaptureBody {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+/* Fields */
+.uxCaptureFields { display: grid; gap: 20px; }
+.uxCaptureField { display: grid; gap: 8px; }
+.uxCaptureField > label,
+.uxCaptureField > label span:first-child {
+  color: var(--dark);
+  font-size: 15px;
+  font-weight: 700;
+}
+.uxCaptureRequired { color: var(--muted); font-weight: 600; }
+.uxCaptureHint { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.uxCaptureField input[type="text"],
+.uxCaptureField input[type="date"],
+.uxCaptureField select,
+.uxCaptureField textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--dark);
+  font: inherit;
+  /* 16px stops phones from zooming in when a box is tapped */
+  font-size: 16px;
+}
+.uxCaptureField textarea { min-height: 96px; resize: vertical; line-height: 1.45; }
+.uxCaptureField input[aria-invalid="true"],
+.uxCaptureField textarea[aria-invalid="true"] { border-color: var(--color-danger); }
+.uxCaptureField input:focus-visible,
+.uxCaptureField select:focus-visible,
+.uxCaptureField textarea:focus-visible {
+  outline: 3px solid #bfdbfe;
+  outline-offset: 1px;
+  border-color: var(--accent);
+}
+
+.uxCaptureChoices { display: flex; flex-wrap: wrap; gap: 8px; }
+.uxCaptureChoice {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--dark);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.uxCaptureChoice[aria-pressed="true"] {
+  border-color: var(--dark);
+  background: var(--dark);
+  color: #fff;
+}
+
+.uxCaptureCounter {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 52px;
+  gap: 8px;
+}
+.uxCaptureCounter input[type="text"] {
+  min-height: 52px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+}
+.uxCaptureCounterButton {
+  min-height: 52px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--dark);
+  font: inherit;
+  font-size: 26px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.uxCaptureCounterButton:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Photos */
+.uxCapturePhotos { display: grid; gap: 14px; }
+.uxCaptureAddRow { display: grid; gap: 10px; }
+.uxCaptureAdd {
+  position: relative;
+  min-height: 56px;
+  display: grid;
+  place-items: center;
+  padding: 0 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--dark);
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.uxCaptureAdd.primary { border-color: var(--dark); background: var(--dark); color: #fff; }
+.uxCaptureAdd:focus-within { outline: 3px solid #bfdbfe; outline-offset: 2px; }
+.uxCaptureAdd:has(input:disabled) { opacity: 0.5; cursor: not-allowed; }
+.uxCaptureEmpty {
+  margin: 0;
+  padding: 18px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+}
+.uxCapturePhotoList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 14px;
+}
+.uxCapturePhoto {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #f8fafc;
+}
+.uxCapturePhotoImage {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: 240px;
+  border-radius: 10px;
+  background-color: #e2e8f0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.uxCapturePhotoBody { display: grid; gap: 12px; min-width: 0; }
+.uxCapturePhotoMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.uxCapturePhotoMeta strong {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--dark);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.uxCapturePhotoStatus { font-size: 12px; }
+.uxCaptureCheck {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--dark);
+  font-size: 15px;
+  font-weight: 600;
+}
+.uxCaptureCheck input { width: 22px; height: 22px; flex: none; }
+.uxCaptureRemove { min-height: 44px; width: max-content; color: var(--color-danger); }
+
+/* Review */
+.uxCaptureReview { display: grid; gap: 14px; }
+.uxCaptureProblems {
+  padding: 12px 14px;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  background: #fef2f2;
+  color: var(--ux-danger);
+  font-size: 14px;
+}
+.uxCaptureProblems ul { margin: 6px 0 0; padding-left: 18px; }
+.uxCaptureProblems .uxLinkButton { color: var(--ux-danger); text-align: left; }
+.uxCaptureSummary { margin: 0; display: grid; }
+.uxCaptureSummaryRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+.uxCaptureSummaryRow:first-child { border-top: 0; padding-top: 0; }
+.uxCaptureSummaryRow dt {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.uxCaptureSummaryRow dd { margin: 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+.uxCaptureSummaryRow dd .uxLinkButton { min-height: 44px; }
+.uxCaptureNone { color: var(--muted); }
+.uxCaptureThumbs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.uxCaptureThumb {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  background-color: #e2e8f0;
+  background-position: center;
+  background-size: cover;
+}
+.uxCaptureMore {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* Buttons and messages */
+.uxCaptureActions { display: flex; gap: 10px; }
+.uxCaptureActions .uxCaptureBig { flex: 1; }
+.uxCaptureActions .uxSecondaryButton.uxCaptureBig { flex: 0 0 32%; }
+.uxCaptureBig {
+  min-height: 54px;
+  border-radius: 14px;
+  font-size: 16px;
+}
+.uxPrimaryButton:disabled { opacity: 0.5; cursor: not-allowed; }
+.uxCaptureLinkButton {
+  min-height: 54px;
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--dark);
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+}
+.uxCaptureSendError { padding: 10px 12px; border-radius: 10px; background: #fef2f2; }
+.uxCaptureSaved { min-height: 18px; margin: 0; color: var(--muted); font-size: 12px; text-align: center; }
+
+/* After sending */
+.uxCaptureDone {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 28px 18px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  text-align: center;
+}
+.uxCaptureDone h2 { margin: 0; font-size: 22px; }
+.uxCaptureDone p { margin: 0; color: var(--muted); }
+.uxCaptureDone .uxCaptureActions { width: 100%; flex-direction: column-reverse; margin-top: 8px; }
+.uxCaptureDoneIcon {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #f0fdf4;
+  color: var(--ux-success);
+  font-size: 28px;
+  font-weight: 800;
+}
+.uxCaptureDone.partial { border-color: #fde68a; background: #fffbeb; }
+.uxCapturePartialList {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+  text-align: left;
+}
+.uxCapturePartialList li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  font-size: 14px;
+}
+
+@media (min-width: 561px) {
+  .uxCaptureAddRow { grid-template-columns: 1fr 1fr; }
+  .uxCapturePhoto { grid-template-columns: 140px minmax(0, 1fr); align-items: start; }
+  .uxCapturePhotoImage { aspect-ratio: 1; max-height: none; }
+  .uxCaptureDone .uxCaptureActions { flex-direction: row; }
+  .uxCaptureBody { padding: 22px; }
+}
