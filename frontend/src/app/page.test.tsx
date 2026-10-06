@@ -1,100 +1,88 @@
-import {
-  render,
-  screen,
-} from "@testing-library/react";
-
-import {
-  describe,
-  expect,
-  it,
-} from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it } from "vitest";
 
 import HomePage from "./page";
 
-describe(
-  "BuildFlow portfolio homepage",
-  () => {
-    it(
-      "presents the product, portfolio capabilities and demo entry point",
-      () => {
-        render(
-          <HomePage />
-        );
+const CAPABILITIES = [
+  "Project management",
+  "Cost control",
+  "Site operations",
+  "Commercial management",
+  "Project insights",
+  "Client portal",
+];
 
-        const heading =
-          screen.getByRole(
-            "heading",
-            {
-              level: 1,
-            }
-          );
+const ROLES = [
+  "Owner",
+  "Project Manager",
+  "Site Manager",
+  "Accountant",
+  "Client",
+];
 
-        expect(
-          heading.textContent
-        ).toContain(
-          "Build better projects."
-        );
+afterEach(() => {
+  cleanup();
+});
 
-        expect(
-          heading.textContent
-        ).toContain(
-          "Control every cost."
-        );
+describe("BuildFlow portfolio homepage", () => {
+  it("presents the headline and the demo entry point", () => {
+    render(<HomePage />);
 
-        const demoLinks =
-          screen.getAllByRole(
-            "link",
-            {
-              name:
-                /explore demo/i,
-            }
-          );
+    const heading = screen.getByRole("heading", { level: 1 });
 
-        expect(
-          demoLinks.length
-        ).toBeGreaterThan(
-          0
-        );
+    expect(heading.textContent).toContain("Projects in sync.");
+    expect(heading.textContent).toContain("Costs in view.");
 
-        expect(
-          demoLinks[0]
-            .getAttribute(
-              "href"
-            )
-        ).toBe(
-          "/demo"
-        );
+    const demoLinks = screen.getAllByRole("link", { name: /explore demo/i });
 
-        expect(
-          screen.getByText(
-            "Project management"
-          )
-        ).toBeTruthy();
+    expect(demoLinks.length).toBeGreaterThan(0);
 
-        expect(
-          screen.getByText(
-            "Client portal"
-          )
-        ).toBeTruthy();
+    for (const link of demoLinks) {
+      expect(link.getAttribute("href")).toBe("/demo");
+    }
+  });
 
-        expect(
-          screen.getByText(
-            "Analytics"
-          )
-        ).toBeTruthy();
+  it("lists the product capabilities", () => {
+    render(<HomePage />);
 
-        expect(
-          screen.getByText(
-            "0"
-          )
-        ).toBeTruthy();
+    for (const capability of CAPABILITIES) {
+      expect(
+        screen.getByRole("heading", { level: 3, name: capability }),
+      ).toBeTruthy();
+    }
+  });
 
-        expect(
-          screen.getByText(
-            "paid external APIs"
-          )
-        ).toBeTruthy();
-      }
-    );
-  }
-);
+  it("lists the five demo roles", () => {
+    render(<HomePage />);
+
+    for (const role of ROLES) {
+      expect(
+        screen.getByRole("heading", { level: 3, name: role }),
+      ).toBeTruthy();
+    }
+  });
+
+  it("links to the source code and the architecture case study", () => {
+    render(<HomePage />);
+
+    const githubLinks = screen.getAllByRole("link", { name: /github/i });
+
+    expect(
+      githubLinks.some(
+        (link) =>
+          link.getAttribute("href") ===
+          "https://github.com/MahmoudMans/buildflow",
+      ),
+    ).toBe(true);
+
+    const architectureLinks = screen.getAllByRole("link", {
+      name: /architecture/i,
+    });
+
+    expect(
+      architectureLinks.some(
+        (link) => link.getAttribute("href") === "/portfolio",
+      ),
+    ).toBe(true);
+  });
+});
