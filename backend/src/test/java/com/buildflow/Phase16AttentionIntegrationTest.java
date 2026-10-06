@@ -6,7 +6,9 @@ import com.buildflow.client.dto.ClientDtos;
 import com.buildflow.client.entity.ClientType;
 import com.buildflow.client.service.ClientService;
 import com.buildflow.dashboard.dto.AttentionDtos;
+import com.buildflow.dashboard.dto.ReceivablesDtos;
 import com.buildflow.dashboard.service.AttentionService;
+import com.buildflow.dashboard.service.ReceivablesService;
 import com.buildflow.organization.dto.OrganizationDtos;
 import com.buildflow.organization.service.OrganizationService;
 import com.buildflow.project.dto.ProjectDtos;
@@ -31,6 +33,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.YearMonth;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -76,6 +79,9 @@ class Phase16AttentionIntegrationTest {
 
     @Autowired
     AttentionService attentionService;
+
+    @Autowired
+    ReceivablesService receivablesService;
 
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -385,6 +391,210 @@ class Phase16AttentionIntegrationTest {
         assertThatThrownBy(
             () ->
                 attentionService.summary(
+                    f.organizationId(),
+                    outsiderId
+                )
+        ).isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void receivablesAgeOutstandingInvoicesAndRankProjects() {
+
+        Fixture f = seed();
+
+        ReceivablesDtos.ReceivablesSummary summary =
+            receivablesService.summary(
+                f.organizationId(),
+                f.ownerId()
+            );
+
+        assertThat(summary.available()).isTrue();
+        assertThat(summary.totalOutstanding())
+            .isEqualByComparingTo("950.00");
+        assertThat(summary.totalOverdue())
+            .isEqualByComparingTo("750.00");
+        assertThat(summary.openInvoices()).isEqualTo(3L);
+        assertThat(summary.overdueInvoices()).isEqualTo(2L);
+        assertThat(summary.overduePercentage())
+            .isEqualByComparingTo("78.9");
+        assertThat(summary.laterAmount())
+            .isEqualByComparingTo(BigDecimal.ZERO);
+
+        List<ReceivablesDtos.AgingBucket> aging = summary.aging();
+
+        assertThat(aging)
+            .extracting(ReceivablesDtos.AgingBucket::key)
+            .containsExactly(
+                "CURRENT",
+                "DAYS_1_30",
+                "DAYS_31_60",
+                "DAYS_61_90",
+                "DAYS_90_PLUS"
+            );
+
+        assertThat(aging)
+            .extracting(ReceivablesDtos.AgingBucket::invoices)
+            .containsExactly(1L, 1L, 1L, 0L, 0L);
+
+        // Not yet due: INV-ATT-A3 (200.00, due in 15 days)
+        assertThat(aging.get(0).amount())
+            .isEqualByComparingTo("200.00");
+
+        // 5 days overdue: INV-ATT-B1 (250.00 outstanding)
+        assertThat(aging.get(1).amount())
+            .isEqualByComparingTo("250.00");
+
+        // 40 days overdue: INV-ATT-A1 (500.00)
+        assertThat(aging.get(2).amount())
+            .isEqualByComparingTo("500.00");
+
+        assertThat(aging.get(3).amount())
+            .isEqualByComparingTo(BigDecimal.ZERO);
+
+        assertThat(aging.get(4).amount())
+            .isEqualByComparingTo(BigDecimal.ZERO);
+
+        assertThat(summary.expected()).hasSize(6);
+
+        assertThat(summary.expected().get(0).month())
+            .isEqualTo(YearMonth.now().toString());
+
+        String dueMonth =
+            YearMonth
+                .from(LocalDate.now().plusDays(15))
+                .toString();
+
+        assertThat(summary.expected())
+            .filteredOn(item -> item.month().equals(dueMonth))
+            .singleElement()
+            .satisfies(
+                item -> {
+                    assertThat(item.invoices()).isEqualTo(1L);
+                    assertThat(item.amount())
+                        .isEqualByComparingTo("200.00");
+                }
+            );
+
+        BigDecimal expectedTotal =
+            summary.expected()
+                .stream()
+                .map(ReceivablesDtos.ExpectedCollection::amount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Overdue and paid invoices are not part of the forecast.
+        assertThat(expectedTotal).isEqualByComparingTo("200.00");
+
+        assertThat(summary.projects())
+            .extracting(ReceivablesDtos.ProjectReceivable::projectId)
+            .containsExactly(f.projectA(), f.projectB());
+
+        ReceivablesDtos.ProjectReceivable first =
+            summary.projects().get(0);
+
+        assertThat(first.openInvoices()).isEqualTo(2L);
+        assertThat(first.outstanding()).isEqualByComparingTo("700.00");
+        assertThat(first.overdue()).isEqualByComparingTo("500.00");
+        assertThat(first.oldestOverdueDays()).isEqualTo(40L);
+
+        ReceivablesDtos.ProjectReceivable second =
+            summary.projects().get(1);
+
+        assertThat(second.openInvoices()).isEqualTo(1L);
+        assertThat(second.outstanding()).isEqualByComparingTo("250.00");
+        assertThat(second.overdue()).isEqualByComparingTo("250.00");
+        assertThat(second.oldestOverdueDays()).isEqualTo(5L);
+    }
+
+    @Test
+    void receivablesAreHiddenFromRolesOutsideFinance() {
+
+        Fixture f = seed();
+
+        for (String role : List.of("ADMIN", "ACCOUNTANT")) {
+
+            ReceivablesDtos.ReceivablesSummary summary =
+                receivablesService.summary(
+                    f.organizationId(),
+                    f.users().get(role)
+                );
+
+            assertThat(summary.available())
+                .as(role)
+                .isTrue();
+
+            assertThat(summary.totalOutstanding())
+                .as(role)
+                .isEqualByComparingTo("950.00");
+        }
+
+        for (
+            String role
+            : List.of("PROJECT_MANAGER", "SITE_MANAGER")
+        ) {
+
+            ReceivablesDtos.ReceivablesSummary summary =
+                receivablesService.summary(
+                    f.organizationId(),
+                    f.users().get(role)
+                );
+
+            assertThat(summary.available()).as(role).isFalse();
+            assertThat(summary.totalOutstanding())
+                .as(role)
+                .isEqualByComparingTo(BigDecimal.ZERO);
+            assertThat(summary.openInvoices()).as(role).isZero();
+            assertThat(summary.aging()).as(role).isEmpty();
+            assertThat(summary.expected()).as(role).isEmpty();
+            assertThat(summary.projects()).as(role).isEmpty();
+        }
+
+        assertThatThrownBy(
+            () ->
+                receivablesService.summary(
+                    f.organizationId(),
+                    f.users().get("CLIENT")
+                )
+        ).isInstanceOfSatisfying(
+            BusinessException.class,
+            exception ->
+                assertThat(exception.getStatus())
+                    .isEqualTo(HttpStatus.FORBIDDEN)
+        );
+    }
+
+    @Test
+    void receivablesDoNotLeakIntoOtherOrganizations() {
+
+        Fixture f = seed();
+
+        String suffix =
+            UUID.randomUUID().toString().substring(0, 8);
+
+        UUID outsiderId = register("outsider-" + suffix);
+
+        UUID otherOrganizationId =
+            createOrganization(
+                outsiderId,
+                "Other Construction " + suffix
+            );
+
+        entityManager.flush();
+
+        ReceivablesDtos.ReceivablesSummary own =
+            receivablesService.summary(
+                otherOrganizationId,
+                outsiderId
+            );
+
+        assertThat(own.available()).isTrue();
+        assertThat(own.totalOutstanding())
+            .isEqualByComparingTo(BigDecimal.ZERO);
+        assertThat(own.openInvoices()).isZero();
+        assertThat(own.projects()).isEmpty();
+
+        assertThatThrownBy(
+            () ->
+                receivablesService.summary(
                     f.organizationId(),
                     outsiderId
                 )
