@@ -7,6 +7,7 @@ import Link from "next/link";
 import {
   FormEvent,
   useEffect,
+  useRef,
   useMemo,
   useState,
 } from "react";
@@ -290,21 +291,27 @@ export default function ProjectsPage() {
     }
   }
 
-  /* eslint-disable react-hooks/exhaustive-deps */
+  // The effect below only re-runs when the organization changes, but it must
+  // always call the latest loadData, so that is kept in a ref.
+  const loadDataRef = useRef(loadData);
+
+  useEffect(() => {
+    loadDataRef.current = loadData;
+  });
+
   useEffect(() => {
     const timer = window.setTimeout(() => {
       if (!organizationId) {
         return;
       }
 
-      void loadData();
+      void loadDataRef.current();
     }, 0);
 
     return () => {
       window.clearTimeout(timer);
     };
   }, [organizationId]);
-  /* eslint-enable react-hooks/exhaustive-deps */
 
   if (loading || !user) {
     return <main className="appLoading">Loading...</main>;
