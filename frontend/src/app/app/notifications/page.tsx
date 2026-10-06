@@ -27,6 +27,7 @@ import {
 import type {
   NotificationView,
 } from "@/lib/notification-types";
+import { formatDateTime } from "@/lib/format";
 
 export default function NotificationsPage() {
   const {
@@ -217,11 +218,7 @@ export default function NotificationsPage() {
 
                     <span>
                       {
-                        new Date(
-                          notification
-                            .createdAt
-                        )
-                          .toLocaleString()
+                        formatDateTime(notification.createdAt)
                       }
                     </span>
                   </header>

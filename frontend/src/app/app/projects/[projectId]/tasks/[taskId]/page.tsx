@@ -33,6 +33,7 @@ import type {
   TaskView,
   TaskWorkLog,
 } from "@/lib/types";
+import { formatDateTime } from "@/lib/format";
 
 function actionsFor(
   status: TaskStatus
@@ -744,9 +745,7 @@ useEffect(() => {
                       </strong>
 
                       <span>
-                        {new Date(
-                          item.createdAt
-                        ).toLocaleString()}
+                        {formatDateTime(item.createdAt)}
                         {item.edited
                           ? " · Edited"
                           : ""}
