@@ -43,46 +43,12 @@ import type {
   DashboardMonthlyValue,
   OrganizationDashboard,
 } from "@/lib/dashboard-types";
+import {
+  formatCompactMoney as compactMoney,
+  formatMoney as money,
+} from "@/lib/format";
 
 import styles from "./dashboard.module.css";
-
-function money(
-  value: number,
-  currency: string,
-) {
-  return new Intl.NumberFormat(
-    "en-GB",
-    {
-      style:
-        "currency",
-      currency,
-      maximumFractionDigits:
-        0,
-    },
-  ).format(
-    value,
-  );
-}
-
-function compactMoney(
-  value: number,
-  currency: string,
-) {
-  return new Intl.NumberFormat(
-    "en-GB",
-    {
-      style:
-        "currency",
-      currency,
-      notation:
-        "compact",
-      maximumFractionDigits:
-        1,
-    },
-  ).format(
-    value,
-  );
-}
 
 function monthDate(
   value: string,
