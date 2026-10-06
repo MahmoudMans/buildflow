@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { useAuth } from "@/components/AuthProvider";
 import { useOrganizationSelection } from "@/components/useOrganizationSelection";
+import { openSearchPalette } from "@/lib/search";
 
 type SidebarSection =
   | "overview"
@@ -97,6 +98,17 @@ export function AppSidebar({ active }: { active?: SidebarSection }) {
           )}
         </div>
       )}
+
+      <button
+        type="button"
+        className="sidebarSearch"
+        onClick={openSearchPalette}
+        aria-label="Search (Command or Control plus K)"
+        aria-keyshortcuts="Meta+K Control+K"
+      >
+        <span>Search</span>
+        <kbd aria-hidden="true">⌘K</kbd>
+      </button>
 
       <nav aria-label="Primary">
         {NAV_ITEMS.map((item) => (

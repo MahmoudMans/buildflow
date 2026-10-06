@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { useAuth } from "@/components/AuthProvider";
+import { CommandPalette } from "@/components/CommandPalette";
 
 export default function AppLayout({
   children,
@@ -23,5 +24,10 @@ export default function AppLayout({
     return <main className="appLoading">Loading...</main>;
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <CommandPalette />
+      {children}
+    </>
+  );
 }
