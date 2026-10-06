@@ -773,3 +773,71 @@ textarea:disabled {
   color: var(--dark);
 }
 .appSidebar .sidebarSignOut:disabled { opacity: 0.6; cursor: progress; }
+
+/* Project list: toolbar, progress and deadline signals */
+.uxToolbar {
+  padding: 16px 24px;
+  display: grid;
+  grid-template-columns: minmax(180px, 1.6fr) repeat(3, minmax(110px, 1fr));
+  gap: 12px;
+  border-bottom: 1px solid #d8e0ea;
+  background: var(--surface);
+}
+.uxToolbar label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.uxToolbar input,
+.uxToolbar select {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--dark);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.uxToolbar input:focus,
+.uxToolbar select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+}
+@media (max-width: 760px) {
+  .uxToolbar { grid-template-columns: 1fr 1fr; }
+  .uxToolbar label:first-child { grid-column: 1 / -1; }
+}
+.uxProjectProgress { margin-top: 18px; }
+.uxProgressTrack {
+  height: 6px;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  background: #e2e8f0;
+}
+.uxProgressFill { height: 100%; background: var(--accent); }
+.uxProgressFill.complete { background: var(--success); }
+.uxDeadline.overdue { color: var(--color-danger-text); font-weight: 800; }
+.uxDeadline.soon { color: var(--color-warning-text); font-weight: 800; }
+.uxPriority.high { color: var(--color-warning-text); font-weight: 800; }
+.uxPriority.critical { color: var(--color-danger-text); font-weight: 800; }
+.uxLinkButton {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-warning-text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
