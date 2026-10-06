@@ -932,3 +932,129 @@ textarea:disabled {
   .uxAttentionItem a { grid-template-columns: 12px minmax(0, 1fr); }
   .uxAttentionMeta { grid-column: 2; justify-items: start; }
 }
+
+/* Dashboard: receivables panel */
+.uxReceivables {
+  margin: 0 0 24px;
+  padding: 22px 24px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  display: grid;
+  gap: 20px;
+}
+.uxReceivablesHeader h2 { margin: 0; font-size: 18px; }
+.uxReceivablesHeader p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+.uxReceivablesStats {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.uxReceivablesStats > div {
+  padding: 14px 16px;
+  display: grid;
+  gap: 4px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.uxReceivablesStats dt {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.uxReceivablesStats dd { margin: 0; font-size: 22px; font-weight: 800; }
+.uxReceivablesStats span { color: var(--muted); font-size: 12px; }
+.uxReceivablesStats .alert dd { color: var(--color-danger, #b91c1c); }
+.uxReceivablesGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+}
+.uxReceivablesBlock h3 { margin: 0 0 12px; font-size: 14px; }
+.uxReceivablesNote { margin: 10px 0 0; color: var(--muted); font-size: 12px; }
+.uxAgingBar {
+  height: 14px;
+  display: flex;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+.uxAgingSegment { height: 100%; min-width: 3px; }
+.uxAgingSegment.current, .uxAgingSwatch.current { background: #94a3b8; }
+.uxAgingSegment.d30, .uxAgingSwatch.d30 { background: #f59e0b; }
+.uxAgingSegment.d60, .uxAgingSwatch.d60 { background: #ea580c; }
+.uxAgingSegment.d90, .uxAgingSwatch.d90 { background: #dc2626; }
+.uxAgingSegment.d90plus, .uxAgingSwatch.d90plus { background: #7f1d1d; }
+.uxAgingLegend {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+.uxAgingLegend li {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+.uxAgingLegend small { color: var(--muted); }
+.uxAgingSwatch { width: 10px; height: 10px; border-radius: 3px; }
+.uxExpected {
+  height: 160px;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+.uxExpectedCol {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  justify-items: center;
+  gap: 6px;
+}
+.uxExpectedValue { color: var(--muted); font-size: 11px; font-weight: 700; }
+.uxExpectedBarTrack {
+  width: 100%;
+  max-width: 38px;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+.uxExpectedBar {
+  width: 100%;
+  border-radius: 6px 6px 0 0;
+  background: var(--color-info, #2563eb);
+}
+.uxExpectedMonth { font-size: 12px; font-weight: 700; }
+.uxReceivablesTableWrap { overflow-x: auto; }
+.uxReceivablesTable { width: 100%; border-collapse: collapse; font-size: 13px; }
+.uxReceivablesTable th,
+.uxReceivablesTable td {
+  padding: 10px 8px;
+  border-top: 1px solid #f1f5f9;
+  text-align: left;
+  vertical-align: top;
+}
+.uxReceivablesTable th {
+  border-top: 0;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.uxReceivablesTable .num { text-align: right; white-space: nowrap; }
+.uxReceivablesTable td.alert { color: var(--color-danger, #b91c1c); font-weight: 700; }
+.uxReceivablesTable td small { display: block; color: var(--muted); font-size: 11px; }
+@media (max-width: 860px) {
+  .uxReceivablesGrid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .uxReceivables { padding: 18px 16px; }
+  .uxReceivablesStats { grid-template-columns: 1fr; }
+}

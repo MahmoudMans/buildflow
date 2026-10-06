@@ -23,6 +23,10 @@ import {
 } from "@/components/AttentionPanel";
 
 import {
+  ReceivablesPanel,
+} from "@/components/ReceivablesPanel";
+
+import {
   useAuth,
 } from "@/components/AuthProvider";
 
@@ -1567,6 +1571,11 @@ export default function DashboardPage() {
                         qualifier="Current dashboard aggregate"
                       />
                     </div>
+
+                    <ReceivablesPanel
+                      organizationId={organizationId}
+                      currency={dashboard.currency}
+                    />
 
                     <div
                       className={
