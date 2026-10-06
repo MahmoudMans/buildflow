@@ -42,6 +42,8 @@ import type {
   ChangeOrderFinancialSummary,
   ChangeOrderSummary,
 } from "@/lib/change-order-types";
+import { formatMoneyExact } from "@/lib/format";
+import { ChangeOrderImpactPanel } from "@/components/ChangeOrderImpactPanel";
 
 export default function ChangeOrdersPage() {
   const params = useParams();
@@ -425,23 +427,14 @@ export default function ChangeOrdersPage() {
     }
   }
 
-  function money(
-    value: number | null
-  ) {
+  function money(value: number | null) {
     if (value === null) {
       return "Internal";
     }
 
-    return new Intl.NumberFormat(
-      "en-US",
-      {
-        style: "currency",
-        currency:
-          project?.currency
-          ?? "EUR",
-      }
-    ).format(
-      Number(value)
+    return formatMoneyExact(
+      Number(value),
+      project?.currency ?? "EUR",
     );
   }
 
@@ -756,6 +749,16 @@ export default function ChangeOrdersPage() {
                       }
                     </p>
                   </div>
+                )}
+
+                {canSeeFinancials && (
+                  <ChangeOrderImpactPanel
+                    changeOrderId={selectedChangeOrder.id}
+                    organizationId={organizationId}
+                    currency={project.currency}
+                    status={selectedChangeOrder.status}
+                    version={selectedChangeOrder.updatedAt}
+                  />
                 )}
 
                 <div className="commercialActions">

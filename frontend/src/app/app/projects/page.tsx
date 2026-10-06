@@ -7,12 +7,15 @@ import Link from "next/link";
 import {
   FormEvent,
   useEffect,
+  useRef,
+  useMemo,
   useState,
 } from "react";
 
 import { AppSidebar } from "@/components/AppSidebar";
 import { useAuth } from "@/components/AuthProvider";
 import { useOrganizationSelection } from "@/components/useOrganizationSelection";
+import { EmptyState } from "@/components/ux/EmptyState";
 
 import {
   ApiClientError,
@@ -20,166 +23,239 @@ import {
   apiPost,
 } from "@/lib/api";
 
+import { formatDate } from "@/lib/format";
+import { humanizeStatus } from "@/lib/ux-validation";
+
 import type {
   ClientSummary,
   Member,
   ProjectPriority,
+  ProjectStatus,
   ProjectSummary,
   ProjectType,
 } from "@/lib/types";
 
+type SortKey = "newest" | "deadline" | "progress" | "name";
 
-function buildflowProjectDisplayLabel(
-  value: string | null | undefined,
-) {
-  if (!value) {
-    return "Unavailable";
+const STATUS_OPTIONS: ProjectStatus[] = [
+  "DRAFT",
+  "PLANNING",
+  "ACTIVE",
+  "ON_HOLD",
+  "COMPLETED",
+  "CANCELLED",
+  "ARCHIVED",
+];
+
+const PRIORITY_OPTIONS: ProjectPriority[] = [
+  "LOW",
+  "MEDIUM",
+  "HIGH",
+  "CRITICAL",
+];
+
+const CLOSED_STATUSES: ProjectStatus[] = [
+  "COMPLETED",
+  "CANCELLED",
+  "ARCHIVED",
+];
+
+const PROJECT_TYPES: { value: ProjectType; label: string }[] = [
+  { value: "NEW_CONSTRUCTION", label: "New construction" },
+  { value: "RENOVATION", label: "Renovation" },
+  { value: "INTERIOR", label: "Interior" },
+  { value: "ELECTRICAL", label: "Electrical" },
+  { value: "PLUMBING", label: "Plumbing" },
+  { value: "ROOFING", label: "Roofing" },
+  { value: "LANDSCAPING", label: "Landscaping" },
+  { value: "MAINTENANCE", label: "Maintenance" },
+  { value: "OTHER", label: "Other" },
+];
+
+const SORT_OPTIONS: { value: SortKey; label: string }[] = [
+  { value: "newest", label: "Newest first" },
+  { value: "deadline", label: "Nearest deadline" },
+  { value: "progress", label: "Most progress" },
+  { value: "name", label: "Name A to Z" },
+];
+
+function todayIso() {
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+
+  return `${now.getFullYear()}-${month}-${day}`;
+}
+
+function daysBetween(fromIso: string, toIso: string) {
+  const from = new Date(`${fromIso}T00:00:00`).getTime();
+  const to = new Date(`${toIso}T00:00:00`).getTime();
+
+  return Math.round((to - from) / 86_400_000);
+}
+
+type DeadlineTone = "overdue" | "soon" | "normal" | "none";
+
+function deadlineSignal(
+  project: ProjectSummary,
+  today: string,
+): { label: string; tone: DeadlineTone } {
+  if (!project.plannedEndDate) {
+    return { label: "No deadline", tone: "none" };
   }
 
-  return value
-    .toLowerCase()
-    .split("_")
-    .map(
-      (part) =>
-        part.length > 0
-          ? `${
-              part[0].toUpperCase()
-            }${part.slice(1)}`
-          : part,
-    )
-    .join(" ");
+  const formatted = formatDate(project.plannedEndDate);
+
+  if (!today || CLOSED_STATUSES.includes(project.status)) {
+    return { label: formatted, tone: "normal" };
+  }
+
+  const days = daysBetween(today, project.plannedEndDate);
+
+  if (days < 0) {
+    return {
+      label: `${formatted} · ${Math.abs(days)}d overdue`,
+      tone: "overdue",
+    };
+  }
+
+  if (days <= 14) {
+    return {
+      label: `${formatted} · ${days === 0 ? "due today" : `${days}d left`}`,
+      tone: "soon",
+    };
+  }
+
+  return { label: formatted, tone: "normal" };
 }
 
 export default function ProjectsPage() {
+  const [creatingProject, setCreatingProject] = useState(false);
 
-  const [
-    creatingProject,
-    setCreatingProject,
-  ] = useState(false);
+  const { user, organizations, loading } = useAuth();
 
-  const {
-    user,
-    organizations,
-    loading,
-  } = useAuth();
+  const organizationSelection = useOrganizationSelection(organizations);
 
-  const organizationSelection =
-    useOrganizationSelection(
-      organizations
-    );
+  const organizationId = organizationSelection.organizationId;
 
-  const organizationId =
-    organizationSelection.organizationId;
+  const [projects, setProjects] = useState<ProjectSummary[]>([]);
+  const [clients, setClients] = useState<ClientSummary[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
+  const [today, setToday] = useState("");
 
-  const [projects, setProjects] =
-    useState<ProjectSummary[]>([]);
-
-  const [clients, setClients] =
-    useState<ClientSummary[]>([]);
-
-  const [members, setMembers] =
-    useState<Member[]>([]);
-
-  const [clientId, setClientId] =
+  const [clientId, setClientId] = useState("");
+  const [name, setName] = useState("");
+  const [projectType, setProjectType] = useState<ProjectType>("RENOVATION");
+  const [priority, setPriority] = useState<ProjectPriority>("MEDIUM");
+  const [projectManagerMembershipId, setProjectManagerMembershipId] =
     useState("");
+  const [startDate, setStartDate] = useState("");
+  const [plannedEndDate, setPlannedEndDate] = useState("");
+  const [error, setError] = useState("");
 
-  const [name, setName] =
-    useState("");
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"ALL" | ProjectStatus>(
+    "ALL",
+  );
+  const [priorityFilter, setPriorityFilter] = useState<
+    "ALL" | ProjectPriority
+  >("ALL");
+  const [sort, setSort] = useState<SortKey>("newest");
 
-  const [projectType, setProjectType] =
-    useState<ProjectType>(
-      "RENOVATION"
-    );
+  const filtersActive =
+    search.trim() !== "" ||
+    statusFilter !== "ALL" ||
+    priorityFilter !== "ALL";
 
-  const [priority, setPriority] =
-    useState<ProjectPriority>(
-      "MEDIUM"
-    );
+  function resetFilters() {
+    setSearch("");
+    setStatusFilter("ALL");
+    setPriorityFilter("ALL");
+  }
 
-  const [
-    projectManagerMembershipId,
-    setProjectManagerMembershipId,
-  ] = useState("");
+  const visibleProjects = useMemo(() => {
+    const query = search.trim().toLowerCase();
 
-  const [startDate, setStartDate] =
-    useState("");
+    const filtered = projects.filter((project) => {
+      if (statusFilter !== "ALL" && project.status !== statusFilter) {
+        return false;
+      }
 
-  const [
-    plannedEndDate,
-    setPlannedEndDate,
-  ] = useState("");
+      if (priorityFilter !== "ALL" && project.priority !== priorityFilter) {
+        return false;
+      }
 
-  const [error, setError] =
-    useState("");
+      if (!query) {
+        return true;
+      }
 
+      return (
+        project.name.toLowerCase().includes(query) ||
+        project.projectNumber.toLowerCase().includes(query) ||
+        project.clientName.toLowerCase().includes(query)
+      );
+    });
 
+    const sorted = [...filtered];
+
+    if (sort === "deadline") {
+      sorted.sort((a, b) =>
+        (a.plannedEndDate ?? "9999-12-31").localeCompare(
+          b.plannedEndDate ?? "9999-12-31",
+        ),
+      );
+    } else if (sort === "progress") {
+      sorted.sort((a, b) => b.progressPercentage - a.progressPercentage);
+    } else if (sort === "name") {
+      sorted.sort((a, b) => a.name.localeCompare(b.name));
+    } else {
+      sorted.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    }
+
+    return sorted;
+  }, [projects, search, statusFilter, priorityFilter, sort]);
 
   async function loadData() {
     try {
-      const [
-        projectResult,
-        clientResult,
-        memberResult,
-      ] = await Promise.all([
-        apiGet<ProjectSummary[]>(
-          "/projects",
-          organizationId
-        ),
+      const [projectResult, clientResult, memberResult] = await Promise.all([
+        apiGet<ProjectSummary[]>("/projects", organizationId),
 
-        apiGet<ClientSummary[]>(
-          "/clients",
-          organizationId
-        ),
+        apiGet<ClientSummary[]>("/clients", organizationId),
 
-        apiGet<Member[]>(
-          `/organizations/${organizationId}/members`
-        ),
+        apiGet<Member[]>(`/organizations/${organizationId}/members`),
       ]);
 
-      setProjects(
-        projectResult
+      const activeClients = clientResult.filter(
+        (client) => client.status === "ACTIVE",
       );
 
-      setClients(
-        clientResult.filter(
-          (client) =>
-            client.status === "ACTIVE"
-        )
-      );
+      setProjects(projectResult);
+      setToday(todayIso());
+      setClients(activeClients);
 
       setMembers(
         memberResult.filter(
           (member) =>
-            member.status === "ACTIVE"
-            && (
-              member.role === "OWNER"
-              || member.role === "ADMIN"
-              || member.role ===
-                "PROJECT_MANAGER"
-            )
-        )
+            member.status === "ACTIVE" &&
+            (member.role === "OWNER" ||
+              member.role === "ADMIN" ||
+              member.role === "PROJECT_MANAGER"),
+        ),
       );
 
-      if (
-        !clientId
-        && clientResult.length > 0
-      ) {
-        setClientId(
-          clientResult[0].id
-        );
+      if (!clientId && activeClients.length > 0) {
+        setClientId(activeClients[0].id);
       }
     } catch (caught) {
       setError(
         caught instanceof ApiClientError
           ? caught.message
-          : "Could not load projects."
+          : "Could not load projects.",
       );
     }
   }
 
-  async function createProject(
-    event: FormEvent
-  ) {
+  async function createProject(event: FormEvent) {
     event.preventDefault();
 
     setError("");
@@ -192,67 +268,60 @@ export default function ProjectsPage() {
           name,
           projectType,
           priority,
-          startDate:
-            startDate || null,
-          plannedEndDate:
-            plannedEndDate || null,
-          projectManagerMembershipId:
-            projectManagerMembershipId
-              || null,
+          startDate: startDate || null,
+          plannedEndDate: plannedEndDate || null,
+          projectManagerMembershipId: projectManagerMembershipId || null,
         },
-        organizationId
+        organizationId,
       );
 
       setName("");
       setStartDate("");
       setPlannedEndDate("");
-      setProjectManagerMembershipId(
-        ""
-      );
+      setProjectManagerMembershipId("");
+      resetFilters();
 
       await loadData();
     } catch (caught) {
       setError(
         caught instanceof ApiClientError
           ? caught.message
-          : "Project creation failed."
+          : "Project creation failed.",
       );
     }
   }
 
-    /* eslint-disable react-hooks/exhaustive-deps */
-useEffect(() => {
-    // BUILDFLOW_ASYNC_LOAD_EFFECT
-    const timer =
-      window.setTimeout(
-        () => {
-        if (!organizationId) {
-          return;
-        }
+  // The effect below only re-runs when the organization changes, but it must
+  // always call the latest loadData, so that is kept in a ref.
+  const loadDataRef = useRef(loadData);
 
-        loadData();
-        },
-        0
-      );
+  useEffect(() => {
+    loadDataRef.current = loadData;
+  });
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      if (!organizationId) {
+        return;
+      }
+
+      void loadDataRef.current();
+    }, 0);
 
     return () => {
-      window.clearTimeout(
-        timer
-      );
+      window.clearTimeout(timer);
     };
   }, [organizationId]);
-  /* eslint-enable react-hooks/exhaustive-deps */
 
-  if (
-    loading ||
-    !user
-  ) {
-    return (
-      <main className="appLoading">
-        Loading...
-      </main>
-    );
+  if (loading || !user) {
+    return <main className="appLoading">Loading...</main>;
   }
+
+  const countLabel = filtersActive
+    ? `${visibleProjects.length} of ${projects.length} projects`
+    : projects.length === 1
+      ? "1 project shown"
+      : `${projects.length} projects shown`;
 
   return (
     <main className={`appShell ${styles.projectsShell}`}>
@@ -260,100 +329,146 @@ useEffect(() => {
 
       <section className={`appContent ${styles.projectsContent}`}>
         <header className="appHeader">
-          <div id="new-project" data-buildflow-region="new-project" tabIndex={-1}>
+          <div
+            id="new-project"
+            data-buildflow-region="new-project"
+            tabIndex={-1}
+          >
+            <h1>Construction projects</h1>
 
-            <h1>
-              Construction projects
-            </h1>
-            <p
-              className={
-                styles.pageDescription
-              }
-            >
+            <p className={styles.pageDescription}>
               Review projects for the selected organization.
             </p>
 
-            <a
-              className={
-                styles.mobileNewProjectLink
-              }
-              href="#new-project"
-            >
+            <a className={styles.mobileNewProjectLink} href="#new-project">
               New project
             </a>
           </div>
-
-          <label className={styles.organizationControl}>
-              <span className={styles.organizationLabel}>
-                Organization
-              </span>
-<select
-            className="organizationSelector"
-            value={organizationId}
-            onChange={(event) => {
-              const value =
-                event.target.value;
-
-              organizationSelection.selectOrganization(
-                value
-              );
-
-              localStorage.setItem(
-                "buildflow.organizationId",
-                value
-              );
-            }}
-                disabled={creatingProject}
-              >
-            {organizations.map(
-              (organization) => (
-                <option
-                  key={organization.id}
-                  value={organization.id}
-                >
-                  {organization.name}
-                </option>
-              )
-            )}
-          </select>
-            </label>
         </header>
 
-        {error && (
-          <div className="formError moduleError">
-            {error}
-          </div>
-        )}
+        {error && <div className="formError moduleError">{error}</div>}
 
         <section className="moduleLayout">
           <div className="moduleTableCard">
-            <div className="moduleCardHeader">
+            <div className="uxToolbar" role="search" aria-label="Filter projects">
+              <label>
+                Search
+                <input
+                  type="search"
+                  placeholder="Name, number or client"
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                />
+              </label>
 
+              <label>
+                Status
+                <select
+                  value={statusFilter}
+                  onChange={(event) =>
+                    setStatusFilter(
+                      event.target.value as "ALL" | ProjectStatus,
+                    )
+                  }
+                >
+                  <option value="ALL">All statuses</option>
+
+                  {STATUS_OPTIONS.map((option) => (
+                    <option key={option} value={option}>
+                      {humanizeStatus(option)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label>
+                Priority
+                <select
+                  value={priorityFilter}
+                  onChange={(event) =>
+                    setPriorityFilter(
+                      event.target.value as "ALL" | ProjectPriority,
+                    )
+                  }
+                >
+                  <option value="ALL">All priorities</option>
+
+                  {PRIORITY_OPTIONS.map((option) => (
+                    <option key={option} value={option}>
+                      {humanizeStatus(option)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label>
+                Sort by
+                <select
+                  value={sort}
+                  onChange={(event) => setSort(event.target.value as SortKey)}
+                >
+                  {SORT_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
             </div>
 
-            <div className="projectList" data-buildflow-region="project-list" aria-label="Project list">
-        <header
-          className={
-            styles.projectListCount
-          }
-        >
-          <strong>
-            {
-              projects.length === 1
-                ? "1 project shown"
-                : `${projects.length} projects shown`
-            }
-          </strong>
-        </header>
+            <div
+              className="projectList"
+              data-buildflow-region="project-list"
+              aria-label="Project list"
+            >
+              <header className={styles.projectListCount}>
+                <strong>{countLabel}</strong>
+
+                {filtersActive && (
+                  <button
+                    type="button"
+                    className="uxLinkButton"
+                    onClick={resetFilters}
+                  >
+                    Clear filters
+                  </button>
+                )}
+              </header>
 
               {projects.length === 0 && (
-                <div className="emptyState">
-                  No projects in this organization
-                </div>
+                <EmptyState
+                  compact
+                  title="No projects yet"
+                  description="Use the New project form to create the first project for this organization."
+                />
               )}
 
-              {projects.map(
-                (project) => (
+              {projects.length > 0 && visibleProjects.length === 0 && (
+                <EmptyState
+                  compact
+                  title="No projects match your filters"
+                  description="Try a different search or clear the filters."
+                  action={
+                    <button
+                      type="button"
+                      className="uxLinkButton"
+                      onClick={resetFilters}
+                    >
+                      Clear filters
+                    </button>
+                  }
+                />
+              )}
+
+              {visibleProjects.map((project) => {
+                const progress = Math.max(
+                  0,
+                  Math.min(100, Math.round(project.progressPercentage)),
+                );
+
+                const deadline = deadlineSignal(project, today);
+
+                return (
                   <Link
                     className="projectListCard"
                     key={project.id}
@@ -369,119 +484,123 @@ useEffect(() => {
                           {project.name}
                         </h3>
 
-                        <p>
-                          Client: {project.clientName}
-                        </p>
+                        <p>Client: {project.clientName}</p>
                       </div>
 
-                      <strong className="statusBadge" data-buildflow-project-status="true">
-                        {buildflowProjectDisplayLabel(project.status)}
+                      <strong
+                        className="statusBadge"
+                        data-buildflow-project-status="true"
+                      >
+                        {humanizeStatus(project.status)}
                       </strong>
                     </div>
 
-                    <div className="projectListMeta" data-buildflow-metadata-grid="true">
-                      <span data-buildflow-meta="type" data-buildflow-label="Type">
-                        {buildflowProjectDisplayLabel(project.projectType)}
+                    <div className="uxProjectProgress">
+                      <div
+                        className="uxProgressTrack"
+                        role="progressbar"
+                        aria-label={`${project.name} progress`}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-valuenow={progress}
+                      >
+                        <div
+                          className={
+                            progress >= 100
+                              ? "uxProgressFill complete"
+                              : "uxProgressFill"
+                          }
+                          style={{ width: `${progress}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div
+                      className="projectListMeta"
+                      data-buildflow-metadata-grid="true"
+                    >
+                      <span
+                        data-buildflow-meta="type"
+                        data-buildflow-label="Type"
+                      >
+                        {humanizeStatus(project.projectType)}
                       </span>
 
-                      <span data-buildflow-meta="priority" data-buildflow-label="Priority">
-                        {buildflowProjectDisplayLabel(project.priority)}
+                      <span
+                        className={`uxPriority ${project.priority.toLowerCase()}`}
+                        data-buildflow-meta="priority"
+                        data-buildflow-label="Priority"
+                      >
+                        {humanizeStatus(project.priority)}
                       </span>
 
-                      <span data-buildflow-meta="planned-end" data-buildflow-label="Planned end">
-                        {project.plannedEndDate ??
-                          "No deadline"}
+                      <span
+                        className={`uxDeadline ${deadline.tone}`}
+                        data-buildflow-meta="planned-end"
+                        data-buildflow-label="Planned end"
+                      >
+                        {deadline.label}
                       </span>
 
-                      <span data-buildflow-meta="progress" data-buildflow-label="Progress">
-                        {project.progressPercentage}%
+                      <span
+                        data-buildflow-meta="progress"
+                        data-buildflow-label="Progress"
+                      >
+                        {progress}%
                       </span>
                     </div>
                   </Link>
-                )
-              )}
+                );
+              })}
             </div>
           </div>
 
           <aside className="moduleFormCard">
             <h2>New project</h2>
-          <p
-            className={
-              styles.creationOrganization
-            }
-          >
-            Organization:{" "}
-            {
-              organizations.find(
-                (organization) =>
-                  organization.id
-                  === organizationId,
-              )?.name
-              ?? "Current organization"
-            }
-          </p>
 
-          <p
-            className={
-              styles.requiredInstruction
-            }
-          >
-            Fields marked{" "}
-            <strong
-              aria-hidden="true"
-            >
-              *
-            </strong>
-            {" "}are required.
-          </p>
+            <p className={styles.creationOrganization}>
+              Organization:{" "}
+              {organizations.find(
+                (organization) => organization.id === organizationId,
+              )?.name ?? "Current organization"}
+            </p>
+
+            <p className={styles.requiredInstruction}>
+              Fields marked <strong aria-hidden="true">*</strong> are required.
+            </p>
 
             <form
               className="authForm"
               onSubmit={async (event) => {
-              if (creatingProject) {
-                event.preventDefault();
-                return;
-              }
+                if (creatingProject) {
+                  event.preventDefault();
+                  return;
+                }
 
-              setCreatingProject(
-                true,
-              );
+                setCreatingProject(true);
 
-              try {
-                await createProject(
-                  event,
-                );
-              } finally {
-                setCreatingProject(
-                  false,
-                );
-              }
-            }} data-buildflow-create-form="true">
+                try {
+                  await createProject(event);
+                } finally {
+                  setCreatingProject(false);
+                }
+              }}
+              data-buildflow-create-form="true"
+            >
               <label data-buildflow-required="true">
                 Client
                 <select
                   required
                   value={clientId}
-                  onChange={(event) =>
-                    setClientId(
-                      event.target.value
-                    )
-                  }
+                  onChange={(event) => setClientId(event.target.value)}
                 >
-                  <option value="">
-                    Select client
-                  </option>
+                  <option value="">Select client</option>
 
-                  {clients.map(
-                    (client) => (
-                      <option
-                        key={client.id}
-                        value={client.id}
-                      >
-                        {client.displayName}
-                      </option>
-                    )
-                  )}
+                  {clients.map((client) => (
+                    <option key={client.id} value={client.id}>
+                      {client.displayName}
+                    </option>
+                  ))}
                 </select>
               </label>
 
@@ -490,11 +609,7 @@ useEffect(() => {
                 <input
                   required
                   value={name}
-                  onChange={(event) =>
-                    setName(
-                      event.target.value
-                    )
-                  }
+                  onChange={(event) => setName(event.target.value)}
                 />
               </label>
 
@@ -504,46 +619,14 @@ useEffect(() => {
                   <select
                     value={projectType}
                     onChange={(event) =>
-                      setProjectType(
-                        event.target.value as ProjectType
-                      )
+                      setProjectType(event.target.value as ProjectType)
                     }
                   >
-                    <option value="NEW_CONSTRUCTION">
-                      New construction
-                    </option>
-
-                    <option value="RENOVATION">
-                      Renovation
-                    </option>
-
-                    <option value="INTERIOR">
-                      Interior
-                    </option>
-
-                    <option value="ELECTRICAL">
-                      Electrical
-                    </option>
-
-                    <option value="PLUMBING">
-                      Plumbing
-                    </option>
-
-                    <option value="ROOFING">
-                      Roofing
-                    </option>
-
-                    <option value="LANDSCAPING">
-                      Landscaping
-                    </option>
-
-                    <option value="MAINTENANCE">
-                      Maintenance
-                    </option>
-
-                    <option value="OTHER">
-                      Other
-                    </option>
+                    {PROJECT_TYPES.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
                   </select>
                 </label>
 
@@ -552,26 +635,14 @@ useEffect(() => {
                   <select
                     value={priority}
                     onChange={(event) =>
-                      setPriority(
-                        event.target.value as ProjectPriority
-                      )
+                      setPriority(event.target.value as ProjectPriority)
                     }
                   >
-                    <option value="LOW">
-                      Low
-                    </option>
-
-                    <option value="MEDIUM">
-                      Medium
-                    </option>
-
-                    <option value="HIGH">
-                      High
-                    </option>
-
-                    <option value="CRITICAL">
-                      Critical
-                    </option>
+                    {PRIORITY_OPTIONS.map((option) => (
+                      <option key={option} value={option}>
+                        {humanizeStatus(option)}
+                      </option>
+                    ))}
                   </select>
                 </label>
               </div>
@@ -579,31 +650,18 @@ useEffect(() => {
               <label>
                 Project manager
                 <select
-                  value={
-                    projectManagerMembershipId
-                  }
+                  value={projectManagerMembershipId}
                   onChange={(event) =>
-                    setProjectManagerMembershipId(
-                      event.target.value
-                    )
+                    setProjectManagerMembershipId(event.target.value)
                   }
                 >
-                  <option value="">
-                    Assign later
-                  </option>
+                  <option value="">Assign later</option>
 
-                  {members.map(
-                    (member) => (
-                      <option
-                        key={member.membershipId}
-                        value={member.membershipId}
-                      >
-                        {member.firstName}
-                        {" "}
-                        {member.lastName}
-                      </option>
-                    )
-                  )}
+                  {members.map((member) => (
+                    <option key={member.membershipId} value={member.membershipId}>
+                      {member.firstName} {member.lastName}
+                    </option>
+                  ))}
                 </select>
               </label>
 
@@ -613,11 +671,7 @@ useEffect(() => {
                   <input
                     type="date"
                     value={startDate}
-                    onChange={(event) =>
-                      setStartDate(
-                        event.target.value
-                      )
-                    }
+                    onChange={(event) => setStartDate(event.target.value)}
                   />
                 </label>
 
@@ -626,11 +680,7 @@ useEffect(() => {
                   <input
                     type="date"
                     value={plannedEndDate}
-                    onChange={(event) =>
-                      setPlannedEndDate(
-                        event.target.value
-                      )
-                    }
+                    onChange={(event) => setPlannedEndDate(event.target.value)}
                   />
                 </label>
               </div>
@@ -639,29 +689,19 @@ useEffect(() => {
                 className="authSubmit"
                 type="submit"
                 disabled={!clientId || creatingProject}
-               aria-busy={creatingProject}>
-                {
-                  creatingProject
-                    ? "Creating project…"
-                    : "Create project"
-                }
+                aria-busy={creatingProject}
+              >
+                {creatingProject ? "Creating project…" : "Create project"}
               </button>
 
               <span
-                className={
-                  styles.creationStatus
-                }
+                className={styles.creationStatus}
                 role="status"
                 aria-live="polite"
                 aria-atomic="true"
               >
-                {
-                  creatingProject
-                    ? "Creating project…"
-                    : ""
-                }
+                {creatingProject ? "Creating project…" : ""}
               </span>
-
             </form>
           </aside>
         </section>

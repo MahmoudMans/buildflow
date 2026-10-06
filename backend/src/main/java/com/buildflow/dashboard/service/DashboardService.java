@@ -407,6 +407,53 @@ public class DashboardService {
             );
     }
 
+    public record AtRiskProject(
+        UUID id,
+        String projectNumber,
+        String name,
+        String healthStatus,
+        List<String> reasons
+    ) {
+    }
+
+    @Transactional(readOnly = true)
+    public List<AtRiskProject> atRiskProjects(
+        UUID organizationId,
+        Set<UUID> visibleProjectIds
+    ) {
+        List<AtRiskProject> result = new ArrayList<>();
+
+        for (ProjectRow project : projects(organizationId)) {
+            if (
+                !visibleProjectIds.contains(project.id())
+                || !"ACTIVE".equals(project.status())
+            ) {
+                continue;
+            }
+
+            DashboardDtos.ProjectHealth health =
+                health(
+                    organizationId,
+                    project,
+                    financial(organizationId, project.id())
+                );
+
+            if (!"ON_TRACK".equals(health.status())) {
+                result.add(
+                    new AtRiskProject(
+                        project.id(),
+                        project.projectNumber(),
+                        project.name(),
+                        health.status(),
+                        health.reasons()
+                    )
+                );
+            }
+        }
+
+        return result;
+    }
+
     private void requireInternalMembership(
         UUID organizationId,
         UUID userId

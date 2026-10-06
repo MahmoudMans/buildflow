@@ -1,114 +1,123 @@
-import Link from "next/link";
+"use client";
 
-import {
-  NotificationBell,
-} from "@/components/NotificationBell";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Fragment, useEffect, useRef } from "react";
+
+import { NotificationBell } from "@/components/NotificationBell";
+
+type WorkspaceSection =
+  | "overview"
+  | "tasks"
+  | "milestones"
+  | "timeline"
+  | "budget"
+  | "expenses"
+  | "procurement"
+  | "commercial"
+  | "changes"
+  | "site"
+  | "documents"
+  | "photos"
+  | "activity";
+
+type NavItem = {
+  key: WorkspaceSection;
+  label: string;
+  segment: string;
+};
+
+const NAV_GROUPS: NavItem[][] = [
+  [{ key: "overview", label: "Overview", segment: "" }],
+  [
+    { key: "tasks", label: "Tasks", segment: "tasks" },
+    { key: "milestones", label: "Milestones", segment: "milestones" },
+    { key: "timeline", label: "Timeline", segment: "timeline" },
+  ],
+  [
+    { key: "budget", label: "Budget", segment: "budget" },
+    { key: "expenses", label: "Expenses", segment: "expenses" },
+    { key: "procurement", label: "Procurement", segment: "procurement" },
+    { key: "commercial", label: "Commercial", segment: "commercial" },
+    { key: "changes", label: "Change Orders", segment: "change-orders" },
+  ],
+  [
+    { key: "site", label: "Site", segment: "site" },
+    { key: "documents", label: "Documents", segment: "documents" },
+    { key: "photos", label: "Photos", segment: "photos" },
+  ],
+  [{ key: "activity", label: "Activity", segment: "activity" }],
+];
+
+function sectionFromPath(
+  pathname: string | null,
+  base: string,
+): WorkspaceSection | undefined {
+  if (!pathname || !pathname.startsWith(base)) {
+    return undefined;
+  }
+
+  const segment =
+    pathname.slice(base.length).split("/").filter(Boolean)[0] ?? "";
+
+  return NAV_GROUPS.flat().find((item) => item.segment === segment)?.key;
+}
 
 export function ProjectWorkspaceNav({
   projectId,
   active,
 }: {
   projectId: string;
-  active:
-    | "overview"
-    | "tasks"
-    | "milestones"
-    | "budget"
-    | "expenses"
-    | "procurement"
-    | "commercial"
-    | "changes"
-    | "site"
-    | "documents"
-    | "photos"
-    | "activity";
+  active?: WorkspaceSection;
 }) {
+  const pathname = usePathname();
+  const base = `/app/projects/${projectId}`;
+  const current = sectionFromPath(pathname, base) ?? active;
+  const onSitePage =
+    pathname === `${base}/site` || pathname === `${base}/site/`;
+  const navRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const activeLink = navRef.current?.querySelector<HTMLElement>("a.active");
+
+    activeLink?.scrollIntoView({ inline: "center", block: "nearest" });
+  }, [current]);
+
   return (
     <div className="projectWorkspaceNavShell">
-      <nav className="projectWorkspaceNav">
-        <Link
-          className={active === "overview" ? "active" : ""}
-          href={`/app/projects/${projectId}`}
-        >
-          Overview
-        </Link>
+      <nav
+        className="projectWorkspaceNav"
+        aria-label="Project workspace"
+        ref={navRef}
+      >
+        {NAV_GROUPS.map((group, index) => (
+          <Fragment key={group[0].key}>
+            {index > 0 && (
+              <span className="projectWorkspaceNavDivider" aria-hidden="true" />
+            )}
 
-        <Link
-          className={active === "tasks" ? "active" : ""}
-          href={`/app/projects/${projectId}/tasks`}
-        >
-          Tasks
-        </Link>
+            {group.map((item) => (
+              <Fragment key={item.key}>
+                <Link
+                  className={current === item.key ? "active" : undefined}
+                  aria-current={current === item.key ? "page" : undefined}
+                  href={item.segment ? `${base}/${item.segment}` : base}
+                >
+                  {item.label}
+                </Link>
 
-        <Link
-          className={active === "milestones" ? "active" : ""}
-          href={`/app/projects/${projectId}/milestones`}
-        >
-          Milestones
-        </Link>
-
-        <Link
-          className={active === "budget" ? "active" : ""}
-          href={`/app/projects/${projectId}/budget`}
-        >
-          Budget
-        </Link>
-
-        <Link
-          className={active === "expenses" ? "active" : ""}
-          href={`/app/projects/${projectId}/expenses`}
-        >
-          Expenses
-        </Link>
-
-        <Link
-          className={active === "procurement" ? "active" : ""}
-          href={`/app/projects/${projectId}/procurement`}
-        >
-          Procurement
-        </Link>
-
-        <Link
-          className={active === "commercial" ? "active" : ""}
-          href={`/app/projects/${projectId}/commercial`}
-        >
-          Commercial
-        </Link>
-
-        <Link
-          className={active === "changes" ? "active" : ""}
-          href={`/app/projects/${projectId}/change-orders`}
-        >
-          Change Orders
-        </Link>
-
-        <Link
-          className={active === "site" ? "active" : ""}
-          href={`/app/projects/${projectId}/site`}
-        >
-          Site
-        </Link>
-
-        <Link
-          className={active === "documents" ? "active" : ""}
-          href={`/app/projects/${projectId}/documents`}
-        >
-          Documents
-        </Link>
-
-        <Link
-          className={active === "photos" ? "active" : ""}
-          href={`/app/projects/${projectId}/photos`}
-        >
-          Photos
-        </Link>
-
-        <Link
-          className={active === "activity" ? "active" : ""}
-          href={`/app/projects/${projectId}/activity`}
-        >
-          Activity
-        </Link>
+                {item.key === "site" && onSitePage && (
+                  <Link
+                    className="projectWorkspaceNavQuick"
+                    href={`${base}/site/capture`}
+                  >
+                    Quick report
+                  </Link>
+                )}
+              </Fragment>
+            ))}
+          </Fragment>
+        ))}
       </nav>
 
       <NotificationBell />

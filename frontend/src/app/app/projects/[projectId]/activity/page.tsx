@@ -38,6 +38,7 @@ import type {
 import type {
   ProjectView,
 } from "@/lib/types";
+import { formatDateTime } from "@/lib/format";
 
 export default function ProjectActivityPage() {
   const params = useParams();
@@ -208,9 +209,7 @@ export default function ProjectActivityPage() {
 
                     <span>
                       {
-                        new Date(
-                          item.createdAt
-                        ).toLocaleString()
+                        formatDateTime(item.createdAt)
                       }
                     </span>
                   </header>

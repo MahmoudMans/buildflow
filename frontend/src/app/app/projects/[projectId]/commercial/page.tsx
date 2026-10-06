@@ -45,6 +45,7 @@ import type {
   QuoteSummary,
   RevenueSummary,
 } from "@/lib/commercial-types";
+import { formatMoneyExact } from "@/lib/format";
 
 export default function CommercialPage() {
   const params = useParams();
@@ -680,19 +681,10 @@ export default function CommercialPage() {
     }
   }
 
-  function money(
-    value: number
-  ) {
-    return new Intl.NumberFormat(
-      "en-US",
-      {
-        style: "currency",
-        currency:
-          project?.currency
-          ?? "EUR",
-      }
-    ).format(
-      Number(value)
+  function money(value: number) {
+    return formatMoneyExact(
+      Number(value),
+      project?.currency ?? "EUR",
     );
   }
 

@@ -19,6 +19,14 @@ import {
 } from "@/components/NotificationBell";
 
 import {
+  AttentionPanel,
+} from "@/components/AttentionPanel";
+
+import {
+  ReceivablesPanel,
+} from "@/components/ReceivablesPanel";
+
+import {
   useAuth,
 } from "@/components/AuthProvider";
 
@@ -35,46 +43,12 @@ import type {
   DashboardMonthlyValue,
   OrganizationDashboard,
 } from "@/lib/dashboard-types";
+import {
+  formatCompactMoney as compactMoney,
+  formatMoney as money,
+} from "@/lib/format";
 
 import styles from "./dashboard.module.css";
-
-function money(
-  value: number,
-  currency: string,
-) {
-  return new Intl.NumberFormat(
-    "en-GB",
-    {
-      style:
-        "currency",
-      currency,
-      maximumFractionDigits:
-        0,
-    },
-  ).format(
-    value,
-  );
-}
-
-function compactMoney(
-  value: number,
-  currency: string,
-) {
-  return new Intl.NumberFormat(
-    "en-GB",
-    {
-      style:
-        "currency",
-      currency,
-      notation:
-        "compact",
-      maximumFractionDigits:
-        1,
-    },
-  ).format(
-    value,
-  );
-}
 
 function monthDate(
   value: string,
@@ -928,50 +902,6 @@ export default function DashboardPage() {
           styles.content
         }
       >
-        <details
-          className={
-            styles.mobileNavigation
-          }
-        >
-          <summary>
-            Open navigation
-          </summary>
-
-          <nav
-            aria-label="Application navigation"
-          >
-            <Link
-              href="/app"
-              aria-current="page"
-            >
-              Overview
-            </Link>
-
-            <Link
-              href="/app/projects"
-            >
-              Projects
-            </Link>
-
-            <Link
-              href="/app/clients"
-            >
-              Clients
-            </Link>
-
-            <Link
-              href="/app/suppliers"
-            >
-              Suppliers
-            </Link>
-
-            <Link
-              href="/app/team"
-            >
-              Team
-            </Link>
-          </nav>
-        </details>
 
         <header
           className={
@@ -1156,6 +1086,11 @@ export default function DashboardPage() {
                     styles.dashboardBody
                   }
                 >
+                  <AttentionPanel
+                    organizationId={organizationId}
+                    currency={dashboard.currency}
+                  />
+
                   {/* ======================================================
                       D02 — Operational summary
                       ====================================================== */}
@@ -1558,6 +1493,11 @@ export default function DashboardPage() {
                         qualifier="Current dashboard aggregate"
                       />
                     </div>
+
+                    <ReceivablesPanel
+                      organizationId={organizationId}
+                      currency={dashboard.currency}
+                    />
 
                     <div
                       className={

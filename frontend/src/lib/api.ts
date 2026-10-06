@@ -21,13 +21,30 @@ export class ApiClientError extends Error {
   }
 }
 
-async function ensureCsrfToken(
+let csrfRequest: Promise<string> | null = null;
+
+function ensureCsrfToken(
   force = false
 ): Promise<string> {
   if (csrfToken && !force) {
-    return csrfToken;
+    return Promise.resolve(csrfToken);
   }
 
+  // Concurrent callers share one request instead of racing each other.
+  if (!csrfRequest) {
+    csrfRequest = (async () => {
+      try {
+        return await fetchCsrfToken();
+      } finally {
+        csrfRequest = null;
+      }
+    })();
+  }
+
+  return csrfRequest;
+}
+
+async function fetchCsrfToken(): Promise<string> {
   const response = await fetch(
     `${API_BASE}/auth/csrf`,
     {
@@ -72,7 +89,27 @@ async function parseError(
   );
 }
 
-async function refreshSession(): Promise<boolean> {
+let refreshRequest: Promise<boolean> | null = null;
+
+/**
+ * One refresh at a time: when several requests hit 401 together they all
+ * wait for the same refresh instead of each one rotating the refresh token.
+ */
+function refreshSession(): Promise<boolean> {
+  if (!refreshRequest) {
+    refreshRequest = (async () => {
+      try {
+        return await performRefresh();
+      } finally {
+        refreshRequest = null;
+      }
+    })();
+  }
+
+  return refreshRequest;
+}
+
+async function performRefresh(): Promise<boolean> {
   try {
     const token =
       await ensureCsrfToken();
@@ -174,19 +211,21 @@ export async function apiRequest<T>(
   return (await response.json()) as T;
 }
 
+function organizationHeaders(organizationId?: string): Headers {
+  const headers = new Headers();
+
+  if (organizationId) {
+    headers.set("X-Organization-Id", organizationId);
+  }
+
+  return headers;
+}
+
 export function apiGet<T>(
   path: string,
   organizationId?: string
 ) {
-  const headers =
-    new Headers();
-
-  if (organizationId) {
-    headers.set(
-      "X-Organization-Id",
-      organizationId
-    );
-  }
+  const headers = organizationHeaders(organizationId);
 
   return apiRequest<T>(
     path,
@@ -202,15 +241,7 @@ export function apiPost<T>(
   body?: unknown,
   organizationId?: string
 ) {
-  const headers =
-    new Headers();
-
-  if (organizationId) {
-    headers.set(
-      "X-Organization-Id",
-      organizationId
-    );
-  }
+  const headers = organizationHeaders(organizationId);
 
   return apiRequest<T>(
     path,
@@ -230,15 +261,7 @@ export function apiPatch<T>(
   body: unknown,
   organizationId?: string
 ) {
-  const headers =
-    new Headers();
-
-  if (organizationId) {
-    headers.set(
-      "X-Organization-Id",
-      organizationId
-    );
-  }
+  const headers = organizationHeaders(organizationId);
 
   return apiRequest<T>(
     path,
@@ -254,15 +277,7 @@ export function apiDelete<T>(
   path: string,
   organizationId?: string
 ) {
-  const headers =
-    new Headers();
-
-  if (organizationId) {
-    headers.set(
-      "X-Organization-Id",
-      organizationId
-    );
-  }
+  const headers = organizationHeaders(organizationId);
 
   return apiRequest<T>(
     path,
