@@ -42,6 +42,7 @@ import type {
   ChangeOrderFinancialSummary,
   ChangeOrderSummary,
 } from "@/lib/change-order-types";
+import { formatMoneyExact } from "@/lib/format";
 
 export default function ChangeOrdersPage() {
   const params = useParams();
@@ -425,23 +426,14 @@ export default function ChangeOrdersPage() {
     }
   }
 
-  function money(
-    value: number | null
-  ) {
+  function money(value: number | null) {
     if (value === null) {
       return "Internal";
     }
 
-    return new Intl.NumberFormat(
-      "en-US",
-      {
-        style: "currency",
-        currency:
-          project?.currency
-          ?? "EUR",
-      }
-    ).format(
-      Number(value)
+    return formatMoneyExact(
+      Number(value),
+      project?.currency ?? "EUR",
     );
   }
 

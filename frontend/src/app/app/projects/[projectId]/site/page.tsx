@@ -46,6 +46,7 @@ import type {
   SitePhoto,
   SitePhotoCategory,
 } from "@/lib/site-operation-types";
+import { formatDate } from "@/lib/format";
 
 async function fileToBase64(
   file: File
@@ -728,19 +729,6 @@ export default function SiteOperationsPage() {
     } catch (caught) {
       handleError(caught);
     }
-  }
-
-  function formatDate(
-    value: string
-  ) {
-    return new Intl.DateTimeFormat(
-      "en-GB",
-      {
-        dateStyle: "medium",
-      }
-    ).format(
-      new Date(value)
-    );
   }
 
   if (

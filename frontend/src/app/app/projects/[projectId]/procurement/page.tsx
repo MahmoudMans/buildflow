@@ -30,6 +30,7 @@ import type {
   PurchaseOrderSummary,
   Supplier,
 } from "@/lib/types";
+import { formatMoneyExact } from "@/lib/format";
 
 export default function ProcurementPage() {
   const params = useParams();
@@ -482,17 +483,11 @@ export default function ProcurementPage() {
     );
   }
 
-  function money(
-    value: number
-  ) {
-    return new Intl.NumberFormat(
-      "en-US",
-      {
-        style: "currency",
-        currency:
-          project?.currency ?? "EUR",
-      }
-    ).format(value);
+  function money(value: number) {
+    return formatMoneyExact(
+      value,
+      project?.currency ?? "EUR",
+    );
   }
 
     /* eslint-disable react-hooks/exhaustive-deps */
