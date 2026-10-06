@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>BuildFlow case study</title>
+<meta name="description" content="How I built BuildFlow, a project management app for construction companies that shows what a change order costs before anyone approves it.">
+<link rel="icon" href="data:,">
+<!--
+  Edit me:
+  - Live demo: set DEMO_URL in the script at the bottom. Until you do, the demo links stay hidden.
+  - Screenshots: run `bash portfolio/case-study/capture.sh`. Figures whose image is missing hide themselves.
+  - Text: this page says the same things as CASE_STUDY.md. Change both, or just this page.
+-->
+<style>
+:root {
+  --paper: #f3f4ef;
+  --ink: #16222c;
+  --muted: #53606a;
+  --rule: #b5bcb4;
+  --line: #16222c;
+  --blue: #1b4f8f;
+  --flag: #d81b60;
+  --serif: Charter, "Bitstream Charter", "Sitka Text", Cambria, "Iowan Old Style", Georgia, serif;
+  --sans: "Avenir Next", Avenir, "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #0e2744;
+    --ink: #e3eef9;
+    --muted: #a5bbd1;
+    --rule: #34567f;
+    --line: #bfd6ee;
+    --blue: #8cc1ff;
+    --flag: #ff7ba5;
+  }
+
+  body {
+    background-image:
+      linear-gradient(rgba(191, 214, 238, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(191, 214, 238, 0.07) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.1875rem;
+  line-height: 1.65;
+  text-rendering: optimizeLegibility;
+}
+
+img { display: block; max-width: 100%; height: auto; }
+
+a { color: var(--blue); text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+
+:focus-visible { outline: 3px solid var(--flag); outline-offset: 3px; }
+
+[hidden] { display: none !important; }
+
+.skip {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  z-index: 10;
+}
+.skip:focus { top: 1rem; }
+
+.page {
+  max-width: 76rem;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 2.5rem);
+}
+
+/* ---------- Hero: a drawing sheet ---------- */
+
+.hero {
+  position: relative;
+  margin-top: clamp(1rem, 3vw, 2rem);
+  padding: clamp(1rem, 3vw, 2rem);
+}
+
+.hero .ln {
+  position: absolute;
+  background: var(--line);
+  pointer-events: none;
+}
+.hero .ln.t { top: 0; left: 0; right: 0; height: 2px; transform-origin: left; animation: drawX 0.55s 0.05s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.hero .ln.r { top: 0; right: 0; bottom: 0; width: 2px; transform-origin: top; animation: drawY 0.55s 0.35s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.hero .ln.b { bottom: 0; left: 0; right: 0; height: 2px; transform-origin: right; animation: drawX 0.55s 0.65s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.hero .ln.l { top: 0; left: 0; bottom: 0; width: 2px; transform-origin: bottom; animation: drawY 0.55s 0.95s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+
+@keyframes drawX { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes drawY { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+.hero-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 1.5rem;
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+h1 {
+  max-width: 17ch;
+  margin: clamp(1.25rem, 4vw, 2.5rem) 0 0;
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: clamp(2.35rem, 6vw, 4.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.lede {
+  max-width: 40rem;
+  margin: 1.25rem 0 0;
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  line-height: 1.55;
+}
+
+.hero-fig { margin: clamp(1.5rem, 4vw, 2.5rem) 0 0; }
+.hero-fig img { border: 1px solid var(--line); background: #fff; }
+
+.titleblock {
+  display: grid;
+  grid-template-columns: 1.7fr 1.5fr 1.7fr 1.3fr 1.2fr;
+  margin: clamp(1.25rem, 3vw, 2rem) 0 0;
+  border-top: 2px solid var(--line);
+  font-family: var(--sans);
+}
+.titleblock .cell { padding: 0.8rem 1rem 0.9rem; border-left: 1px solid var(--line); min-width: 0; }
+.titleblock .cell:first-child { border-left: 0; padding-left: 0; }
+.titleblock dt { margin: 0 0 0.25rem; font-size: 0.8125rem; color: var(--muted); }
+.titleblock dd { margin: 0; font-size: 0.95rem; line-height: 1.45; }
+.titleblock dd strong { font-weight: 650; }
+.titleblock dd span { display: block; }
+
+@media (max-width: 62rem) {
+  .titleblock { grid-template-columns: 1fr 1fr; }
+  .titleblock .cell { border-left: 0; border-top: 1px solid var(--rule); padding-left: 0; }
+  .titleblock .cell:nth-child(-n + 2) { border-top: 0; }
+  .titleblock .cell:nth-child(even) { padding-left: 1rem; border-left: 1px solid var(--line); }
+}
+@media (max-width: 36rem) {
+  .titleblock { grid-template-columns: 1fr; }
+  .titleblock .cell { border-left: 0 !important; padding-left: 0 !important; }
+  .titleblock .cell:nth-child(2) { border-top: 1px solid var(--rule); }
+}
+
+/* ---------- Sections ---------- */
+
+main { padding-bottom: 2rem; }
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  margin-top: clamp(3rem, 7vw, 5.5rem);
+}
+
+.row > h2 {
+  margin: 0 0 1.25rem;
+  padding-top: 0.75rem;
+  border-top: 2px solid var(--line);
+  max-width: 11.5rem;
+  font-family: var(--sans);
+  font-size: 1.05rem;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.body { display: grid; grid-template-columns: minmax(0, 1fr); }
+.body > * { min-width: 0; }
+
+.body p { margin: 0 0 1.1em; max-width: 36rem; }
+.body h3 {
+  margin: 2.75rem 0 0.75rem;
+  max-width: 30rem;
+  font-family: var(--serif);
+  font-size: clamp(1.4rem, 2.6vw, 1.7rem);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.body h3:first-child { margin-top: 0; }
+.body ul { margin: 0 0 1.1em; padding-left: 1.2em; max-width: 36rem; }
+.body li { margin-bottom: 0.4em; }
+
+@media (min-width: 62rem) {
+  .row { grid-template-columns: 11.5rem minmax(0, 1fr); column-gap: 3rem; }
+  .row > h2 { position: sticky; top: 1.5rem; align-self: start; margin-bottom: 0; }
+  .body { grid-template-columns: minmax(0, 36rem) minmax(0, 1fr); }
+  .body > * { grid-column: 1; }
+  .body > .wide, .body > table { grid-column: 1 / -1; }
+}
+
+/* ---------- Figures ---------- */
+
+figure { margin: 0; }
+.body > figure { margin: 1.5rem 0 0.5rem; }
+figure img { border: 1px solid var(--line); background: #fff; }
+figcaption {
+  margin-top: 0.5rem;
+  max-width: 36rem;
+  font-family: var(--sans);
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.pair { display: grid; gap: 1.25rem; grid-template-columns: minmax(0, 1fr); margin: 1.5rem 0 0.5rem; }
+@media (min-width: 40rem) { .pair { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.trio { display: grid; gap: 1.25rem; grid-template-columns: minmax(0, 1fr); margin: 1.5rem 0 0.5rem; }
+@media (min-width: 40rem) { .trio { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+.pair figure, .trio figure { margin: 0; }
+
+.phones {
+  display: flex;
+  gap: 1rem;
+  margin: 1.5rem 0 0.5rem;
+  padding-bottom: 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+}
+.phones figure { flex: 0 0 min(62%, 11.5rem); scroll-snap-align: start; }
+.phones img { border-radius: 1.1rem; }
+@media (min-width: 62rem) {
+  .phones { overflow: visible; }
+  .phones figure { flex: 1 1 0; }
+}
+.phones-caption { margin-top: 0; }
+
+.thumbs { display: grid; gap: 1.25rem; grid-template-columns: minmax(0, 1fr); margin-top: 1.5rem; }
+@media (min-width: 40rem) { .thumbs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.thumbs img { aspect-ratio: 16 / 10; width: 100%; object-fit: cover; object-position: top; }
+
+/* ---------- Tables ---------- */
+
+table { width: 100%; table-layout: fixed; border-collapse: collapse; margin: 1.25rem 0 0.5rem; font-family: var(--sans); font-size: 0.975rem; line-height: 1.5; }
+th, td { padding: 0.8rem 1rem 0.8rem 0; text-align: left; vertical-align: top; border-top: 1px solid var(--rule); }
+tr:last-child th, tr:last-child td { border-bottom: 1px solid var(--rule); }
+thead th:first-child { width: 11rem; }
+th { font-weight: 650; }
+thead th { font-weight: 600; color: var(--muted); font-size: 0.85rem; border-top: 2px solid var(--line); }
+
+@media (max-width: 36rem) {
+  table, tbody, tr, th, td { display: block; width: 100%; }
+  thead { display: none; }
+  tr { padding: 0.75rem 0; border-top: 1px solid var(--rule); }
+  tr:last-child { border-bottom: 1px solid var(--rule); }
+  th, td { padding: 0; border: 0 !important; }
+  th { margin-bottom: 0.15rem; }
+}
+
+/* ---------- Footer ---------- */
+
+footer { margin-top: clamp(3rem, 7vw, 5.5rem); padding-bottom: 3rem; font-family: var(--sans); font-size: 0.9rem; color: var(--muted); }
+footer .page > div { padding-top: 1.25rem; border-top: 2px solid var(--line); display: flex; flex-wrap: wrap; gap: 0.35rem 2rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero .ln.t, .hero .ln.r, .hero .ln.b, .hero .ln.l { animation: none; }
+  html { scroll-behavior: auto; }
+}
+
+@media print {
+  body { background: #fff; color: #000; font-size: 11pt; }
+  .hero .ln.t, .hero .ln.r, .hero .ln.b, .hero .ln.l { animation: none; }
+  .row > h2 { position: static; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the case study</a>
+
+<header class="page">
+  <div class="hero">
+    <i class="ln t"></i><i class="ln r"></i><i class="ln b"></i><i class="ln l"></i>
+
+    <div class="hero-top">
+      <span>BuildFlow case study</span>
+      <a href="https://github.com/MahmoudMans/buildflow">Source on GitHub</a>
+    </div>
+
+    <h1>See what a change order costs before you approve it</h1>
+    <p class="lede">BuildFlow is a project management app for construction companies. Budgets, schedules, site reports and client approvals live in one place, with a separate view for each of five roles.</p>
+
+    <figure class="hero-fig">
+      <a href="screenshots/01-dashboard.png"><img src="screenshots/01-dashboard.png" width="1440" height="900" alt="The BuildFlow dashboard for a construction company owner, listing what needs attention across three projects." onerror="this.closest('figure').hidden = true"></a>
+    </figure>
+
+    <dl class="titleblock">
+      <div class="cell">
+        <dt>Project</dt>
+        <dd><strong>BuildFlow</strong><span>Project management for construction companies</span></dd>
+      </div>
+      <div class="cell">
+        <dt>Built by</dt>
+        <dd><strong>Mahmoud Mansouri</strong><span>Solo project, backend to frontend</span></dd>
+      </div>
+      <div class="cell">
+        <dt>Stack</dt>
+        <dd><span>Java and Spring Boot</span><span>PostgreSQL and MinIO</span><span>Next.js, React and TypeScript</span></dd>
+      </div>
+      <div class="cell">
+        <dt>Status</dt>
+        <dd><strong>Working demo</strong><span>Three sample projects, five roles</span></dd>
+      </div>
+      <div class="cell">
+        <dt>Links</dt>
+        <dd><span><a href="https://github.com/MahmoudMans/buildflow">Source on GitHub</a></span><span><a data-demo href="#" hidden>Live demo</a></span></dd>
+      </div>
+    </dl>
+  </div>
+</header>
+
+<main id="main" class="page">
+
+  <section class="row" aria-labelledby="h-problem">
+    <h2 id="h-problem">The problem</h2>
+    <div class="body">
+      <p>A construction company runs several jobs at once. The budget is in one spreadsheet, the site photos are in someone's camera roll, and the client's yes or no is buried in an email thread.</p>
+      <p>The costly moments are the changes. A client asks for a different floor finish, a supplier's price moves, a wall hides a pipe nobody drew. Someone has to say yes or no, and they usually do it without seeing what it does to the budget.</p>
+      <p>I built BuildFlow around that moment. Everything else in the app (budgets, schedules, site reports) is there so the numbers behind a change order are current when someone has to decide.</p>
+    </div>
+  </section>
+
+  <section class="row" aria-labelledby="h-does">
+    <h2 id="h-does">What it does</h2>
+    <div class="body">
+      <p>One organization, five ways of working in it. The demo signs you in as any of them.</p>
+
+      <table>
+        <thead><tr><th scope="col">Role</th><th scope="col">What they work on</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Owner</th><td>A company-wide view: what needs attention today, receivables and cash flow, the team and the audit log.</td></tr>
+          <tr><th scope="row">Project manager</th><td>Runs a project day to day: tasks, milestones, timeline, budget, procurement and change orders.</td></tr>
+          <tr><th scope="row">Site manager</th><td>Works from a phone: daily site reports with photos, incidents and progress updates.</td></tr>
+          <tr><th scope="row">Accountant</th><td>Quotes, invoices, payments and expenses, with receivables aging.</td></tr>
+          <tr><th scope="row">Client</th><td>A portal limited to their own projects: progress, documents, and the change orders waiting for their approval.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="pair wide">
+        <figure>
+          <a href="screenshots/05-project-overview.png"><img src="screenshots/05-project-overview.png" width="1440" height="900" loading="lazy" decoding="async" alt="A project overview page showing progress, budget and recent activity for the Rivoli Hotel Renovation." onerror="this.closest('figure').hidden = true"></a>
+          <figcaption>A project overview, signed in as the owner.</figcaption>
+        </figure>
+        <figure>
+          <a href="screenshots/06-budget.png"><img src="screenshots/06-budget.png" width="1440" height="900" loading="lazy" decoding="async" alt="The budget page, comparing actual, committed and forecast cost by category." onerror="this.closest('figure').hidden = true"></a>
+          <figcaption>The budget, with actual, committed and forecast cost.</figcaption>
+        </figure>
+      </div>
+
+      <div class="pair wide">
+        <figure>
+          <a href="screenshots/13-client-portal.png"><img src="screenshots/13-client-portal.png" width="1440" height="900" loading="lazy" decoding="async" alt="The client portal home page listing the projects this client can see." onerror="this.closest('figure').hidden = true"></a>
+          <figcaption>The client portal lists only that client's projects.</figcaption>
+        </figure>
+        <figure>
+          <a href="screenshots/14-client-project.png"><img src="screenshots/14-client-project.png" width="1440" height="900" loading="lazy" decoding="async" alt="A single project as the client sees it, with progress and documents." onerror="this.closest('figure').hidden = true"></a>
+          <figcaption>One project, as the client sees it.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="row" aria-labelledby="h-eng">
+    <h2 id="h-eng">Where the engineering is</h2>
+    <div class="body">
+      <h3>A change order shows its effect before anyone approves it</h3>
+      <p>Open a pending change order and the impact panel lists the project's figures now, after approval, and the difference. It warns about problems, summarises what the change order earns on its own, and counts the other pending change orders so you can see their combined effect.</p>
+      <p>The API computes the preview, so the browser never guesses at money. The panel also states its one assumption in plain words: the forecast treats the change order's cost as not yet committed or spent.</p>
+      <figure class="wide">
+        <a href="screenshots/07-change-order-impact.png"><img src="screenshots/07-change-order-impact.png" width="1440" height="900" loading="lazy" decoding="async" alt="A pending change order with the Impact of approval table showing figures now, after approval and the change." onerror="this.closest('figure').hidden = true"></a>
+        <figcaption>The impact panel on a pending change order.</figcaption>
+      </figure>
+
+      <h3>A site report you can finish with one hand</h3>
+      <p>A site manager standing in a half-finished room has one free hand and an unreliable signal. The quick report is four short steps: the basics, the work done, photos, and a review before sending.</p>
+      <p>It saves a draft on the phone as you type, shrinks photos in the browser before uploading them, and says so when the phone goes offline. Nothing is sent until you choose Send report.</p>
+      <div class="phones wide">
+        <figure>
+          <img src="screenshots/20-phone-overview.png" width="390" height="844" loading="lazy" decoding="async" alt="The project overview on a phone." onerror="this.closest('figure').hidden = true">
+          <figcaption>Project overview</figcaption>
+        </figure>
+        <figure>
+          <img src="screenshots/21-phone-report-basics.png" width="390" height="844" loading="lazy" decoding="async" alt="Step one of the quick site report: the basics, such as the weather." onerror="this.closest('figure').hidden = true">
+          <figcaption>Basics</figcaption>
+        </figure>
+        <figure>
+          <img src="screenshots/22-phone-report-work.png" width="390" height="844" loading="lazy" decoding="async" alt="Step two: a summary of the work done." onerror="this.closest('figure').hidden = true">
+          <figcaption>Work done</figcaption>
+        </figure>
+        <figure>
+          <img src="screenshots/23-phone-report-photos.png" width="390" height="844" loading="lazy" decoding="async" alt="Step three: adding photos." onerror="this.closest('figure').hidden = true">
+          <figcaption>Photos</figcaption>
+        </figure>
+        <figure>
+          <img src="screenshots/24-phone-report-review.png" width="390" height="844" loading="lazy" decoding="async" alt="Step four: reviewing the report before sending." onerror="this.closest('figure').hidden = true">
+          <figcaption>Review</figcaption>
+        </figure>
+      </div>
+
+      <h3>Finding things quickly in a big app</h3>
+      <p>A project piles up tasks, invoices, reports and people. Command-K opens a search across the app, the dashboard lists what needs attention first, the timeline shows a project's schedule on one chart, and the audit log records who changed what.</p>
+      <div class="trio wide">
+        <figure>
+          <a href="screenshots/03-search.png"><img src="screenshots/03-search.png" width="1440" height="900" loading="lazy" decoding="async" alt="The Command-K search palette open over the dashboard." onerror="this.closest('figure').hidden = true"></a>
+          <figcaption>Search, opened with Command-K.</figcaption>
+        </figure>
+        <figure>
+          <a href="screenshots/08-timeline.png"><img src="screenshots/08-timeline.png" width="1440" height="900" loading="lazy" decoding="async" alt="A project timeline chart." onerror="this.closest('figure').hidden = true"></a>
+          <figcaption>A project's timeline.</figcaption>
+        </figure>
+        <figure>
+          <a href="screenshots/12-audit-log.png"><img src="screenshots/12-audit-log.png" width="1440" height="900" loading="lazy" decoding="async" alt="The audit log table listing who changed what and when." onerror="this.closest('figure').hidden = true"></a>
+          <figcaption>The audit log.</figcaption>
+        </figure>
+      </div>
+
+      <h3>Separate organizations, and a safer default</h3>
+      <p>Each company's data is kept apart: requests name an organization and the server checks that the signed-in user belongs to it. Sessions use opaque cookies rather than tokens kept in browser storage, state-changing requests are protected against CSRF, logins are rate limited, request bodies have size limits, and responses carry the standard security headers.</p>
+      <p>Integration tests run these rules against a real database, so a change that weakens one fails the test run.</p>
+    </div>
+  </section>
+
+  <section class="row" aria-labelledby="h-built">
+    <h2 id="h-built">How it's built</h2>
+    <div class="body">
+      <figure class="wide">
+        <a href="../screenshots/architecture.png"><img src="../screenshots/architecture.png" width="1440" height="1000" loading="lazy" decoding="async" alt="Architecture diagram: a Next.js frontend talks to a Spring Boot API, which uses PostgreSQL and MinIO." onerror="this.closest('figure').hidden = true"></a>
+        <figcaption>The architecture page from the app.</figcaption>
+      </figure>
+
+      <table>
+        <thead><tr><th scope="col">Layer</th><th scope="col">Technology</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Backend</th><td>Java and Spring Boot (Web, Security, Data JPA, Validation, Actuator, Mail), Flyway, PDFBox</td></tr>
+          <tr><th scope="row">Database</th><td>PostgreSQL 17</td></tr>
+          <tr><th scope="row">Storage</th><td>MinIO, for documents and photos</td></tr>
+          <tr><th scope="row">Frontend</th><td>Next.js 16, React 19, TypeScript, CSS Modules</td></tr>
+          <tr><th scope="row">Testing</th><td>JUnit with Testcontainers, Vitest with Testing Library</td></tr>
+          <tr><th scope="row">Infrastructure</th><td>Docker Compose, with Caddy in front in production</td></tr>
+        </tbody>
+      </table>
+
+      <p>The schema grows through 13 Flyway migrations, so every environment reaches the same state the same way. Docker Compose runs the whole stack locally, and a production Compose file adds Caddy as the entry point.</p>
+    </div>
+  </section>
+
+  <section class="row" aria-labelledby="h-tests">
+    <h2 id="h-tests">Testing</h2>
+    <div class="body">
+      <p>More than 100 backend tests run against a real PostgreSQL started by Testcontainers, not a mock. The frontend has Vitest and Testing Library tests for its helpers, components and pages.</p>
+      <p>One seed-data test failed now and then because two steps raced each other. I made the order explicit and ran it repeatedly until it stayed green.</p>
+    </div>
+  </section>
+
+  <section class="row" aria-labelledby="h-next">
+    <h2 id="h-next">What I would build next</h2>
+    <div class="body">
+      <ul>
+        <li>Finish a site report with no signal at all, and sync it when the phone reconnects.</li>
+        <li>Add a signature step to the client's approval of a change order.</li>
+        <li>Run an accessibility pass with a screen reader over the main flows.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="row figs-only" aria-labelledby="h-more">
+    <h2 id="h-more">More screens</h2>
+    <div class="body">
+      <div class="thumbs wide">
+        <figure>
+          <a href="screenshots/04-projects.png"><img src="screenshots/04-projects.png" width="1440" height="900" loading="lazy" decoding="async" alt="The project list with filters and progress." onerror="this.closest('figure').hidden = true"></a>
+          <figcaption>The project list.</figcaption>
+        </figure>
+        <figure>
+          <a href="screenshots/09-site-operations.png"><img src="screenshots/09-site-operations.png" width="1440" height="900" loading="lazy" decoding="async" alt="Site operations: daily reports and incidents." onerror="this.closest('figure').hidden = true"></a>
+          <figcaption>Site operations.</figcaption>
+        </figure>
+        <figure>
+          <a href="screenshots/10-commercial.png"><img src="screenshots/10-commercial.png" width="1440" height="900" loading="lazy" decoding="async" alt="The commercial page with quotes, invoices and payments." onerror="this.closest('figure').hidden = true"></a>
+          <figcaption>Quotes, invoices and payments.</figcaption>
+        </figure>
+        <figure>
+          <a href="screenshots/11-tasks.png"><img src="screenshots/11-tasks.png" width="1440" height="900" loading="lazy" decoding="async" alt="The task list for a project." onerror="this.closest('figure').hidden = true"></a>
+          <figcaption>Tasks.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="page">
+    <div>
+      <a href="https://github.com/MahmoudMans/buildflow">Source on GitHub</a>
+      <a data-demo href="#" hidden>Live demo</a>
+      <span>Built by Mahmoud Mansouri. Updated October 2026.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Put the address of your live demo between the quotes to show the demo links.
+  var DEMO_URL = "";
+
+  document.querySelectorAll("a[data-demo]").forEach(function (link) {
+    if (DEMO_URL) {
+      link.href = DEMO_URL;
+      link.hidden = false;
+    }
+  });
+
+  // A figure hides itself when its image is missing. A section that only holds figures hides too.
+  function syncSections() {
+    document.querySelectorAll(".row.figs-only").forEach(function (row) {
+      row.hidden = !row.querySelector("figure:not([hidden])");
+    });
+  }
+
+  document.querySelectorAll("figure img").forEach(function (img) {
+    if (img.complete && img.naturalWidth === 0) {
+      img.closest("figure").hidden = true;
+    }
+  });
+  syncSections();
+
+  // Images that load late (lazy loading) can still fail after this point.
+  document.addEventListener("error", function () { setTimeout(syncSections, 0); }, true);
+</script>
+</body>
+</html>
