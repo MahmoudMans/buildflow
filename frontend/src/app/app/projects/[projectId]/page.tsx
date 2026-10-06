@@ -12,6 +12,18 @@ import {
   StatusBadge,
 } from "@/components/ux/StatusBadge";
 
+import {
+  BudgetUtilization,
+} from "@/components/ux/BudgetUtilization";
+
+import {
+  formatMoney as money,
+} from "@/lib/format";
+
+import {
+  humanizeStatus,
+} from "@/lib/ux-validation";
+
 
 import {
   useCallback,
@@ -52,20 +64,6 @@ import type {
   DashboardMonthlyValue,
   ProjectDashboard,
 } from "@/lib/dashboard-types";
-
-function money(
-  value: number,
-  currency: string
-) {
-  return new Intl.NumberFormat(
-    undefined,
-    {
-      style: "currency",
-      currency,
-      maximumFractionDigits: 0,
-    }
-  ).format(value);
-}
 
 function Bars({
   values,
@@ -235,12 +233,6 @@ export default function ProjectDashboardPage() {
     );
   }
 
-  const revisedBudget =
-    Math.max(
-      1,
-      dashboard.budgetUtilization
-        .revisedBudget
-    );
 
   return (
     <main className="appShell">
@@ -258,7 +250,7 @@ export default function ProjectDashboardPage() {
             </h1>
 
             <span>
-              {dashboard.status}
+              {humanizeStatus(dashboard.status)}
               {" · "}
               {dashboard.progressPercentage.toFixed(
                 0
@@ -530,65 +522,12 @@ export default function ProjectDashboardPage() {
               </div>
             </header>
 
-            <div className="budgetUtilization">
-              <div>
-                <span>
-                  Actual
-                </span>
-                <strong>
-                  {money(
-                    dashboard
-                      .budgetUtilization
-                      .actualCost,
-                    dashboard.currency
-                  )}
-                </strong>
-              </div>
-
-              <div className="horizontalTrack">
-                <div
-                  style={{
-                    width: `${Math.min(
-                      100,
-                      (dashboard
-                        .budgetUtilization
-                        .actualCost /
-                        revisedBudget) *
-                        100
-                    )}%`,
-                  }}
-                />
-              </div>
-
-              <div>
-                <span>
-                  Forecast
-                </span>
-                <strong>
-                  {money(
-                    dashboard
-                      .budgetUtilization
-                      .forecastCost,
-                    dashboard.currency
-                  )}
-                </strong>
-              </div>
-
-              <div className="horizontalTrack">
-                <div
-                  style={{
-                    width: `${Math.min(
-                      100,
-                      (dashboard
-                        .budgetUtilization
-                        .forecastCost /
-                        revisedBudget) *
-                        100
-                    )}%`,
-                  }}
-                />
-              </div>
-            </div>
+            <BudgetUtilization
+              revisedBudget={dashboard.budgetUtilization.revisedBudget}
+              actualCost={dashboard.budgetUtilization.actualCost}
+              forecastCost={dashboard.budgetUtilization.forecastCost}
+              currency={dashboard.currency}
+            />
           </article>
         </section>
 
@@ -618,10 +557,7 @@ export default function ProjectDashboardPage() {
                   <div key={item.status}>
                     <div>
                       <span>
-                        {item.status.replace(
-                          "_",
-                          " "
-                        )}
+                        {humanizeStatus(item.status)}
                       </span>
 
                       <strong>
