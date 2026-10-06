@@ -19,6 +19,10 @@ import {
 } from "@/components/NotificationBell";
 
 import {
+  AttentionPanel,
+} from "@/components/AttentionPanel";
+
+import {
   useAuth,
 } from "@/components/AuthProvider";
 
@@ -1156,6 +1160,11 @@ export default function DashboardPage() {
                     styles.dashboardBody
                   }
                 >
+                  <AttentionPanel
+                    organizationId={organizationId}
+                    currency={dashboard.currency}
+                  />
+
                   {/* ======================================================
                       D02 — Operational summary
                       ====================================================== */}

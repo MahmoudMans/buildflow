@@ -856,3 +856,79 @@ textarea:disabled {
   margin: 6px 4px;
   background: var(--border);
 }
+
+/* Dashboard: needs-attention panel */
+.uxAttention {
+  margin-bottom: 28px;
+  padding: 22px 24px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+.uxAttentionHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.uxAttentionHeader h2 { margin: 0; font-size: 18px; }
+.uxAttentionHeader p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+.uxAttentionChips { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+.uxAttentionChip {
+  min-height: 34px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--dark);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.uxAttentionChip:disabled { opacity: 0.5; cursor: default; }
+.uxAttentionChip[aria-pressed="true"] {
+  border-color: var(--dark);
+  background: var(--dark);
+  color: #ffffff;
+}
+.uxAttentionList { margin: 16px 0 0; padding: 0; list-style: none; display: grid; }
+.uxAttentionItem a {
+  padding: 13px 6px;
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  border-top: 1px solid #f1f5f9;
+}
+.uxAttentionItem a:hover { background: #f8fafc; }
+.uxSeverityDot { width: 10px; height: 10px; border-radius: 50%; }
+.uxSeverityDot.critical { background: var(--color-danger); }
+.uxSeverityDot.warning { background: var(--accent); }
+.uxSeverityDot.info { background: var(--color-info); }
+.uxAttentionBody { display: grid; gap: 3px; min-width: 0; }
+.uxAttentionKind {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.uxAttentionBody strong { font-size: 14px; }
+.uxAttentionDetail { color: var(--muted); font-size: 12px; }
+.uxAttentionMeta {
+  display: grid;
+  justify-items: end;
+  gap: 3px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.uxAttentionMeta strong { color: var(--dark); font-size: 13px; }
+@media (max-width: 640px) {
+  .uxAttentionItem a { grid-template-columns: 12px minmax(0, 1fr); }
+  .uxAttentionMeta { grid-column: 2; justify-items: start; }
+}
