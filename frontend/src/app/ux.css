@@ -1260,3 +1260,64 @@ textarea:disabled {
   }
   .appShell > section { padding-bottom: 88px; }
 }
+
+/* Change orders: impact of approval */
+.uxImpact {
+  margin: 4px 0 0;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  display: grid;
+  gap: 12px;
+}
+.uxImpactHeader h4 { margin: 0; font-size: 15px; }
+.uxImpactHeader p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+.uxImpactWarnings {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+.uxImpactWarnings li {
+  padding: 8px 12px;
+  border: 1px solid #fcd34d;
+  border-radius: 10px;
+  background: #fffbeb;
+  color: #92400e;
+  font-size: 13px;
+  font-weight: 600;
+}
+.uxImpactTableWrap { overflow-x: auto; }
+.uxImpactTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.uxImpactTable th,
+.uxImpactTable td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: right;
+  white-space: nowrap;
+}
+.uxImpactTable thead th {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.uxImpactTable tbody th {
+  font-weight: 600;
+  text-align: left;
+  white-space: normal;
+}
+.uxImpactTable thead th:first-child { text-align: left; }
+.uxImpactTable tbody tr:last-child th,
+.uxImpactTable tbody tr:last-child td { border-bottom: 0; }
+.uxImpactTable td.change { font-weight: 700; }
+.uxImpactTable td.change[data-tone="good"] { color: #15803d; }
+.uxImpactTable td.change[data-tone="bad"] { color: var(--color-danger, #b91c1c); }
+.uxImpactNote { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.5; }

@@ -43,6 +43,7 @@ import type {
   ChangeOrderSummary,
 } from "@/lib/change-order-types";
 import { formatMoneyExact } from "@/lib/format";
+import { ChangeOrderImpactPanel } from "@/components/ChangeOrderImpactPanel";
 
 export default function ChangeOrdersPage() {
   const params = useParams();
@@ -748,6 +749,16 @@ export default function ChangeOrdersPage() {
                       }
                     </p>
                   </div>
+                )}
+
+                {canSeeFinancials && (
+                  <ChangeOrderImpactPanel
+                    changeOrderId={selectedChangeOrder.id}
+                    organizationId={organizationId}
+                    currency={project.currency}
+                    status={selectedChangeOrder.status}
+                    version={selectedChangeOrder.updatedAt}
+                  />
                 )}
 
                 <div className="commercialActions">
