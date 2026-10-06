@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { useAuth } from "@/components/AuthProvider";
 import { useOrganizationSelection } from "@/components/useOrganizationSelection";
+import { canViewAuditLog } from "@/lib/audit-log";
 import { openSearchPalette } from "@/lib/search";
 
 type SidebarSection =
@@ -15,9 +16,15 @@ type SidebarSection =
   | "suppliers"
   | "team"
   | "reports"
-  | "notifications";
+  | "notifications"
+  | "audit";
 
-const NAV_ITEMS: { key: SidebarSection; label: string; href: string }[] = [
+const NAV_ITEMS: {
+  key: SidebarSection;
+  label: string;
+  href: string;
+  adminOnly?: boolean;
+}[] = [
   { key: "overview", label: "Overview", href: "/app" },
   { key: "projects", label: "Projects", href: "/app/projects" },
   { key: "clients", label: "Clients", href: "/app/clients" },
@@ -25,6 +32,7 @@ const NAV_ITEMS: { key: SidebarSection; label: string; href: string }[] = [
   { key: "team", label: "Team", href: "/app/team" },
   { key: "reports", label: "Reports", href: "/app/reports" },
   { key: "notifications", label: "Notifications", href: "/app/notifications" },
+  { key: "audit", label: "Audit log", href: "/app/audit", adminOnly: true },
 ];
 
 function sectionFromPath(pathname: string | null): SidebarSection | undefined {
@@ -47,6 +55,12 @@ export function AppSidebar({ active }: { active?: SidebarSection }) {
   const pathname = usePathname();
   const { organizations, logout } = useAuth();
   const selection = useOrganizationSelection(organizations);
+  const role = organizations.find(
+    (organization) => organization.id === selection.organizationId,
+  )?.role;
+  const navItems = NAV_ITEMS.filter(
+    (item) => !item.adminOnly || canViewAuditLog(role),
+  );
   const [signingOut, setSigningOut] = useState(false);
   const current = sectionFromPath(pathname) ?? active;
 
@@ -112,7 +126,7 @@ export function AppSidebar({ active }: { active?: SidebarSection }) {
         </button>
 
         <nav aria-label="Primary">
-          {NAV_ITEMS.map((item) => (
+          {navItems.map((item) => (
             <Link
               key={item.key}
               className={current === item.key ? "active" : undefined}
@@ -157,7 +171,7 @@ export function AppSidebar({ active }: { active?: SidebarSection }) {
           </select>
         )}
 
-        {NAV_ITEMS.map((item) => (
+        {navItems.map((item) => (
           <Link
             key={item.key}
             className={current === item.key ? "active" : undefined}
