@@ -841,3 +841,18 @@ textarea:disabled {
   text-decoration: underline;
   cursor: pointer;
 }
+
+/* Project workspace navigation: groups and horizontal scrolling */
+.projectWorkspaceNav {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.projectWorkspaceNavShell .projectWorkspaceNav { min-width: 0; }
+.projectWorkspaceNav a { flex: none; white-space: nowrap; }
+.projectWorkspaceNavDivider {
+  flex: none;
+  align-self: stretch;
+  width: 1px;
+  margin: 6px 4px;
+  background: var(--border);
+}
