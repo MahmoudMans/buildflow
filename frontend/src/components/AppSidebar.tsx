@@ -2,6 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
+
+import { useAuth } from "@/components/AuthProvider";
+import { useOrganizationSelection } from "@/components/useOrganizationSelection";
 
 type SidebarSection =
   | "overview"
@@ -40,7 +44,26 @@ function sectionFromPath(pathname: string | null): SidebarSection | undefined {
 
 export function AppSidebar({ active }: { active?: SidebarSection }) {
   const pathname = usePathname();
+  const { organizations, logout } = useAuth();
+  const selection = useOrganizationSelection(organizations);
+  const [signingOut, setSigningOut] = useState(false);
   const current = sectionFromPath(pathname) ?? active;
+
+  async function handleSignOut() {
+    if (signingOut) {
+      return;
+    }
+
+    setSigningOut(true);
+
+    try {
+      await logout();
+    } catch {
+      // The session is cleared locally even if the request fails.
+    } finally {
+      setSigningOut(false);
+    }
+  }
 
   return (
     <aside className="appSidebar">
@@ -48,6 +71,32 @@ export function AppSidebar({ active }: { active?: SidebarSection }) {
         <span>B</span>
         BuildFlow
       </Link>
+
+      {organizations.length > 0 && (
+        <div className="sidebarOrg">
+          <span className="sidebarOrgLabel" id="sidebar-org-label">
+            Organization
+          </span>
+
+          {organizations.length > 1 ? (
+            <select
+              aria-labelledby="sidebar-org-label"
+              value={selection.organizationId}
+              onChange={(event) =>
+                selection.selectOrganization(event.target.value)
+              }
+            >
+              {organizations.map((organization) => (
+                <option key={organization.id} value={organization.id}>
+                  {organization.name}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <strong className="sidebarOrgName">{organizations[0].name}</strong>
+          )}
+        </div>
+      )}
 
       <nav aria-label="Primary">
         {NAV_ITEMS.map((item) => (
@@ -61,6 +110,17 @@ export function AppSidebar({ active }: { active?: SidebarSection }) {
           </Link>
         ))}
       </nav>
+
+      <div className="sidebarFooter">
+        <button
+          type="button"
+          className="sidebarSignOut"
+          onClick={handleSignOut}
+          disabled={signingOut}
+        >
+          {signingOut ? "Signing out..." : "Sign out"}
+        </button>
+      </div>
     </aside>
   );
 }
