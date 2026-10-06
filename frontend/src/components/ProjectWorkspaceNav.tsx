@@ -10,6 +10,7 @@ type WorkspaceSection =
   | "overview"
   | "tasks"
   | "milestones"
+  | "timeline"
   | "budget"
   | "expenses"
   | "procurement"
@@ -31,6 +32,7 @@ const NAV_GROUPS: NavItem[][] = [
   [
     { key: "tasks", label: "Tasks", segment: "tasks" },
     { key: "milestones", label: "Milestones", segment: "milestones" },
+    { key: "timeline", label: "Timeline", segment: "timeline" },
   ],
   [
     { key: "budget", label: "Budget", segment: "budget" },
