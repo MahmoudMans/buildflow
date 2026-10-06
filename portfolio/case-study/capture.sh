@@ -47,6 +47,18 @@ is_up() { [ "$(http_code "$1")" != "000" ]; }
   exit 1
 }
 
+# The browser asks the API first whether the frontend's address is allowed (CORS).
+# Another project's API on the same port answers "Invalid CORS request", and every sign-in then fails.
+REFUSED="$(curl -s -m 5 -H "Origin: $BASE_URL" "$API_URL/api/v1/auth/me" 2>/dev/null | grep -c 'Invalid CORS request')"
+if [ "$REFUSED" != "0" ]; then
+  echo "The API on $API_URL refuses requests from $BASE_URL (CORS), so signing in from the browser cannot work."
+  echo "That usually means a different project's server is using this port, or BuildFlow is set up for another frontend address."
+  OWNER_PID="$(lsof -nP -iTCP:8080 -sTCP:LISTEN -t 2>/dev/null | head -1)"
+  [ -n "$OWNER_PID" ] && echo "Port 8080 is held by pid $OWNER_PID: $(ps -p "$OWNER_PID" -o command= 2>/dev/null | cut -c1-160)"
+  echo "Stop that server, start BuildFlow (docker compose up -d --build backend frontend), then run this again."
+  exit 1
+fi
+
 if is_up "$BASE_URL/"; then
   echo "Using the frontend that is already running at $BASE_URL"
   echo "(A development server shows a small Next.js badge in the corner. A production build does not.)"

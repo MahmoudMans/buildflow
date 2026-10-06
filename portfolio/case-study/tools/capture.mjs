@@ -36,7 +36,7 @@ function log(line) {
 }
 
 function firstLine(error) {
-  return String(error && error.message ? error.message : error).split("\n")[0].slice(0, 220);
+  return String(error && error.message ? error.message : error).split("\n")[0].slice(0, 420);
 }
 
 function sizeOf(file) {
@@ -103,6 +103,18 @@ async function signIn(browser, options, patterns, label) {
   const context = await browser.newContext(options);
   const page = await context.newPage();
 
+  // Remember what the browser could not reach, so a failed sign-in can say why.
+  const trouble = [];
+
+  page.on("requestfailed", (request) => {
+    trouble.push(request.method() + " " + request.url() + " failed: " + ((request.failure() || {}).errorText || "unknown"));
+  });
+  page.on("response", (response) => {
+    if (response.status() >= 400 && /\/api\//.test(response.url())) {
+      trouble.push(response.request().method() + " " + response.url() + " answered " + response.status());
+    }
+  });
+
   await page.goto(BASE + "/demo", { waitUntil: "domcontentloaded", timeout: 60000 });
   await page.waitForLoadState("networkidle", { timeout: 20000 }).catch(() => {});
 
@@ -144,10 +156,11 @@ async function signIn(browser, options, patterns, label) {
   try {
     await page.waitForURL((url) => !url.pathname.startsWith("/demo"), { timeout: 40000 });
   } catch {
-    const text = (await page.locator("body").innerText().catch(() => "")).replace(/\s+/g, " ").slice(0, 200);
+    const text = (await page.locator("body").innerText().catch(() => "")).replace(/\s+/g, " ").slice(0, 80);
+    const why = trouble.length ? " (" + trouble.slice(0, 2).join("; ") + ")" : "";
 
     await context.close();
-    throw new Error("demo sign-in did not finish for " + chosen.href + ": " + text);
+    throw new Error("demo sign-in did not finish for " + chosen.href + why + ". The page said: " + text);
   }
 
   await page.waitForLoadState("networkidle", { timeout: 20000 }).catch(() => {});
