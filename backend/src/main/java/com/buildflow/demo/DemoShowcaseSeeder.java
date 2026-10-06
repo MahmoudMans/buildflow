@@ -16,6 +16,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -41,6 +42,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+@Order(2)
 @Component
 @DependsOn(
     "demoPortfolioSeeder"
