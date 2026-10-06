@@ -67,50 +67,96 @@ export function AppSidebar({ active }: { active?: SidebarSection }) {
   }
 
   return (
-    <aside className="appSidebar">
-      <Link className="sidebarBrand" href="/app">
-        <span>B</span>
-        BuildFlow
-      </Link>
+    <>
+      <aside className="appSidebar">
+        <Link className="sidebarBrand" href="/app">
+          <span>B</span>
+          BuildFlow
+        </Link>
 
-      {organizations.length > 0 && (
-        <div className="sidebarOrg">
-          <span className="sidebarOrgLabel" id="sidebar-org-label">
-            Organization
-          </span>
+        {organizations.length > 0 && (
+          <div className="sidebarOrg">
+            <span className="sidebarOrgLabel" id="sidebar-org-label">
+              Organization
+            </span>
 
-          {organizations.length > 1 ? (
-            <select
-              aria-labelledby="sidebar-org-label"
-              value={selection.organizationId}
-              onChange={(event) =>
-                selection.selectOrganization(event.target.value)
-              }
+            {organizations.length > 1 ? (
+              <select
+                aria-labelledby="sidebar-org-label"
+                value={selection.organizationId}
+                onChange={(event) =>
+                  selection.selectOrganization(event.target.value)
+                }
+              >
+                {organizations.map((organization) => (
+                  <option key={organization.id} value={organization.id}>
+                    {organization.name}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <strong className="sidebarOrgName">{organizations[0].name}</strong>
+            )}
+          </div>
+        )}
+
+        <button
+          type="button"
+          className="sidebarSearch"
+          onClick={openSearchPalette}
+          aria-label="Search (Command or Control plus K)"
+          aria-keyshortcuts="Meta+K Control+K"
+        >
+          <span>Search</span>
+          <kbd aria-hidden="true">⌘K</kbd>
+        </button>
+
+        <nav aria-label="Primary">
+          {NAV_ITEMS.map((item) => (
+            <Link
+              key={item.key}
+              className={current === item.key ? "active" : undefined}
+              aria-current={current === item.key ? "page" : undefined}
+              href={item.href}
             >
-              {organizations.map((organization) => (
-                <option key={organization.id} value={organization.id}>
-                  {organization.name}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <strong className="sidebarOrgName">{organizations[0].name}</strong>
-          )}
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="sidebarFooter">
+          <button
+            type="button"
+            className="sidebarSignOut"
+            onClick={handleSignOut}
+            disabled={signingOut}
+          >
+            {signingOut ? "Signing out..." : "Sign out"}
+          </button>
         </div>
-      )}
+      </aside>
 
-      <button
-        type="button"
-        className="sidebarSearch"
-        onClick={openSearchPalette}
-        aria-label="Search (Command or Control plus K)"
-        aria-keyshortcuts="Meta+K Control+K"
-      >
-        <span>Search</span>
-        <kbd aria-hidden="true">⌘K</kbd>
-      </button>
+      <nav className="appMobileNav" aria-label="Mobile navigation">
+        <button type="button" onClick={openSearchPalette}>
+          Search
+        </button>
 
-      <nav aria-label="Primary">
+        {organizations.length > 1 && (
+          <select
+            aria-label="Organization"
+            value={selection.organizationId}
+            onChange={(event) =>
+              selection.selectOrganization(event.target.value)
+            }
+          >
+            {organizations.map((organization) => (
+              <option key={organization.id} value={organization.id}>
+                {organization.name}
+              </option>
+            ))}
+          </select>
+        )}
+
         {NAV_ITEMS.map((item) => (
           <Link
             key={item.key}
@@ -121,18 +167,11 @@ export function AppSidebar({ active }: { active?: SidebarSection }) {
             {item.label}
           </Link>
         ))}
-      </nav>
 
-      <div className="sidebarFooter">
-        <button
-          type="button"
-          className="sidebarSignOut"
-          onClick={handleSignOut}
-          disabled={signingOut}
-        >
+        <button type="button" onClick={handleSignOut} disabled={signingOut}>
           {signingOut ? "Signing out..." : "Sign out"}
         </button>
-      </div>
-    </aside>
+      </nav>
+    </>
   );
 }

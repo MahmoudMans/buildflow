@@ -936,50 +936,6 @@ export default function DashboardPage() {
           styles.content
         }
       >
-        <details
-          className={
-            styles.mobileNavigation
-          }
-        >
-          <summary>
-            Open navigation
-          </summary>
-
-          <nav
-            aria-label="Application navigation"
-          >
-            <Link
-              href="/app"
-              aria-current="page"
-            >
-              Overview
-            </Link>
-
-            <Link
-              href="/app/projects"
-            >
-              Projects
-            </Link>
-
-            <Link
-              href="/app/clients"
-            >
-              Clients
-            </Link>
-
-            <Link
-              href="/app/suppliers"
-            >
-              Suppliers
-            </Link>
-
-            <Link
-              href="/app/team"
-            >
-              Team
-            </Link>
-          </nav>
-        </details>
 
         <header
           className={
