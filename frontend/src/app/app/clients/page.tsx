@@ -12,6 +12,7 @@ import {
 import { AppSidebar } from "@/components/AppSidebar";
 import { useAuth } from "@/components/AuthProvider";
 import { useOrganizationSelection } from "@/components/useOrganizationSelection";
+import { OrganizationSelect } from "@/components/OrganizationSelect";
 
 import {
   ApiClientError,
@@ -232,33 +233,7 @@ useEffect(() => {
               >
                 Organization
               </span>
-<select
-            className="organizationSelector"
-            value={organizationId}
-            onChange={(event) => {
-              const value =
-                event.target.value;
-
-              organizationSelection.selectOrganization(
-                value
-              );
-
-              localStorage.setItem(
-                "buildflow.organizationId",
-                value
-              );
-            }} disabled={creatingClient}>
-            {organizations.map(
-              (organization) => (
-                <option
-                  key={organization.id}
-                  value={organization.id}
-                >
-                  {organization.name}
-                </option>
-              )
-            )}
-          </select>
+<OrganizationSelect disabled={creatingClient} />
             </label>
         </header>
 
