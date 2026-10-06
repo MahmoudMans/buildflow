@@ -1,3 +1,5 @@
+import { humanizeStatus } from "./ux-validation";
+
 export type SearchKind =
   | "PROJECT"
   | "TASK"
@@ -76,13 +78,7 @@ export function hitHref(hit: SearchHit): string {
 }
 
 export function statusLabel(status: string | null): string {
-  if (!status) {
-    return "";
-  }
-
-  const text = status.toLowerCase().replace(/_/g, " ");
-
-  return text.charAt(0).toUpperCase() + text.slice(1);
+  return status ? humanizeStatus(status) : "";
 }
 
 export interface QuickLink {

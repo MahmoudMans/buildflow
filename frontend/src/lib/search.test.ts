@@ -100,7 +100,7 @@ describe("global search helpers", () => {
   });
 
   it("turns statuses into readable labels", () => {
-    expect(statusLabel("PARTIALLY_PAID")).toBe("Partially paid");
+    expect(statusLabel("PARTIALLY_PAID")).toBe("Partially Paid");
     expect(statusLabel(null)).toBe("");
   });
 });
