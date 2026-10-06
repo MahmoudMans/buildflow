@@ -73,6 +73,8 @@ export function ProjectWorkspaceNav({
   const pathname = usePathname();
   const base = `/app/projects/${projectId}`;
   const current = sectionFromPath(pathname, base) ?? active;
+  const onSitePage =
+    pathname === `${base}/site` || pathname === `${base}/site/`;
   const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -95,14 +97,24 @@ export function ProjectWorkspaceNav({
             )}
 
             {group.map((item) => (
-              <Link
-                key={item.key}
-                className={current === item.key ? "active" : undefined}
-                aria-current={current === item.key ? "page" : undefined}
-                href={item.segment ? `${base}/${item.segment}` : base}
-              >
-                {item.label}
-              </Link>
+              <Fragment key={item.key}>
+                <Link
+                  className={current === item.key ? "active" : undefined}
+                  aria-current={current === item.key ? "page" : undefined}
+                  href={item.segment ? `${base}/${item.segment}` : base}
+                >
+                  {item.label}
+                </Link>
+
+                {item.key === "site" && onSitePage && (
+                  <Link
+                    className="projectWorkspaceNavQuick"
+                    href={`${base}/site/capture`}
+                  >
+                    Quick report
+                  </Link>
+                )}
+              </Fragment>
             ))}
           </Fragment>
         ))}
