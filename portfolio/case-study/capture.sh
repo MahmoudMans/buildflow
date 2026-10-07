@@ -67,9 +67,9 @@ else
   command -v pnpm >/dev/null 2>&1 || { echo "pnpm not found: needed to build the frontend."; exit 1; }
 
   echo ">> The frontend is not running: building it and starting it for the screenshots (a few minutes)"
-  ( cd frontend && pnpm build ) >"$TMP/build.log" 2>&1 || { echo "The frontend build failed:"; tail -30 "$TMP/build.log"; exit 1; }
+  ( cd frontend && pnpm build ) >"$TMP/build.log" 2>&1 </dev/null || { echo "The frontend build failed:"; tail -30 "$TMP/build.log"; exit 1; }
 
-  ( cd frontend && exec pnpm exec next start -p 3000 ) >"$TMP/server.log" 2>&1 &
+  ( cd frontend && exec pnpm exec next start -p 3000 ) >"$TMP/server.log" 2>&1 </dev/null &
   SERVER_PID=$!
   STARTED=1
 
@@ -87,23 +87,24 @@ mkdir -p "$WORK" "$OUT_DIR"
 cp "$ROOT/$KIT/tools/capture.mjs" "$WORK/"
 
 echo ">> Installing Playwright in a temporary folder (first run takes a minute)"
-( cd "$WORK" && npm init -y >/dev/null 2>&1 && npm install playwright >"$TMP/npm.log" 2>&1 ) || {
+( cd "$WORK" && npm init -y >/dev/null 2>&1 && npm install playwright >"$TMP/npm.log" 2>&1 ) </dev/null || {
   echo "npm install playwright failed:"; tail -20 "$TMP/npm.log"; exit 1
 }
 
-if ! ( cd "$WORK" && node -e "import('playwright').then(async (m) => { try { const b = await m.chromium.launch({ channel: 'chrome' }); await b.close(); } catch (e) { process.exit(1); } })" ) >/dev/null 2>&1; then
+if ! ( cd "$WORK" && node -e "import('playwright').then(async (m) => { try { const b = await m.chromium.launch({ channel: 'chrome' }); await b.close(); } catch (e) { process.exit(1); } })" ) >/dev/null 2>&1 </dev/null; then
   echo ">> Google Chrome was not found: downloading Chromium for Playwright (about 150 MB, first run only)"
-  ( cd "$WORK" && npx playwright install chromium ) >"$TMP/install.log" 2>&1 || {
+  ( cd "$WORK" && npx playwright install chromium ) >"$TMP/install.log" 2>&1 </dev/null || {
     echo "Downloading Chromium failed:"; tail -20 "$TMP/install.log"; exit 1
   }
 fi
 
 echo ">> Taking the screenshots (about a minute)"
-( cd "$WORK" && OUT_DIR="$OUT_DIR" BASE_URL="$BASE_URL" node capture.mjs ) 2>&1 | tee "$TMP/capture.log"
+( cd "$WORK" && OUT_DIR="$OUT_DIR" BASE_URL="$BASE_URL" node capture.mjs ) 2>&1 </dev/null | tee "$TMP/capture.log"
 CAPTURE_CODE=${PIPESTATUS[0]}
 
 {
   echo "=== CAPTURE (exit $CAPTURE_CODE) ==="
+  echo "frontend: $BASE_URL    api: $API_URL"
   sed -n '/=== RESULT/,$p' "$TMP/capture.log"
   echo
   echo "=== WHAT THE TOOL SAW ==="

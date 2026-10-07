@@ -115,16 +115,27 @@ async function signIn(browser, options, patterns, label) {
     }
   });
 
-  await page.goto(BASE + "/demo", { waitUntil: "domcontentloaded", timeout: 60000 });
+  const demoResponse = await page.goto(BASE + "/demo", { waitUntil: "domcontentloaded", timeout: 60000 });
+
   await page.waitForLoadState("networkidle", { timeout: 20000 }).catch(() => {});
+  await page.waitForSelector('a[href*="/demo/login/"]', { timeout: 8000 }).catch(() => {});
 
   const links = await page.$$eval('a[href*="/demo/login/"]', (anchors) =>
     anchors.map((a) => ({ href: a.getAttribute("href") || "", text: (a.textContent || "").replace(/\s+/g, " ").trim().slice(0, 70) })),
   );
 
   if (links.length === 0) {
+    const where = page.url();
+    const status = demoResponse ? demoResponse.status() : "no response";
+    const title = await page.title().catch(() => "");
+    const anchorCount = await page.locator("a").count().catch(() => 0);
+    const said = (await page.locator("body").innerText().catch(() => "")).replace(/\s+/g, " ").slice(0, 140);
+
     await context.close();
-    throw new Error("the /demo page has no role links (is the demo turned on? BUILDFLOW_DEMO_ENABLED=true)");
+    throw new Error(
+      "the /demo page has no role links. Address " + where + ", status " + status + ', title "' + title + '", ' +
+        anchorCount + " links in total. The page said: " + said,
+    );
   }
 
   log("  roles on /demo: " + links.map((l) => l.href.split("/").pop()).join(", "));
